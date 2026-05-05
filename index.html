@@ -128,7 +128,7 @@ body{font-family:var(--fs);font-weight:300;min-height:100vh}
 
 /* ── CONFIG TAB ── */
 .cfg-sticky{position:sticky;top:49px;z-index:50;background:var(--paper);border-bottom:1px solid var(--line);padding:12px 32px;display:flex;align-items:center;justify-content:space-between;gap:16px}
-.cfg-wrap{max-width:1080px;margin:0 auto;padding:40px 32px 100px}
+.cfg-wrap{max-width:1080px;margin:0 auto;padding:80px 32px 100px}
 .cfg-title{font-family:var(--fd);font-size:30px;font-weight:300;margin-bottom:6px}
 .cfg-desc{font-size:13px;color:var(--ink2);margin-bottom:32px;line-height:1.6}
 .cfg-section{margin-bottom:44px}
@@ -1257,6 +1257,7 @@ function switchTab(name,btn) {
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('tab-'+name).classList.add('active');
   btn.classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
 }
 
 // ── RELATIVE SCORE ──
