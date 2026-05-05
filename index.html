@@ -227,6 +227,75 @@ table.ctbl td.bench-td{font-weight:500;color:var(--ink)}
 .verify-score-good { color: var(--good); font-weight:500; }
 .verify-score-zero { color: var(--bad); font-weight:500; }
 .verify-score-mid  { color: var(--warn); font-weight:500; }
+
+.cat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.cat-card {
+  background: var(--paper2);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 12px 14px;
+  transition: border-color .15s;
+}
+.cat-card:hover { border-color: var(--ink3); }
+.cat-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.cat-emoji { font-size: 18px; line-height: 1; flex-shrink: 0; }
+.cat-label { font-size: 12px; color: var(--ink2); flex: 1; line-height: 1.3; }
+.cat-val {
+  font-family: var(--fd);
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.cat-slider {
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 3px;
+  background: var(--line);
+  border-radius: 2px;
+  outline: none;
+}
+.cat-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--ink);
+  cursor: pointer;
+  border: 2px solid var(--paper);
+  box-shadow: 0 0 0 1px var(--ink);
+}
+.cat-total-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--paper3);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+.cat-total-label {
+  font-size: 12px;
+  color: var(--ink2);
+  flex: 1;
+}
+.cat-total-val {
+  font-family: var(--fd);
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--ink);
+}
 </style>
 </head>
 <body>
@@ -266,15 +335,38 @@ table.ctbl td.bench-td{font-weight:500;color:var(--ink)}
   <div class="chapter">
     <div class="chapter-eyebrow">Chapter 1 · Lifestyle</div>
     <h2 class="chapter-title">How do you <em>live?</em></h2>
-    <p class="chapter-desc">The way you spend on things you enjoy says a lot about your financial personality.</p>
-    <div class="q-block">
-      <div class="q-text">What portion of your income goes toward dining, shopping, entertainment and travel?</div>
-      <div class="q-hint">Include food delivery, OTT subscriptions, weekends out, online orders</div>
-      <div class="slider-row">
-        <input type="range" min="0" max="100" step="1" value="20" id="sl-r2" oninput="slUpdate('r2',this.value)">
-        <span class="slider-val" id="sv-r2">20%</span>
+    <p class="chapter-desc">The way you spend on things you enjoy — dining out, travel, weekend plans. Move each slider to roughly what you spend monthly.</p>
+
+    <div class="cat-grid" id="cat-r2">
+      <div class="cat-card" data-key="r2_food">
+        <div class="cat-top"><span class="cat-emoji">🍽️</span><span class="cat-label">Dining &amp; Food delivery</span><span class="cat-val" id="cv-r2_food">3%</span></div>
+        <input class="cat-slider" type="range" min="0" max="30" step="1" value="3" oninput="catUpdate('r2','r2_food',this.value)">
       </div>
-      <div class="rs-display" id="rs-r2">≈ ₹11k / month</div>
+      <div class="cat-card" data-key="r2_shop">
+        <div class="cat-top"><span class="cat-emoji">🛍️</span><span class="cat-label">Shopping</span><span class="cat-val" id="cv-r2_shop">5%</span></div>
+        <input class="cat-slider" type="range" min="0" max="30" step="1" value="5" oninput="catUpdate('r2','r2_shop',this.value)">
+      </div>
+      <div class="cat-card" data-key="r2_ent">
+        <div class="cat-top"><span class="cat-emoji">🎬</span><span class="cat-label">Entertainment &amp; Games</span><span class="cat-val" id="cv-r2_ent">3%</span></div>
+        <input class="cat-slider" type="range" min="0" max="20" step="1" value="3" oninput="catUpdate('r2','r2_ent',this.value)">
+      </div>
+      <div class="cat-card" data-key="r2_travel">
+        <div class="cat-top"><span class="cat-emoji">✈️</span><span class="cat-label">Travel &amp; Outings</span><span class="cat-val" id="cv-r2_travel">4%</span></div>
+        <input class="cat-slider" type="range" min="0" max="30" step="1" value="4" oninput="catUpdate('r2','r2_travel',this.value)">
+      </div>
+      <div class="cat-card" data-key="r2_alc">
+        <div class="cat-top"><span class="cat-emoji">🍷</span><span class="cat-label">Alcohol &amp; Social</span><span class="cat-val" id="cv-r2_alc">2%</span></div>
+        <input class="cat-slider" type="range" min="0" max="20" step="1" value="2" oninput="catUpdate('r2','r2_alc',this.value)">
+      </div>
+      <div class="cat-card" data-key="r2_charity">
+        <div class="cat-top"><span class="cat-emoji">🤝</span><span class="cat-label">Charity &amp; Donations</span><span class="cat-val" id="cv-r2_charity">3%</span></div>
+        <input class="cat-slider" type="range" min="0" max="20" step="1" value="3" oninput="catUpdate('r2','r2_charity',this.value)">
+      </div>
+    </div>
+    <div class="cat-total-row">
+      <span class="cat-total-label">Total lifestyle spend</span>
+      <span class="cat-total-val" id="ct-r2">20%</span>
+      <span class="rs-display" id="rs-r2" style="font-size:16px;margin:0">≈ ₹11k / month</span>
     </div>
   </div>
 
@@ -284,16 +376,44 @@ table.ctbl td.bench-td{font-weight:500;color:var(--ink)}
   <div class="chapter">
     <div class="chapter-eyebrow">Chapter 2 · Essentials</div>
     <h2 class="chapter-title">What life <em>costs</em> you</h2>
-    <p class="chapter-desc">Rent, groceries, electricity, fuel — the non-negotiables before anything else.</p>
-    <div class="q-block">
-      <div class="q-text">What share of your income covers rent, utilities, groceries and other essentials?</div>
-      <div class="q-hint">Include electricity, internet, telecom, fuel, healthcare, education</div>
-      <div class="slider-row">
-        <input type="range" min="0" max="100" step="1" value="30" id="sl-r1" oninput="slUpdate('r1',this.value)">
-        <span class="slider-val" id="sv-r1">30%</span>
+    <p class="chapter-desc">The non-negotiables — rent, food on the table, keeping the lights on. These come out before anything else.</p>
+
+    <div class="cat-grid" id="cat-r1">
+      <div class="cat-card" data-key="r1_rent">
+        <div class="cat-top"><span class="cat-emoji">🏠</span><span class="cat-label">Rent &amp; Housing</span><span class="cat-val" id="cv-r1_rent">15%</span></div>
+        <input class="cat-slider" type="range" min="0" max="60" step="1" value="15" oninput="catUpdate('r1','r1_rent',this.value)">
       </div>
-      <div class="rs-display" id="rs-r1">≈ ₹17k / month</div>
+      <div class="cat-card" data-key="r1_util">
+        <div class="cat-top"><span class="cat-emoji">💡</span><span class="cat-label">Utilities &amp; Telecom</span><span class="cat-val" id="cv-r1_util">3%</span></div>
+        <input class="cat-slider" type="range" min="0" max="20" step="1" value="3" oninput="catUpdate('r1','r1_util',this.value)">
+      </div>
+      <div class="cat-card" data-key="r1_groc">
+        <div class="cat-top"><span class="cat-emoji">🛒</span><span class="cat-label">Groceries</span><span class="cat-val" id="cv-r1_groc">5%</span></div>
+        <input class="cat-slider" type="range" min="0" max="20" step="1" value="5" oninput="catUpdate('r1','r1_groc',this.value)">
+      </div>
+      <div class="cat-card" data-key="r1_fuel">
+        <div class="cat-top"><span class="cat-emoji">⛽</span><span class="cat-label">Fuel &amp; Transport</span><span class="cat-val" id="cv-r1_fuel">3%</span></div>
+        <input class="cat-slider" type="range" min="0" max="20" step="1" value="3" oninput="catUpdate('r1','r1_fuel',this.value)">
+      </div>
+      <div class="cat-card" data-key="r1_health">
+        <div class="cat-top"><span class="cat-emoji">🏥</span><span class="cat-label">Healthcare &amp; Insurance</span><span class="cat-val" id="cv-r1_health">2%</span></div>
+        <input class="cat-slider" type="range" min="0" max="20" step="1" value="2" oninput="catUpdate('r1','r1_health',this.value)">
+      </div>
+      <div class="cat-card" data-key="r1_edu">
+        <div class="cat-top"><span class="cat-emoji">📚</span><span class="cat-label">Education &amp; Courses</span><span class="cat-val" id="cv-r1_edu">1%</span></div>
+        <input class="cat-slider" type="range" min="0" max="20" step="1" value="1" oninput="catUpdate('r1','r1_edu',this.value)">
+      </div>
+      <div class="cat-card" data-key="r1_tax">
+        <div class="cat-top"><span class="cat-emoji">🏛️</span><span class="cat-label">Tax &amp; Government</span><span class="cat-val" id="cv-r1_tax">1%</span></div>
+        <input class="cat-slider" type="range" min="0" max="20" step="1" value="1" oninput="catUpdate('r1','r1_tax',this.value)">
+      </div>
     </div>
+    <div class="cat-total-row">
+      <span class="cat-total-label">Total essential spend</span>
+      <span class="cat-total-val" id="ct-r1">30%</span>
+      <span class="rs-display" id="rs-r1" style="font-size:16px;margin:0">≈ ₹17k / month</span>
+    </div>
+    <div id="sanity-warn" class="sanity-warn">Your inputs already exceed 100% of income — please review.</div>
   </div>
 
   <hr class="ch-divider">
@@ -907,7 +1027,7 @@ function calc() {
 
 function updateRsDisplays() {
   const mid=SAL_MID[S.sal]||57500;
-  [{id:'r1',v:S.r1},{id:'r2',v:S.r2},{id:'r5',v:S.r5},{id:'r6',v:S.r6}].forEach(({id,v})=>{
+  [{id:'r5',v:S.r5},{id:'r6',v:S.r6}].forEach(({id,v})=>{
     const el=document.getElementById('rs-'+id);
     if(el) el.textContent='≈ '+fmtRs(mid*v)+' / month';
   });
@@ -1155,12 +1275,26 @@ function toggleScore() {
     S.r5 = DEFAULTS.r5; S.r6 = DEFAULTS.r6;
     S.sal = DEFAULTS.sal;
 
-    document.getElementById('sl-r1').value = DEFAULTS.r1 * 100;
-    document.getElementById('sl-r2').value = DEFAULTS.r2 * 100;
+    // Reset category sliders
+    const catDefaults = {
+      r2_food:3, r2_shop:5, r2_ent:3, r2_travel:4, r2_alc:2, r2_charity:3,
+      r1_rent:15, r1_util:3, r1_groc:5, r1_fuel:3, r1_health:2, r1_edu:1, r1_tax:1,
+    };
+    Object.entries(catDefaults).forEach(([key, val]) => {
+      CAT_STATE[key] = val;
+      const el = document.querySelector(`[data-key="${key}"] .cat-slider`);
+      if (el) el.value = val;
+      const cv = document.getElementById('cv-' + key);
+      if (cv) cv.textContent = val + '%';
+    });
+    ['r1','r2'].forEach(ratio => {
+      const prefix = ratio + '_';
+      const total = Object.entries(CAT_STATE).filter(([k])=>k.startsWith(prefix)).reduce((s,[,v])=>s+v,0);
+      S[ratio] = total / 100;
+      document.getElementById('ct-' + ratio).textContent = total + '%';
+    });
     document.getElementById('sl-r5').value = DEFAULTS.r5 * 100;
     document.getElementById('sl-r6').value = DEFAULTS.r6 * 100;
-    document.getElementById('sv-r1').textContent = Math.round(DEFAULTS.r1*100) + '%';
-    document.getElementById('sv-r2').textContent = Math.round(DEFAULTS.r2*100) + '%';
     document.getElementById('sv-r5').textContent = Math.round(DEFAULTS.r5*100) + '%';
     document.getElementById('sv-r6').textContent = Math.round(DEFAULTS.r6*100) + '%';
     document.getElementById('sal-select').value = DEFAULTS.sal;
@@ -1245,8 +1379,52 @@ function buildVerifyTables(r3, r4) {
   });
 }
 
+// ── CATEGORY INPUTS ──────────────────────────────────────────────────────
+const CAT_STATE = {
+  r2_food:3, r2_shop:5, r2_ent:3, r2_travel:4, r2_alc:2, r2_charity:3,
+  r1_rent:15, r1_util:3, r1_groc:5, r1_fuel:3, r1_health:2, r1_edu:1, r1_tax:1,
+};
+
+function catUpdate(ratio, key, val) {
+  CAT_STATE[key] = parseInt(val);
+  document.getElementById('cv-' + key).textContent = val + '%';
+  // Sum all cats for this ratio
+  const prefix = ratio + '_';
+  const total = Object.entries(CAT_STATE)
+    .filter(([k]) => k.startsWith(prefix))
+    .reduce((s, [,v]) => s + v, 0);
+  S[ratio] = total / 100;
+  // Update total display
+  document.getElementById('ct-' + ratio).textContent = total + '%';
+  // Update rs display
+  const mid = SAL_MID[S.sal] || 57500;
+  const n = Math.round(mid * total / 100);
+  const rs = n >= 100000 ? '₹'+(n/100000).toFixed(1)+'L' : n >= 1000 ? '₹'+Math.round(n/1000)+'k' : '₹'+n;
+  document.getElementById('rs-' + ratio).textContent = '≈ ' + rs + ' / month';
+  // Hide scores if visible
+  if (scoreVisible) {
+    document.getElementById('score-sections').classList.remove('show');
+    document.getElementById('calc-btn-main').textContent = 'Calculate my UpScore';
+    scoreVisible = false;
+  }
+}
+
+function initCatDisplays() {
+  // Set initial S values from CAT_STATE
+  const r2Total = Object.entries(CAT_STATE).filter(([k]) => k.startsWith('r2_')).reduce((s,[,v])=>s+v,0);
+  const r1Total = Object.entries(CAT_STATE).filter(([k]) => k.startsWith('r1_')).reduce((s,[,v])=>s+v,0);
+  S.r2 = r2Total / 100;
+  S.r1 = r1Total / 100;
+  // Also update rs displays
+  ['r1','r2'].forEach(ratio => {
+    const total = ratio === 'r1' ? r1Total : r2Total;
+    document.getElementById('ct-' + ratio).textContent = total + '%';
+  });
+}
+
 // ── INIT ──
 buildCohortTable();
+initCatDisplays();
 updateRsDisplays();
 </script>
 </body>
