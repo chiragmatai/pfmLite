@@ -17,7 +17,7 @@ html{font-size:16px;background:var(--paper);color:var(--ink)}
 body{font-family:var(--fs);font-weight:300;min-height:100vh}
 
 /* tabs */
-.tab-bar{display:flex;border-bottom:1px solid var(--line);background:var(--paper);position:sticky;top:0;z-index:100;padding:0 32px}
+.tab-bar{display:flex;border-bottom:1px solid var(--line);background:var(--paper);position:sticky;top:0;z-index:100;padding:0 32px;overflow-x:auto}
 .tab-btn{font-family:var(--fs);font-size:13px;font-weight:400;color:var(--ink3);background:none;border:none;cursor:pointer;padding:16px 20px 14px;border-bottom:2px solid transparent;letter-spacing:.04em;transition:color .2s,border-color .2s}
 .tab-btn:hover{color:var(--ink)}
 .tab-btn.active{color:var(--ink);border-bottom-color:var(--ink);font-weight:500}
@@ -300,6 +300,72 @@ table.ctbl td.bench-td{font-weight:500;color:var(--ink)}
   font-weight: 300;
   color: #fff;
 }
+
+/* ── RESPONSIVE ─────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+
+  /* Layout */
+  .calc-wrap  { padding: 32px 16px 80px; }
+  .cfg-wrap   { padding: 28px 16px 80px; }
+  .tab-bar    { padding: 0 16px; }
+  .cfg-sticky { padding: 10px 16px; }
+
+  /* Page title */
+  .page-title { font-size: 30px; }
+  .page-desc  { font-size: 13px; }
+
+  /* Cohort row — stack vertically */
+  .cohort-row { flex-direction: column; gap: 8px; }
+  .cohort-card { min-width: 0; }
+
+  /* Category grid — single column on mobile */
+  .cat-grid { grid-template-columns: 1fr; }
+
+  /* Module grid — single column */
+  .module-grid { grid-template-columns: 1fr; }
+
+  /* Relative score cols — stack */
+  .rel-cols { grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  /* Score hero — smaller number */
+  .score-big { font-size: 52px; }
+
+  /* Breakdown table — hide normalisation col, compress */
+  .breakdown-row  { grid-template-columns: 1.6fr 0.7fr 1.4fr 0.6fr; gap: 6px; font-size: 11px; padding: 8px 10px; }
+  .breakdown-row .normalisation-col { display: none; }
+  .verify-row { grid-template-columns: 1.4fr 0.6fr 1.6fr 0.5fr; gap: 4px; font-size: 10px; padding: 7px 10px; }
+  .verify-row .hide-mobile { display: none; }
+
+  /* Explain table */
+  .explain-row { grid-template-columns: 1.2fr 1.8fr 0.6fr 0.7fr; font-size: 11px; padding: 8px 10px; }
+
+  /* Config weights grid */
+  .wt-grid { grid-template-columns: 1fr; }
+
+  /* Config cohort table — scrollable */
+  .tbl-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+  /* Action bar */
+  .action-bar { padding: 24px 0 0; }
+  .calc-btn   { width: 100%; text-align: center; padding: 16px 24px; font-size: 14px; }
+
+  /* Insights */
+  .ins-card { padding: 16px; }
+  .ins-compare { grid-template-columns: 1fr; gap: 10px; }
+
+  /* Score section desc */
+  .score-section-desc { font-size: 11px; }
+
+  /* Cat total row */
+  .cat-total-row { flex-wrap: wrap; gap: 8px; }
+}
+
+@media (max-width: 400px) {
+  .page-title { font-size: 26px; }
+  .score-big  { font-size: 44px; }
+  .rel-cols   { grid-template-columns: 1fr; }
+  .cat-total-val { font-size: 18px; }
+}
 </style>
 </head>
 <body>
@@ -577,7 +643,7 @@ table.ctbl td.bench-td{font-weight:500;color:var(--ink)}
       <!-- Ratio breakdown -->
       <div class="score-breakdown" id="abs-breakdown">
         <div class="breakdown-row header">
-          <span>Ratio</span><span>Your value</span><span>Normalisation</span><span>Score</span><span>Pts</span>
+          <span>Ratio</span><span>Your value</span><span class="normalisation-col">Normalisation</span><span>Score</span><span>Pts</span>
         </div>
         <div class="breakdown-row" id="abs-r1"></div>
         <div class="breakdown-row" id="abs-r2"></div>
