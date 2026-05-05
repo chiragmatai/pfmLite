@@ -250,7 +250,8 @@ table.ctbl td.bench-td{font-weight:500;color:var(--ink)}
 }
 .cat-emoji { font-size: 22px; line-height: 1.2; flex-shrink: 0; }
 .cat-info { flex: 1; min-width: 0; }
-.cat-label { font-size: 12px; color: var(--ink2); line-height: 1.4; display:block; margin-bottom:3px; }
+.cat-label { font-size: 13px; color: var(--ink); line-height: 1.3; display:block; margin-bottom:2px; font-weight:400; }
+.cat-hint { font-size: 11px; color: var(--ink3); line-height: 1.4; display:block; margin-bottom:4px; }
 .cat-amounts { display:flex; align-items:baseline; gap:6px; }
 .cat-val {
   font-family: var(--fd);
@@ -412,7 +413,8 @@ table.ctbl td.bench-td{font-weight:500;color:var(--ink)}
         <div class="cat-top">
           <span class="cat-emoji">🍽️</span>
           <div class="cat-info">
-            <span class="cat-label">Eating out &amp; Takeaway</span>
+            <span class="cat-label">Dining out &amp; Food delivery</span>
+            <span class="cat-hint">Restaurants, cafes, Zomato, Swiggy</span>
             <div class="cat-amounts">
               <span class="cat-val" id="cv-r2_food">6%</span>
               <span class="cat-rs" id="cr-r2_food">≈ ₹—</span>
@@ -426,6 +428,7 @@ table.ctbl td.bench-td{font-weight:500;color:var(--ink)}
           <span class="cat-emoji">🛍️</span>
           <div class="cat-info">
             <span class="cat-label">Shopping</span>
+            <span class="cat-hint">Clothes, gadgets, beauty, online orders</span>
             <div class="cat-amounts">
               <span class="cat-val" id="cv-r2_shop">6%</span>
               <span class="cat-rs" id="cr-r2_shop">≈ ₹—</span>
@@ -439,6 +442,7 @@ table.ctbl td.bench-td{font-weight:500;color:var(--ink)}
           <span class="cat-emoji">🥂</span>
           <div class="cat-info">
             <span class="cat-label">Going out</span>
+            <span class="cat-hint">Bars, clubs, events, movies, dates</span>
             <div class="cat-amounts">
               <span class="cat-val" id="cv-r2_goout">4%</span>
               <span class="cat-rs" id="cr-r2_goout">≈ ₹—</span>
@@ -451,7 +455,8 @@ table.ctbl td.bench-td{font-weight:500;color:var(--ink)}
         <div class="cat-top">
           <span class="cat-emoji">🎮</span>
           <div class="cat-info">
-            <span class="cat-label">Entertainment &amp; Streaming</span>
+            <span class="cat-label">Entertainment</span>
+            <span class="cat-hint">Netflix, Spotify, games, OTT subscriptions</span>
             <div class="cat-amounts">
               <span class="cat-val" id="cv-r2_ent">4%</span>
               <span class="cat-rs" id="cr-r2_ent">≈ ₹—</span>
@@ -481,6 +486,7 @@ table.ctbl td.bench-td{font-weight:500;color:var(--ink)}
           <span class="cat-emoji">🏠</span>
           <div class="cat-info">
             <span class="cat-label">Rent &amp; Housing</span>
+            <span class="cat-hint">Rent, maintenance, society charges</span>
             <div class="cat-amounts">
               <span class="cat-val" id="cv-r1_rent">15%</span>
               <span class="cat-rs" id="cr-r1_rent">≈ ₹—</span>
@@ -494,6 +500,7 @@ table.ctbl td.bench-td{font-weight:500;color:var(--ink)}
           <span class="cat-emoji">🧾</span>
           <div class="cat-info">
             <span class="cat-label">Bills</span>
+            <span class="cat-hint">Electricity, water, internet, phone</span>
             <div class="cat-amounts">
               <span class="cat-val" id="cv-r1_bills">4%</span>
               <span class="cat-rs" id="cr-r1_bills">≈ ₹—</span>
@@ -507,6 +514,7 @@ table.ctbl td.bench-td{font-weight:500;color:var(--ink)}
           <span class="cat-emoji">🛒</span>
           <div class="cat-info">
             <span class="cat-label">Groceries</span>
+            <span class="cat-hint">Supermarket, vegetables, daily staples</span>
             <div class="cat-amounts">
               <span class="cat-val" id="cv-r1_groc">6%</span>
               <span class="cat-rs" id="cr-r1_groc">≈ ₹—</span>
@@ -520,6 +528,7 @@ table.ctbl td.bench-td{font-weight:500;color:var(--ink)}
           <span class="cat-emoji">🚗</span>
           <div class="cat-info">
             <span class="cat-label">Commute</span>
+            <span class="cat-hint">Petrol, cabs, metro, parking</span>
             <div class="cat-amounts">
               <span class="cat-val" id="cv-r1_commute">3%</span>
               <span class="cat-rs" id="cr-r1_commute">≈ ₹—</span>
@@ -533,6 +542,7 @@ table.ctbl td.bench-td{font-weight:500;color:var(--ink)}
           <span class="cat-emoji">🏥</span>
           <div class="cat-info">
             <span class="cat-label">Health &amp; Insurance</span>
+            <span class="cat-hint">Doctor visits, medicines, health/life premiums</span>
             <div class="cat-amounts">
               <span class="cat-val" id="cv-r1_health">2%</span>
               <span class="cat-rs" id="cr-r1_health">≈ ₹—</span>
@@ -546,6 +556,7 @@ table.ctbl td.bench-td{font-weight:500;color:var(--ink)}
           <span class="cat-emoji">📋</span>
           <div class="cat-info">
             <span class="cat-label">Education &amp; Tax</span>
+            <span class="cat-hint">School fees, courses, advance tax payments</span>
             <div class="cat-amounts">
               <span class="cat-val" id="cv-r1_edutax">0%</span>
               <span class="cat-rs" id="cr-r1_edutax">≈ ₹—</span>
