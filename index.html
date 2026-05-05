@@ -219,6 +219,14 @@ table.ctbl td.bench-td{font-weight:500;color:var(--ink)}
 
 .score-sections { display: none; }
 .score-sections.show { display: block; }
+
+.verify-row { display:grid; grid-template-columns:1.3fr 0.8fr 1fr 2fr 0.6fr; padding:8px 14px; border-bottom:1px solid var(--line); gap:8px; align-items:center; font-size:11px; color:var(--ink2); }
+.verify-row:last-child { border-bottom:none; }
+.verify-row.hdr { font-size:10px; font-weight:500; letter-spacing:.06em; text-transform:uppercase; color:var(--ink3); background:var(--paper2); }
+.verify-calc { font-family:monospace; font-size:11px; color:var(--ink); }
+.verify-score-good { color: var(--good); font-weight:500; }
+.verify-score-zero { color: var(--bad); font-weight:500; }
+.verify-score-mid  { color: var(--warn); font-weight:500; }
 </style>
 </head>
 <body>
@@ -448,9 +456,20 @@ table.ctbl td.bench-td{font-weight:500;color:var(--ink)}
       <div class="explain-text">
         <span class="explain-formula">Absolute — lower: (P95 − value) / (P95 − P5)</span>&nbsp;
         <span class="explain-formula">Absolute — higher: (value − P5) / (P95 − P5)</span><br><br>
-        <span class="explain-formula">Relative — lower: MIN(1, P25 ÷ input)</span>&nbsp;
-        <span class="explain-formula">Relative — higher: MIN(1, input ÷ P75)</span><br><br>
-        Both use seeded P5/P25/P75/P95 from the DB per cohort. Absolute normalizes against the full P5–P95 range. Relative further divides by what a P25/P75 peer scores.
+        <span class="explain-formula">Relative — lower: norm ÷ (P95 − P25)/(P95 − P5)</span>&nbsp;
+        <span class="explain-formula">Relative — higher: norm ÷ (P75 − P5)/(P95 − P5)</span><br><br>
+        Both use seeded P5/P25/P75/P95 from the DB per cohort. Absolute normalises against the full P5–P95 range. Relative divides by what a P25/P75 peer scores on the same scale.
+      </div>
+    </div>
+
+    <div class="explain-block">
+      <div class="explain-label">Verification — your numbers</div>
+      <div id="verify-table-abs" class="explain-table" style="margin-bottom:12px">
+        <div class="verify-row hdr"><span>Ratio</span><span>Your value</span><span>P5 / P95</span><span>Calculation</span><span>Score</span></div>
+      </div>
+      <div class="explain-text" style="margin-bottom:16px;font-size:11px;color:var(--ink3)">Relative score verification:</div>
+      <div id="verify-table-rel" class="explain-table">
+        <div class="verify-row hdr"><span>Ratio</span><span>Your value</span><span>P25 / P75</span><span>Calculation</span><span>Score</span></div>
       </div>
     </div>
     <div class="explain-block">
@@ -883,6 +902,7 @@ function calc() {
 
   updateRel(total);
   buildInsights();
+  buildVerifyTables(r3, r4);
 }
 
 function updateRsDisplays() {
@@ -1151,6 +1171,78 @@ function toggleScore() {
     updateRsDisplays();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
+}
+
+// ── VERIFICATION TABLES ──────────────────────────────────────────────────
+function buildVerifyTables(r3, r4) {
+  const co = cohort();
+  const pf = v => Math.round(v*100) + '%';
+  const sc = v => (v*100).toFixed(0) + '%';
+  const scClass = v => v <= 0 ? 'verify-score-zero' : v >= 0.8 ? 'verify-score-good' : 'verify-score-mid';
+
+  function vRow(label, userVal, ref1, ref2, calcStr, score, derived) {
+    return `<div class="verify-row">
+      <span>${label}${derived ? '<br><span style="font-size:10px;color:var(--ink3)">' + derived + '</span>' : ''}</span>
+      <span>${pf(userVal)}</span>
+      <span>${ref1} / ${ref2}</span>
+      <span class="verify-calc">${calcStr}</span>
+      <span class="${scClass(score)}">${sc(score)}</span>
+    </div>`;
+  }
+
+  // Absolute rows
+  const ratios = [
+    { label:'R1 · Fixed', v:S.r1,  p5:co.r1.p5, p95:co.r1.p95, hi:false },
+    { label:'R2 · Discr.', v:S.r2, p5:co.r2.p5, p95:co.r2.p95, hi:false },
+    { label:'R3 · Other', v:r3,    p5:co.r3.p5, p95:co.r3.p95, hi:false, derived:'residual÷2' },
+    { label:'R4 · Savings', v:r4,  p5:co.r4.p5, p95:co.r4.p95, hi:true,  derived:'residual÷2' },
+    { label:'R5 · Invest.', v:S.r5,p5:co.r5.p5, p95:co.r5.p95, hi:true  },
+    { label:'R6 · Debt',   v:S.r6, p5:co.r6.p5, p95:co.r6.p95, hi:false },
+  ];
+
+  const absBody = document.getElementById('verify-table-abs');
+  const hdrAbs = absBody.querySelector('.verify-row.hdr').outerHTML;
+  absBody.innerHTML = hdrAbs;
+  ratios.forEach(r => {
+    const range = r.p95 - r.p5;
+    const score = range === 0 ? 0 : r.hi
+      ? Math.max(0, Math.min(1, (r.v - r.p5) / range))
+      : Math.max(0, Math.min(1, (r.p95 - r.v) / range));
+    const calcStr = r.hi
+      ? `(${pf(r.v)}−${pf(r.p5)})/(${pf(r.p95)}−${pf(r.p5)}) = ${sc(score)}`
+      : `(${pf(r.p95)}−${pf(r.v)})/(${pf(r.p95)}−${pf(r.p5)}) = ${sc(score)}`;
+    absBody.innerHTML += vRow(r.label, r.v, pf(r.p5), pf(r.p95), calcStr, score, r.derived||'');
+  });
+
+  // Relative rows
+  const relRatios = [
+    { label:'R1 · Fixed', v:S.r1,  p5:co.r1.p5, p25:co.r1.p25, p75:co.r1.p75, p95:co.r1.p95, hi:false },
+    { label:'R2 · Discr.', v:S.r2, p5:co.r2.p5, p25:co.r2.p25, p75:co.r2.p75, p95:co.r2.p95, hi:false },
+    { label:'R3 · Other', v:r3,    p5:co.r3.p5, p25:co.r3.p25, p75:co.r3.p75, p95:co.r3.p95, hi:false, derived:'residual÷2' },
+    { label:'R4 · Savings', v:r4,  p5:co.r4.p5, p25:co.r4.p25, p75:co.r4.p75, p95:co.r4.p95, hi:true,  derived:'residual÷2' },
+    { label:'R5 · Invest.', v:S.r5,p5:co.r5.p5, p25:co.r5.p25, p75:co.r5.p75, p95:co.r5.p95, hi:true  },
+    { label:'R6 · Debt',   v:S.r6, p5:co.r6.p5, p25:co.r6.p25, p75:co.r6.p75, p95:co.r6.p95, hi:false },
+  ];
+
+  const relBody = document.getElementById('verify-table-rel');
+  const hdrRel = relBody.querySelector('.verify-row.hdr').outerHTML;
+  relBody.innerHTML = hdrRel;
+  relRatios.forEach(r => {
+    const range = r.p95 - r.p5;
+    const norm = range === 0 ? 0 : r.hi
+      ? Math.max(0, Math.min(1, (r.v - r.p5) / range))
+      : Math.max(0, Math.min(1, (r.p95 - r.v) / range));
+    const divisor = range === 0 ? 0 : r.hi
+      ? (r.p75 - r.p5) / range
+      : (r.p95 - r.p25) / range;
+    const score = divisor === 0 ? 0 : Math.min(1, norm / divisor);
+    const benchRef = r.hi ? pf(r.p75) : pf(r.p25);
+    const divStr = r.hi
+      ? `(${pf(r.p75)}−${pf(r.p5)})/(${pf(r.p95)}−${pf(r.p5)})`
+      : `(${pf(r.p95)}−${pf(r.p25)})/(${pf(r.p95)}−${pf(r.p5)})`;
+    const calcStr = `norm=${sc(norm)} ÷ div=${sc(divisor)} = ${sc(score)}`;
+    relBody.innerHTML += vRow(r.label, r.v, r.hi ? pf(r.p5) : pf(r.p25), r.hi ? pf(r.p75) : pf(r.p95), calcStr, score, r.derived||'');
+  });
 }
 
 // ── INIT ──
