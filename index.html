@@ -237,25 +237,30 @@ table.ctbl td.bench-td{font-weight:500;color:var(--ink)}
 .cat-card {
   background: var(--paper2);
   border: 1px solid var(--line);
-  border-radius: 10px;
-  padding: 12px 14px;
+  border-radius: 12px;
+  padding: 14px 16px;
   transition: border-color .15s;
 }
 .cat-card:hover { border-color: var(--ink3); }
 .cat-top {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 10px;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 12px;
 }
-.cat-emoji { font-size: 18px; line-height: 1; flex-shrink: 0; }
-.cat-label { font-size: 12px; color: var(--ink2); flex: 1; line-height: 1.3; }
+.cat-emoji { font-size: 22px; line-height: 1.2; flex-shrink: 0; }
+.cat-info { flex: 1; min-width: 0; }
+.cat-label { font-size: 12px; color: var(--ink2); line-height: 1.4; display:block; margin-bottom:3px; }
+.cat-amounts { display:flex; align-items:baseline; gap:6px; }
 .cat-val {
   font-family: var(--fd);
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 400;
   color: var(--ink);
-  white-space: nowrap;
+}
+.cat-rs {
+  font-size: 12px;
+  color: var(--ink3);
 }
 .cat-slider {
   width: 100%;
@@ -278,23 +283,22 @@ table.ctbl td.bench-td{font-weight:500;color:var(--ink)}
 .cat-total-row {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px 14px;
-  background: var(--paper3);
-  border-radius: 8px;
+  gap: 14px;
+  padding: 12px 16px;
+  background: var(--ink);
+  border-radius: 10px;
   margin-bottom: 8px;
-  flex-wrap: wrap;
 }
 .cat-total-label {
   font-size: 12px;
-  color: var(--ink2);
+  color: rgba(255,255,255,0.6);
   flex: 1;
 }
 .cat-total-val {
   font-family: var(--fd);
   font-size: 22px;
-  font-weight: 400;
-  color: var(--ink);
+  font-weight: 300;
+  color: #fff;
 }
 </style>
 </head>
@@ -339,30 +343,74 @@ table.ctbl td.bench-td{font-weight:500;color:var(--ink)}
 
     <div class="cat-grid" id="cat-r2">
       <div class="cat-card" data-key="r2_food">
-        <div class="cat-top"><span class="cat-emoji">🍽️</span><span class="cat-label">Dining &amp; Food delivery</span><span class="cat-val" id="cv-r2_food">5%</span></div>
+        <div class="cat-top">
+          <span class="cat-emoji">🍽️</span>
+          <div class="cat-info">
+            <span class="cat-label">Dining &amp; Food delivery</span>
+            <div class="cat-amounts">
+              <span class="cat-val" id="cv-r2_food">5%</span>
+              <span class="cat-rs" id="cr-r2_food">≈ ₹—</span>
+            </div>
+          </div>
+        </div>
         <input class="cat-slider" type="range" min="0" max="40" step="1" value="5" oninput="catUpdate('r2','r2_food',this.value)">
       </div>
       <div class="cat-card" data-key="r2_shop">
-        <div class="cat-top"><span class="cat-emoji">🛍️</span><span class="cat-label">Shopping &amp; Personal care</span><span class="cat-val" id="cv-r2_shop">6%</span></div>
+        <div class="cat-top">
+          <span class="cat-emoji">🛍️</span>
+          <div class="cat-info">
+            <span class="cat-label">Shopping &amp; Personal care</span>
+            <div class="cat-amounts">
+              <span class="cat-val" id="cv-r2_shop">6%</span>
+              <span class="cat-rs" id="cr-r2_shop">≈ ₹—</span>
+            </div>
+          </div>
+        </div>
         <input class="cat-slider" type="range" min="0" max="40" step="1" value="6" oninput="catUpdate('r2','r2_shop',this.value)">
       </div>
       <div class="cat-card" data-key="r2_ent">
-        <div class="cat-top"><span class="cat-emoji">🎬</span><span class="cat-label">Entertainment &amp; Subscriptions</span><span class="cat-val" id="cv-r2_ent">3%</span></div>
+        <div class="cat-top">
+          <span class="cat-emoji">🎬</span>
+          <div class="cat-info">
+            <span class="cat-label">Entertainment &amp; Subscriptions</span>
+            <div class="cat-amounts">
+              <span class="cat-val" id="cv-r2_ent">3%</span>
+              <span class="cat-rs" id="cr-r2_ent">≈ ₹—</span>
+            </div>
+          </div>
+        </div>
         <input class="cat-slider" type="range" min="0" max="30" step="1" value="3" oninput="catUpdate('r2','r2_ent',this.value)">
       </div>
       <div class="cat-card" data-key="r2_travel">
-        <div class="cat-top"><span class="cat-emoji">✈️</span><span class="cat-label">Travel &amp; Weekends</span><span class="cat-val" id="cv-r2_travel">4%</span></div>
+        <div class="cat-top">
+          <span class="cat-emoji">✈️</span>
+          <div class="cat-info">
+            <span class="cat-label">Travel &amp; Weekends</span>
+            <div class="cat-amounts">
+              <span class="cat-val" id="cv-r2_travel">4%</span>
+              <span class="cat-rs" id="cr-r2_travel">≈ ₹—</span>
+            </div>
+          </div>
+        </div>
         <input class="cat-slider" type="range" min="0" max="40" step="1" value="4" oninput="catUpdate('r2','r2_travel',this.value)">
       </div>
       <div class="cat-card" data-key="r2_alc">
-        <div class="cat-top"><span class="cat-emoji">🍷</span><span class="cat-label">Alcohol &amp; Nightlife</span><span class="cat-val" id="cv-r2_alc">2%</span></div>
+        <div class="cat-top">
+          <span class="cat-emoji">🍷</span>
+          <div class="cat-info">
+            <span class="cat-label">Alcohol &amp; Nightlife</span>
+            <div class="cat-amounts">
+              <span class="cat-val" id="cv-r2_alc">2%</span>
+              <span class="cat-rs" id="cr-r2_alc">≈ ₹—</span>
+            </div>
+          </div>
+        </div>
         <input class="cat-slider" type="range" min="0" max="30" step="1" value="2" oninput="catUpdate('r2','r2_alc',this.value)">
       </div>
-    </div>
+    </div>    </div>
     <div class="cat-total-row">
       <span class="cat-total-label">Total lifestyle spend</span>
-      <span class="cat-total-val" id="ct-r2">20%</span>
-      <span class="rs-display" id="rs-r2" style="font-size:16px;margin:0">≈ ₹11k / month</span>
+      <div style="display:flex;align-items:baseline;gap:8px"><span class="cat-total-val" id="ct-r2">20%</span><span style="font-size:13px;color:rgba(255,255,255,0.6)" id="rs-r2">≈ ₹11k / month</span></div>
     </div>
   </div>
 
@@ -376,34 +424,87 @@ table.ctbl td.bench-td{font-weight:500;color:var(--ink)}
 
     <div class="cat-grid" id="cat-r1">
       <div class="cat-card" data-key="r1_rent">
-        <div class="cat-top"><span class="cat-emoji">🏠</span><span class="cat-label">Rent &amp; Housing</span><span class="cat-val" id="cv-r1_rent">15%</span></div>
+        <div class="cat-top">
+          <span class="cat-emoji">🏠</span>
+          <div class="cat-info">
+            <span class="cat-label">Rent &amp; Housing</span>
+            <div class="cat-amounts">
+              <span class="cat-val" id="cv-r1_rent">15%</span>
+              <span class="cat-rs" id="cr-r1_rent">≈ ₹—</span>
+            </div>
+          </div>
+        </div>
         <input class="cat-slider" type="range" min="0" max="70" step="1" value="15" oninput="catUpdate('r1','r1_rent',this.value)">
       </div>
       <div class="cat-card" data-key="r1_util">
-        <div class="cat-top"><span class="cat-emoji">💡</span><span class="cat-label">Utilities, Telecom &amp; Internet</span><span class="cat-val" id="cv-r1_util">4%</span></div>
+        <div class="cat-top">
+          <span class="cat-emoji">💡</span>
+          <div class="cat-info">
+            <span class="cat-label">Utilities, Telecom &amp; Internet</span>
+            <div class="cat-amounts">
+              <span class="cat-val" id="cv-r1_util">4%</span>
+              <span class="cat-rs" id="cr-r1_util">≈ ₹—</span>
+            </div>
+          </div>
+        </div>
         <input class="cat-slider" type="range" min="0" max="20" step="1" value="4" oninput="catUpdate('r1','r1_util',this.value)">
       </div>
       <div class="cat-card" data-key="r1_groc">
-        <div class="cat-top"><span class="cat-emoji">🛒</span><span class="cat-label">Groceries &amp; Household</span><span class="cat-val" id="cv-r1_groc">6%</span></div>
+        <div class="cat-top">
+          <span class="cat-emoji">🛒</span>
+          <div class="cat-info">
+            <span class="cat-label">Groceries &amp; Household</span>
+            <div class="cat-amounts">
+              <span class="cat-val" id="cv-r1_groc">6%</span>
+              <span class="cat-rs" id="cr-r1_groc">≈ ₹—</span>
+            </div>
+          </div>
+        </div>
         <input class="cat-slider" type="range" min="0" max="25" step="1" value="6" oninput="catUpdate('r1','r1_groc',this.value)">
       </div>
       <div class="cat-card" data-key="r1_fuel">
-        <div class="cat-top"><span class="cat-emoji">⛽</span><span class="cat-label">Transport &amp; Fuel</span><span class="cat-val" id="cv-r1_fuel">3%</span></div>
+        <div class="cat-top">
+          <span class="cat-emoji">⛽</span>
+          <div class="cat-info">
+            <span class="cat-label">Transport &amp; Fuel</span>
+            <div class="cat-amounts">
+              <span class="cat-val" id="cv-r1_fuel">3%</span>
+              <span class="cat-rs" id="cr-r1_fuel">≈ ₹—</span>
+            </div>
+          </div>
+        </div>
         <input class="cat-slider" type="range" min="0" max="20" step="1" value="3" oninput="catUpdate('r1','r1_fuel',this.value)">
       </div>
       <div class="cat-card" data-key="r1_health">
-        <div class="cat-top"><span class="cat-emoji">🏥</span><span class="cat-label">Healthcare &amp; Insurance</span><span class="cat-val" id="cv-r1_health">2%</span></div>
+        <div class="cat-top">
+          <span class="cat-emoji">🏥</span>
+          <div class="cat-info">
+            <span class="cat-label">Healthcare &amp; Insurance</span>
+            <div class="cat-amounts">
+              <span class="cat-val" id="cv-r1_health">2%</span>
+              <span class="cat-rs" id="cr-r1_health">≈ ₹—</span>
+            </div>
+          </div>
+        </div>
         <input class="cat-slider" type="range" min="0" max="20" step="1" value="2" oninput="catUpdate('r1','r1_health',this.value)">
       </div>
       <div class="cat-card" data-key="r1_edutax">
-        <div class="cat-top"><span class="cat-emoji">📚</span><span class="cat-label">Education &amp; Tax</span><span class="cat-val" id="cv-r1_edutax">0%</span></div>
+        <div class="cat-top">
+          <span class="cat-emoji">📚</span>
+          <div class="cat-info">
+            <span class="cat-label">Education &amp; Tax</span>
+            <div class="cat-amounts">
+              <span class="cat-val" id="cv-r1_edutax">0%</span>
+              <span class="cat-rs" id="cr-r1_edutax">≈ ₹—</span>
+            </div>
+          </div>
+        </div>
         <input class="cat-slider" type="range" min="0" max="20" step="1" value="0" oninput="catUpdate('r1','r1_edutax',this.value)">
       </div>
-    </div>
+    </div>    </div>
     <div class="cat-total-row">
       <span class="cat-total-label">Total essential spend</span>
-      <span class="cat-total-val" id="ct-r1">30%</span>
-      <span class="rs-display" id="rs-r1" style="font-size:16px;margin:0">≈ ₹17k / month</span>
+      <div style="display:flex;align-items:baseline;gap:8px"><span class="cat-total-val" id="ct-r1">30%</span><span style="font-size:13px;color:rgba(255,255,255,0.6)" id="rs-r1">≈ ₹17k / month</span></div>
     </div>
     <div id="sanity-warn" class="sanity-warn">Your inputs already exceed 100% of income — please review.</div>
   </div>
@@ -1386,13 +1487,19 @@ function catUpdate(ratio, key, val) {
     .filter(([k]) => k.startsWith(prefix))
     .reduce((s, [,v]) => s + v, 0);
   S[ratio] = total / 100;
+  const mid = SAL_MID[S.sal] || 57500;
+  function fmtRsLocal(pct) {
+    const n = Math.round(mid * pct / 100);
+    return n >= 100000 ? '₹'+(n/100000).toFixed(1)+'L' : n >= 1000 ? '₹'+Math.round(n/1000)+'k' : '₹'+n;
+  }
+  // Update per-card rs amount
+  const crEl = document.getElementById('cr-' + key);
+  if (crEl) crEl.textContent = '≈ ' + fmtRsLocal(parseInt(val));
   // Update total display
   document.getElementById('ct-' + ratio).textContent = total + '%';
-  // Update rs display
-  const mid = SAL_MID[S.sal] || 57500;
-  const n = Math.round(mid * total / 100);
-  const rs = n >= 100000 ? '₹'+(n/100000).toFixed(1)+'L' : n >= 1000 ? '₹'+Math.round(n/1000)+'k' : '₹'+n;
-  document.getElementById('rs-' + ratio).textContent = '≈ ' + rs + ' / month';
+  // Update total rs display
+  const rsEl = document.getElementById('rs-' + ratio);
+  if (rsEl) rsEl.textContent = '≈ ' + fmtRsLocal(total) + ' / mo';
   // Hide scores if visible
   if (scoreVisible) {
     document.getElementById('score-sections').classList.remove('show');
@@ -1402,16 +1509,27 @@ function catUpdate(ratio, key, val) {
 }
 
 function initCatDisplays() {
-  // Set initial S values from CAT_STATE
+  const mid = SAL_MID[S.sal] || 57500;
+  function fmtRsLocal(pct) {
+    const n = Math.round(mid * pct / 100);
+    return n >= 100000 ? '₹'+(n/100000).toFixed(1)+'L' : n >= 1000 ? '₹'+Math.round(n/1000)+'k' : '₹'+n;
+  }
   const r2Total = Object.entries(CAT_STATE).filter(([k]) => k.startsWith('r2_')).reduce((s,[,v])=>s+v,0);
   const r1Total = Object.entries(CAT_STATE).filter(([k]) => k.startsWith('r1_')).reduce((s,[,v])=>s+v,0);
   S.r2 = r2Total / 100;
   S.r1 = r1Total / 100;
-  // Also update rs displays
-  ['r1','r2'].forEach(ratio => {
-    const total = ratio === 'r1' ? r1Total : r2Total;
-    document.getElementById('ct-' + ratio).textContent = total + '%';
+  // Update per-card rs amounts
+  Object.entries(CAT_STATE).forEach(([key, val]) => {
+    const crEl = document.getElementById('cr-' + key);
+    if (crEl) crEl.textContent = '≈ ' + fmtRsLocal(val);
   });
+  // Update totals
+  document.getElementById('ct-r2').textContent = r2Total + '%';
+  document.getElementById('ct-r1').textContent = r1Total + '%';
+  const rsR2 = document.getElementById('rs-r2');
+  const rsR1 = document.getElementById('rs-r1');
+  if (rsR2) rsR2.textContent = '≈ ' + fmtRsLocal(r2Total) + ' / mo';
+  if (rsR1) rsR1.textContent = '≈ ' + fmtRsLocal(r1Total) + ' / mo';
 }
 
 // ── INIT ──
