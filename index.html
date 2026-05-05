@@ -412,20 +412,20 @@ table.ctbl td.bench-td{font-weight:500;color:var(--ink)}
         <div class="cat-top">
           <span class="cat-emoji">🍽️</span>
           <div class="cat-info">
-            <span class="cat-label">Dining &amp; Food delivery</span>
+            <span class="cat-label">Eating out &amp; Takeaway</span>
             <div class="cat-amounts">
-              <span class="cat-val" id="cv-r2_food">5%</span>
+              <span class="cat-val" id="cv-r2_food">6%</span>
               <span class="cat-rs" id="cr-r2_food">≈ ₹—</span>
             </div>
           </div>
         </div>
-        <input class="cat-slider" type="range" min="0" max="40" step="1" value="5" oninput="catUpdate('r2','r2_food',this.value)">
+        <input class="cat-slider" type="range" min="0" max="40" step="1" value="6" oninput="catUpdate('r2','r2_food',this.value)">
       </div>
       <div class="cat-card" data-key="r2_shop">
         <div class="cat-top">
           <span class="cat-emoji">🛍️</span>
           <div class="cat-info">
-            <span class="cat-label">Shopping &amp; Personal care</span>
+            <span class="cat-label">Shopping</span>
             <div class="cat-amounts">
               <span class="cat-val" id="cv-r2_shop">6%</span>
               <span class="cat-rs" id="cr-r2_shop">≈ ₹—</span>
@@ -434,44 +434,31 @@ table.ctbl td.bench-td{font-weight:500;color:var(--ink)}
         </div>
         <input class="cat-slider" type="range" min="0" max="40" step="1" value="6" oninput="catUpdate('r2','r2_shop',this.value)">
       </div>
+      <div class="cat-card" data-key="r2_goout">
+        <div class="cat-top">
+          <span class="cat-emoji">🥂</span>
+          <div class="cat-info">
+            <span class="cat-label">Going out</span>
+            <div class="cat-amounts">
+              <span class="cat-val" id="cv-r2_goout">4%</span>
+              <span class="cat-rs" id="cr-r2_goout">≈ ₹—</span>
+            </div>
+          </div>
+        </div>
+        <input class="cat-slider" type="range" min="0" max="30" step="1" value="4" oninput="catUpdate('r2','r2_goout',this.value)">
+      </div>
       <div class="cat-card" data-key="r2_ent">
         <div class="cat-top">
-          <span class="cat-emoji">🎬</span>
+          <span class="cat-emoji">🎮</span>
           <div class="cat-info">
-            <span class="cat-label">Entertainment &amp; Subscriptions</span>
+            <span class="cat-label">Entertainment &amp; Streaming</span>
             <div class="cat-amounts">
-              <span class="cat-val" id="cv-r2_ent">3%</span>
+              <span class="cat-val" id="cv-r2_ent">4%</span>
               <span class="cat-rs" id="cr-r2_ent">≈ ₹—</span>
             </div>
           </div>
         </div>
-        <input class="cat-slider" type="range" min="0" max="30" step="1" value="3" oninput="catUpdate('r2','r2_ent',this.value)">
-      </div>
-      <div class="cat-card" data-key="r2_travel">
-        <div class="cat-top">
-          <span class="cat-emoji">✈️</span>
-          <div class="cat-info">
-            <span class="cat-label">Trips &amp; Holidays</span>
-            <div class="cat-amounts">
-              <span class="cat-val" id="cv-r2_travel">4%</span>
-              <span class="cat-rs" id="cr-r2_travel">≈ ₹—</span>
-            </div>
-          </div>
-        </div>
-        <input class="cat-slider" type="range" min="0" max="40" step="1" value="4" oninput="catUpdate('r2','r2_travel',this.value)">
-      </div>
-      <div class="cat-card" data-key="r2_alc">
-        <div class="cat-top">
-          <span class="cat-emoji">🍷</span>
-          <div class="cat-info">
-            <span class="cat-label">Alcohol &amp; Nightlife</span>
-            <div class="cat-amounts">
-              <span class="cat-val" id="cv-r2_alc">2%</span>
-              <span class="cat-rs" id="cr-r2_alc">≈ ₹—</span>
-            </div>
-          </div>
-        </div>
-        <input class="cat-slider" type="range" min="0" max="30" step="1" value="2" oninput="catUpdate('r2','r2_alc',this.value)">
+        <input class="cat-slider" type="range" min="0" max="30" step="1" value="4" oninput="catUpdate('r2','r2_ent',this.value)">
       </div>
     </div>    </div>
     <div class="cat-total-row">
@@ -502,24 +489,24 @@ table.ctbl td.bench-td{font-weight:500;color:var(--ink)}
         </div>
         <input class="cat-slider" type="range" min="0" max="70" step="1" value="15" oninput="catUpdate('r1','r1_rent',this.value)">
       </div>
-      <div class="cat-card" data-key="r1_util">
+      <div class="cat-card" data-key="r1_bills">
         <div class="cat-top">
-          <span class="cat-emoji">💡</span>
+          <span class="cat-emoji">🧾</span>
           <div class="cat-info">
-            <span class="cat-label">Bills &amp; Utilities</span>
+            <span class="cat-label">Bills</span>
             <div class="cat-amounts">
-              <span class="cat-val" id="cv-r1_util">4%</span>
-              <span class="cat-rs" id="cr-r1_util">≈ ₹—</span>
+              <span class="cat-val" id="cv-r1_bills">4%</span>
+              <span class="cat-rs" id="cr-r1_bills">≈ ₹—</span>
             </div>
           </div>
         </div>
-        <input class="cat-slider" type="range" min="0" max="20" step="1" value="4" oninput="catUpdate('r1','r1_util',this.value)">
+        <input class="cat-slider" type="range" min="0" max="20" step="1" value="4" oninput="catUpdate('r1','r1_bills',this.value)">
       </div>
       <div class="cat-card" data-key="r1_groc">
         <div class="cat-top">
           <span class="cat-emoji">🛒</span>
           <div class="cat-info">
-            <span class="cat-label">Groceries &amp; Household</span>
+            <span class="cat-label">Groceries</span>
             <div class="cat-amounts">
               <span class="cat-val" id="cv-r1_groc">6%</span>
               <span class="cat-rs" id="cr-r1_groc">≈ ₹—</span>
@@ -528,24 +515,24 @@ table.ctbl td.bench-td{font-weight:500;color:var(--ink)}
         </div>
         <input class="cat-slider" type="range" min="0" max="25" step="1" value="6" oninput="catUpdate('r1','r1_groc',this.value)">
       </div>
-      <div class="cat-card" data-key="r1_fuel">
+      <div class="cat-card" data-key="r1_commute">
         <div class="cat-top">
-          <span class="cat-emoji">⛽</span>
+          <span class="cat-emoji">🚗</span>
           <div class="cat-info">
-            <span class="cat-label">Commute &amp; Daily transport</span>
+            <span class="cat-label">Commute</span>
             <div class="cat-amounts">
-              <span class="cat-val" id="cv-r1_fuel">3%</span>
-              <span class="cat-rs" id="cr-r1_fuel">≈ ₹—</span>
+              <span class="cat-val" id="cv-r1_commute">3%</span>
+              <span class="cat-rs" id="cr-r1_commute">≈ ₹—</span>
             </div>
           </div>
         </div>
-        <input class="cat-slider" type="range" min="0" max="20" step="1" value="3" oninput="catUpdate('r1','r1_fuel',this.value)">
+        <input class="cat-slider" type="range" min="0" max="20" step="1" value="3" oninput="catUpdate('r1','r1_commute',this.value)">
       </div>
       <div class="cat-card" data-key="r1_health">
         <div class="cat-top">
           <span class="cat-emoji">🏥</span>
           <div class="cat-info">
-            <span class="cat-label">Healthcare &amp; Insurance</span>
+            <span class="cat-label">Health &amp; Insurance</span>
             <div class="cat-amounts">
               <span class="cat-val" id="cv-r1_health">2%</span>
               <span class="cat-rs" id="cr-r1_health">≈ ₹—</span>
@@ -556,7 +543,7 @@ table.ctbl td.bench-td{font-weight:500;color:var(--ink)}
       </div>
       <div class="cat-card" data-key="r1_edutax">
         <div class="cat-top">
-          <span class="cat-emoji">📚</span>
+          <span class="cat-emoji">📋</span>
           <div class="cat-info">
             <span class="cat-label">Education &amp; Tax</span>
             <div class="cat-amounts">
@@ -1436,8 +1423,8 @@ function toggleScore() {
 
     // Reset category sliders
     const catDefaults = {
-      r2_food:5, r2_shop:6, r2_ent:3, r2_travel:4, r2_alc:2,
-      r1_rent:15, r1_util:4, r1_groc:6, r1_fuel:3, r1_health:2, r1_edutax:0,
+      r2_food:6, r2_shop:6, r2_goout:4, r2_ent:4,
+      r1_rent:15, r1_bills:4, r1_groc:6, r1_commute:3, r1_health:2, r1_edutax:0,
     };
     Object.entries(catDefaults).forEach(([key, val]) => {
       CAT_STATE[key] = val;
@@ -1540,8 +1527,8 @@ function buildVerifyTables(r3, r4) {
 
 // ── CATEGORY INPUTS ──────────────────────────────────────────────────────
 const CAT_STATE = {
-  r2_food:5, r2_shop:6, r2_ent:3, r2_travel:4, r2_alc:2,
-  r1_rent:15, r1_util:4, r1_groc:6, r1_fuel:3, r1_health:2, r1_edutax:0,
+  r2_food:6, r2_shop:6, r2_goout:4, r2_ent:4,
+  r1_rent:15, r1_bills:4, r1_groc:6, r1_commute:3, r1_health:2, r1_edutax:0,
 };
 
 function catUpdate(ratio, key, val) {
