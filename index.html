@@ -356,7 +356,7 @@ table.ctbl td.bench-td{font-weight:500;color:var(--ink)}
       <!-- Ratio breakdown -->
       <div class="score-breakdown" id="abs-breakdown">
         <div class="breakdown-row header">
-          <span>Ratio</span><span>Your value</span><span>Benchmark</span><span>Score</span><span>Pts</span>
+          <span>Ratio</span><span>Your value</span><span>Normalisation</span><span>Score</span><span>Pts</span>
         </div>
         <div class="breakdown-row" id="abs-r1"></div>
         <div class="breakdown-row" id="abs-r2"></div>
@@ -871,12 +871,12 @@ function calc() {
       `<span class="bd-score">${sc2(score)}</span><span class="bd-pts">${pts}</span>`;
   }
   const r1pts=Math.round(sr1*sw.r1*w.spends*1000), r2pts=Math.round(sr2*sw.r2*w.spends*1000), r3pts=Math.round(sr3*sw.r3*w.spends*1000);
-  bdRow('abs-r1','R1 · Fixed expenses',S.r1,'(P95−v)/(P95−P5)',sr1,r1pts);
-  bdRow('abs-r2','R2 · Discretionary',S.r2,'(P95−v)/(P95−P5)',sr2,r2pts);
-  bdRow('abs-r3','R3 · Other outflow',r3,'(P95−v)/(P95−P5)',sr3,r3pts,'residual ÷ 2');
-  bdRow('abs-r4','R4 · Liquid savings',r4,'(v−P5)/(P95−P5)',sr4,sa,'residual ÷ 2');
-  bdRow('abs-r5','R5 · Investments',S.r5,'(v−P5)/(P95−P5)',sr5,si);
-  bdRow('abs-r6','R6 · Debt servicing',S.r6,'(P95−v)/(P95−P5)',sr6,so);
+  bdRow('abs-r1','R1 · Fixed expenses',S.r1,`P5=${pf2(c.r1.p5)} / P95=${pf2(c.r1.p95)}`,sr1,r1pts);
+  bdRow('abs-r2','R2 · Discretionary',S.r2,`P5=${pf2(c.r2.p5)} / P95=${pf2(c.r2.p95)}`,sr2,r2pts);
+  bdRow('abs-r3','R3 · Other outflow',r3,`P5=${pf2(c.r3.p5)} / P95=${pf2(c.r3.p95)}`,sr3,r3pts,'residual ÷ 2');
+  bdRow('abs-r4','R4 · Liquid savings',r4,`P5=${pf2(c.r4.p5)} / P95=${pf2(c.r4.p95)}`,sr4,sa,'residual ÷ 2');
+  bdRow('abs-r5','R5 · Investments',S.r5,`P5=${pf2(c.r5.p5)} / P95=${pf2(c.r5.p95)}`,sr5,si);
+  bdRow('abs-r6','R6 · Debt servicing',S.r6,`P5=${pf2(c.r6.p5)} / P95=${pf2(c.r6.p95)}`,sr6,so);
   const absEl=document.getElementById('abs-total');
   if(absEl) absEl.innerHTML=`<span>Total</span><span></span><span></span><span></span><span class="bd-pts">${total}</span>`;
 
