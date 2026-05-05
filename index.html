@@ -1637,9 +1637,11 @@ function initCatDisplays() {
 }
 
 // ── INIT ──
-buildCohortTable();
-initCatDisplays();
-updateRsDisplays();
+document.addEventListener('DOMContentLoaded', function() {
+  try { buildCohortTable(); } catch(e) { console.error('buildCohortTable:', e); }
+  try { initCatDisplays(); } catch(e) { console.error('initCatDisplays:', e); }
+  try { updateRsDisplays(); } catch(e) { console.error('updateRsDisplays:', e); }
+});
 </script>
 </body>
 </html>
