@@ -182,6 +182,43 @@ table.ctbl td.bench-td{font-weight:500;color:var(--ink)}
 .bd-score { font-weight:500; color:var(--ink); }
 .bd-pts { font-weight:500; color:var(--ink); }
 .bd-derived { font-size:10px; color:var(--ink3); font-style:italic; }
+
+.action-bar {
+  display: flex; gap: 12px; align-items: center;
+  padding: 32px 0 0;
+}
+.calc-btn {
+  font-family: var(--fs); font-size: 15px; font-weight: 500;
+  color: #fff; background: var(--ink); border: none;
+  border-radius: 10px; padding: 14px 32px;
+  cursor: pointer; transition: opacity .15s; letter-spacing: .02em;
+}
+.calc-btn:hover { opacity: .85; }
+.calc-btn:active { transform: scale(.98); }
+.reset-btn {
+  font-family: var(--fs); font-size: 14px; font-weight: 400;
+  color: var(--ink2); background: none;
+  border: 1px solid var(--line); border-radius: 10px;
+  padding: 14px 24px; cursor: pointer; transition: all .15s;
+}
+.reset-btn:hover { border-color: var(--ink3); color: var(--ink); }
+
+.loader-wrap {
+  display: none; align-items: center; gap: 10px;
+  padding: 32px 0 0;
+}
+.loader-wrap.show { display: flex; }
+.loader-spinner {
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 2px solid var(--line);
+  border-top-color: var(--ink);
+  animation: spin .7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loader-text { font-size: 13px; color: var(--ink2); }
+
+.score-sections { display: none; }
+.score-sections.show { display: block; }
 </style>
 </head>
 <body>
@@ -293,8 +330,18 @@ table.ctbl td.bench-td{font-weight:500;color:var(--ink)}
   <!-- Derived values (hidden display, updated by calc) -->
   <div id="sanity-warn" class="sanity-warn">Your inputs already exceed 100% of income — nothing left for savings. Please review.</div>
 
+  <!-- Action bar -->
+  <div class="action-bar" id="action-bar">
+    <button class="calc-btn" id="calc-btn-main" onclick="calculateScore()">Calculate my UpScore</button>
+    <button class="reset-btn" id="reset-btn-main" onclick="resetAll()" style="display:none">↺ Reset &amp; recalculate</button>
+  </div>
+  <div class="loader-wrap" id="loader-wrap">
+    <div class="loader-spinner"></div>
+    <span class="loader-text">Calculating your score…</span>
+  </div>
+
   <!-- Score sections -->
-  <div class="score-sections">
+  <div class="score-sections" id="score-sections">
 
     <!-- ABSOLUTE SCORE -->
     <div class="score-section">
@@ -849,13 +896,18 @@ function slUpdate(key,val) {
   S[key]=parseInt(val)/100;
   document.getElementById('sv-'+key).textContent=val+'%';
   updateRsDisplays();
-  calc();
+  // Hide scores when inputs change — require recalculation
+  document.getElementById('score-sections').classList.remove('show');
+  document.getElementById('calc-btn-main').style.display = '';
+  document.getElementById('reset-btn-main').style.display = 'none';
 }
 
 function setSalary(val) {
   S.sal=val;
   updateRsDisplays();
-  calc();
+  document.getElementById('score-sections').classList.remove('show');
+  document.getElementById('calc-btn-main').style.display = '';
+  document.getElementById('reset-btn-main').style.display = 'none';
 }
 
 function switchTab(name,btn) {
@@ -1048,10 +1100,65 @@ function buildCohortTable() {
   }
 }
 
+// ── CALCULATE & RESET ────────────────────────────────────────────────────
+function calculateScore() {
+  const actionBar  = document.getElementById('action-bar');
+  const loaderWrap = document.getElementById('loader-wrap');
+  const scoreSecs  = document.getElementById('score-sections');
+
+  // Show loader, hide button
+  actionBar.style.display  = 'none';
+  loaderWrap.classList.add('show');
+  scoreSecs.classList.remove('show');
+
+  // Simulate brief calculation delay then show results
+  setTimeout(() => {
+    calc();
+    loaderWrap.classList.remove('show');
+    scoreSecs.classList.add('show');
+    scoreSecs.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // Show reset button in a new bar below
+    actionBar.style.display = 'flex';
+    document.getElementById('calc-btn-main').style.display = 'none';
+    document.getElementById('reset-btn-main').style.display = 'flex';
+  }, 900);
+}
+
+const DEFAULTS = { r1:.30, r2:.20, r5:.08, r6:.15, sal:'Salary40-75K' };
+
+function resetAll() {
+  // Reset state
+  S.r1 = DEFAULTS.r1; S.r2 = DEFAULTS.r2;
+  S.r5 = DEFAULTS.r5; S.r6 = DEFAULTS.r6;
+  S.sal = DEFAULTS.sal;
+
+  // Reset sliders
+  document.getElementById('sl-r1').value = DEFAULTS.r1 * 100;
+  document.getElementById('sl-r2').value = DEFAULTS.r2 * 100;
+  document.getElementById('sl-r5').value = DEFAULTS.r5 * 100;
+  document.getElementById('sl-r6').value = DEFAULTS.r6 * 100;
+
+  // Reset display values
+  document.getElementById('sv-r1').textContent = Math.round(DEFAULTS.r1*100) + '%';
+  document.getElementById('sv-r2').textContent = Math.round(DEFAULTS.r2*100) + '%';
+  document.getElementById('sv-r5').textContent = Math.round(DEFAULTS.r5*100) + '%';
+  document.getElementById('sv-r6').textContent = Math.round(DEFAULTS.r6*100) + '%';
+
+  // Reset salary selector
+  document.getElementById('sal-select').value = DEFAULTS.sal;
+  S.sal = DEFAULTS.sal;
+
+  // Hide scores, show calculate button
+  document.getElementById('score-sections').classList.remove('show');
+  document.getElementById('calc-btn-main').style.display = '';
+  document.getElementById('reset-btn-main').style.display = 'none';
+
+  updateRsDisplays();
+}
+
 // ── INIT ──
 buildCohortTable();
 updateRsDisplays();
-calc();
 </script>
 </body>
 </html>
