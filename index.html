@@ -332,8 +332,7 @@ table.ctbl td.bench-td{font-weight:500;color:var(--ink)}
 
   <!-- Action bar -->
   <div class="action-bar" id="action-bar">
-    <button class="calc-btn" id="calc-btn-main" onclick="calculateScore()">Calculate my UpScore</button>
-    <button class="reset-btn" id="reset-btn-main" onclick="resetAll()" style="display:none">↺ Reset &amp; recalculate</button>
+    <button class="calc-btn" id="calc-btn-main" onclick="toggleScore()">Calculate my UpScore</button>
   </div>
   <div class="loader-wrap" id="loader-wrap">
     <div class="loader-spinner"></div>
@@ -897,17 +896,21 @@ function slUpdate(key,val) {
   document.getElementById('sv-'+key).textContent=val+'%';
   updateRsDisplays();
   // Hide scores when inputs change — require recalculation
-  document.getElementById('score-sections').classList.remove('show');
-  document.getElementById('calc-btn-main').style.display = '';
-  document.getElementById('reset-btn-main').style.display = 'none';
+  if (scoreVisible) {
+    document.getElementById('score-sections').classList.remove('show');
+    document.getElementById('calc-btn-main').textContent = 'Calculate my UpScore';
+    scoreVisible = false;
+  }
 }
 
 function setSalary(val) {
   S.sal=val;
   updateRsDisplays();
-  document.getElementById('score-sections').classList.remove('show');
-  document.getElementById('calc-btn-main').style.display = '';
-  document.getElementById('reset-btn-main').style.display = 'none';
+  if (scoreVisible) {
+    document.getElementById('score-sections').classList.remove('show');
+    document.getElementById('calc-btn-main').textContent = 'Calculate my UpScore';
+    scoreVisible = false;
+  }
 }
 
 function switchTab(name,btn) {
@@ -1100,60 +1103,52 @@ function buildCohortTable() {
   }
 }
 
-// ── CALCULATE & RESET ────────────────────────────────────────────────────
-function calculateScore() {
-  const actionBar  = document.getElementById('action-bar');
+// ── TOGGLE: CALCULATE / RESET ────────────────────────────────────────────
+const DEFAULTS = { r1:.30, r2:.20, r5:.08, r6:.15, sal:'Salary40-75K' };
+let scoreVisible = false;
+
+function toggleScore() {
+  const btn        = document.getElementById('calc-btn-main');
   const loaderWrap = document.getElementById('loader-wrap');
   const scoreSecs  = document.getElementById('score-sections');
 
-  // Show loader, hide button
-  actionBar.style.display  = 'none';
-  loaderWrap.classList.add('show');
-  scoreSecs.classList.remove('show');
+  if (!scoreVisible) {
+    // CALCULATE — show loader then scores
+    btn.disabled = true;
+    loaderWrap.classList.add('show');
 
-  // Simulate brief calculation delay then show results
-  setTimeout(() => {
-    calc();
-    loaderWrap.classList.remove('show');
-    scoreSecs.classList.add('show');
-    scoreSecs.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    // Show reset button in a new bar below
-    actionBar.style.display = 'flex';
-    document.getElementById('calc-btn-main').style.display = 'none';
-    document.getElementById('reset-btn-main').style.display = 'flex';
-  }, 900);
-}
+    setTimeout(() => {
+      calc();
+      loaderWrap.classList.remove('show');
+      scoreSecs.classList.add('show');
+      scoreSecs.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      btn.textContent = '↺ Reset';
+      btn.disabled = false;
+      scoreVisible = true;
+    }, 900);
 
-const DEFAULTS = { r1:.30, r2:.20, r5:.08, r6:.15, sal:'Salary40-75K' };
+  } else {
+    // RESET — clear inputs and hide scores
+    S.r1 = DEFAULTS.r1; S.r2 = DEFAULTS.r2;
+    S.r5 = DEFAULTS.r5; S.r6 = DEFAULTS.r6;
+    S.sal = DEFAULTS.sal;
 
-function resetAll() {
-  // Reset state
-  S.r1 = DEFAULTS.r1; S.r2 = DEFAULTS.r2;
-  S.r5 = DEFAULTS.r5; S.r6 = DEFAULTS.r6;
-  S.sal = DEFAULTS.sal;
+    document.getElementById('sl-r1').value = DEFAULTS.r1 * 100;
+    document.getElementById('sl-r2').value = DEFAULTS.r2 * 100;
+    document.getElementById('sl-r5').value = DEFAULTS.r5 * 100;
+    document.getElementById('sl-r6').value = DEFAULTS.r6 * 100;
+    document.getElementById('sv-r1').textContent = Math.round(DEFAULTS.r1*100) + '%';
+    document.getElementById('sv-r2').textContent = Math.round(DEFAULTS.r2*100) + '%';
+    document.getElementById('sv-r5').textContent = Math.round(DEFAULTS.r5*100) + '%';
+    document.getElementById('sv-r6').textContent = Math.round(DEFAULTS.r6*100) + '%';
+    document.getElementById('sal-select').value = DEFAULTS.sal;
 
-  // Reset sliders
-  document.getElementById('sl-r1').value = DEFAULTS.r1 * 100;
-  document.getElementById('sl-r2').value = DEFAULTS.r2 * 100;
-  document.getElementById('sl-r5').value = DEFAULTS.r5 * 100;
-  document.getElementById('sl-r6').value = DEFAULTS.r6 * 100;
-
-  // Reset display values
-  document.getElementById('sv-r1').textContent = Math.round(DEFAULTS.r1*100) + '%';
-  document.getElementById('sv-r2').textContent = Math.round(DEFAULTS.r2*100) + '%';
-  document.getElementById('sv-r5').textContent = Math.round(DEFAULTS.r5*100) + '%';
-  document.getElementById('sv-r6').textContent = Math.round(DEFAULTS.r6*100) + '%';
-
-  // Reset salary selector
-  document.getElementById('sal-select').value = DEFAULTS.sal;
-  S.sal = DEFAULTS.sal;
-
-  // Hide scores, show calculate button
-  document.getElementById('score-sections').classList.remove('show');
-  document.getElementById('calc-btn-main').style.display = '';
-  document.getElementById('reset-btn-main').style.display = 'none';
-
-  updateRsDisplays();
+    scoreSecs.classList.remove('show');
+    btn.textContent = 'Calculate my UpScore';
+    scoreVisible = false;
+    updateRsDisplays();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 }
 
 // ── INIT ──
