@@ -2034,8 +2034,13 @@
       const dir = dx > 0 ? 1 : -1;
       draggedCard.style.transform = `translateX(${dir * 450}px) rotate(${dir * 18}deg)`;
       draggedCard.style.opacity = '0';
+      const swipedStackId = activeStack ? activeStack.id : null;
+      const swipedCounterElId = counterElId;
+      const swipedContinueElId = continueElId;
+      const swipedTotal = stackTotalCards;
       setTimeout(() => {
-        const stack = draggedCard.closest('.stack-area');
+        const stack = document.getElementById(swipedStackId);
+        if (!stack) return;
         const remaining = [...stack.querySelectorAll('.stack-card:not(.swiped-out)')];
         remaining.sort((a,b) => (parseInt(b.style.zIndex)||0) - (parseInt(a.style.zIndex)||0));
         remaining.forEach((c, i) => {
@@ -2044,22 +2049,19 @@
           c.style.opacity = '1';
         });
         stackTopIndex++;
-        const counterEl = document.getElementById(counterElId);
+        const counterEl = document.getElementById(swipedCounterElId);
         if (counterEl) {
-          const left = stackTotalCards - stackTopIndex;
+          const left = swipedTotal - stackTopIndex;
           if (left > 0) {
             counterEl.textContent = stackTopIndex + 1;
           } else {
-            // All cards swiped
-            const isReveal = activeStack && activeStack.id === 'revealStack';
-            if (isReveal) {
-              // Auto-navigate to dashboard after a short pause — cards settle into dashboard
+            counterEl.textContent = swipedTotal;
+            if (swipedStackId === 'revealStack') {
               counterEl.parentElement.style.opacity = '0';
-              setTimeout(() => { goTo(9); }, 600);
+              setTimeout(() => { goTo(9); }, 500);
             } else {
-              counterEl.textContent = stackTotalCards;
-              if (continueElId) {
-                const cw = document.getElementById(continueElId);
+              if (swipedContinueElId) {
+                const cw = document.getElementById(swipedContinueElId);
                 if (cw) cw.classList.add('show');
               }
             }
