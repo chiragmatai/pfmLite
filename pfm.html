@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Upscore — PFM Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..900,0..100,0..1&family=Inter+Tight:wght@300..700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #efebe3;
+    --ink: #1a1814;
+    --ink-soft: #4a4438;
+    --ink-mute: #8a8278;
+    --accent: #c8442a;
+    --accent-soft: #e8a890;
+    --accent-bg: #f5d9cc;
+    --gold: #c69c4d;
+    --gold-soft: #e8d4a8;
+    --gold-bg: #f5ebd2;
+    --positive: #2d6a4f;
+    --positive-bg: #d4ede2;
+    --negative: #c8442a;
+    --card-bg: #faf7f0;
+    --card-divide: rgba(26,24,20,0.07);
+    --phone-frame: #1a1814;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { min-height: 100%; }
+
+  body {
+    background: var(--bg);
+    font-family: 'Inter Tight', sans-serif;
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 40px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 60px;
+    position: relative;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      radial-gradient(circle at 20% 30%, #e8e2d4 0%, transparent 40%),
+      radial-gradient(circle at 80% 70%, #e8e2d4 0%, transparent 40%);
+    opacity: 0.5; pointer-events: none; z-index: 0;
+  }
+
+  /* Controls */
+  .controls {
+    position: relative; z-index: 2;
+    width: 180px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .ctrl-tag { font-size: 10px; text-transform: uppercase; letter-spacing: 0.22em; color: var(--ink-soft); font-weight: 600; }
+  .ctrl-step { font-family: 'Fraunces', serif; font-size: 13px; font-style: italic; color: var(--accent); }
+  .ctrl-name { font-family: 'Fraunces', serif; font-size: 20px; line-height: 1.1; letter-spacing: -0.01em; }
+  .ctrl-hint { font-size: 11px; color: var(--ink-soft); line-height: 1.5; margin-top: 4px; }
+  .nav-row { display: flex; gap: 6px; margin-top: 8px; }
+  .nav-btn {
+    background: var(--card-bg); border: 1px solid var(--card-divide);
+    color: var(--ink); border-radius: 8px; padding: 6px 10px;
+    font-size: 11px; cursor: pointer; font-family: inherit;
+    transition: all 0.2s;
+  }
+  .nav-btn:hover { background: var(--ink); color: var(--card-bg); }
+  .progress-rail { display: flex; gap: 3px; margin-top: 12px; }
+  .progress-dot { flex: 1; height: 3px; background: rgba(26,24,20,0.1); border-radius: 2px; cursor: pointer; transition: background 0.3s; }
+  .progress-dot.passed { background: var(--accent-soft); }
+  .progress-dot.current { background: var(--accent); }
+
+  /* Phone */
+  .phone {
+    width: 360px; height: 740px;
+    background: var(--phone-frame);
+    border-radius: 50px; padding: 10px;
+    flex-shrink: 0;
+    box-shadow: 0 40px 80px -20px rgba(26,24,20,0.3), inset 0 0 0 2px #2a2620;
+    position: relative; z-index: 2;
+  }
+  .phone-screen {
+    width: 100%; height: 100%;
+    background: var(--card-bg); border-radius: 40px;
+    overflow: hidden; position: relative;
+  }
+  .dynamic-island {
+    position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+    width: 120px; height: 32px;
+    background: var(--phone-frame); border-radius: 20px; z-index: 100;
+  }
+
+  /* Screen system */
+  .screen {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    background: var(--card-bg);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.4s cubic-bezier(0.22,1,0.36,1), transform 0.45s cubic-bezier(0.22,1,0.36,1);
+    transform: translateX(28px);
+  }
+  .screen.active { opacity: 1; pointer-events: auto; transform: translateX(0); }
+  .screen.exit { transform: translateX(-28px); opacity: 0; }
+
+  .status-bar {
+    height: 50px; padding: 14px 28px 0;
+    display: flex; align-items: flex-start; justify-content: space-between;
+    font-size: 14px; font-weight: 600; color: var(--ink);
+    flex-shrink: 0; z-index: 50; position: relative;
+  }
+  .status-bar.inv { color: var(--card-bg); }
+  .status-bar .icons { display: flex; gap: 5px; align-items: center; }
+
+  /* Shared scrollable body */
+  .scroll-body { flex: 1; overflow-y: auto; padding-bottom: 20px; }
+  .scroll-body::-webkit-scrollbar { display: none; }
+
+  /* ========== SHARED COMPONENTS ========== */
+
+  .screen-header {
+    padding: 10px 22px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .screen-header-title {
+    font-family: 'Fraunces', serif; font-size: 22px; font-weight: 400;
+    letter-spacing: -0.02em;
+  }
+  .screen-header-title em { font-style: italic; color: var(--accent); }
+  .avatar {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: var(--accent); color: var(--card-bg);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Fraunces', serif; font-size: 14px;
+  }
+  .back-btn {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: rgba(26,24,20,0.06); display: flex; align-items: center;
+    justify-content: center; font-size: 16px; cursor: pointer;
+    border: none; color: var(--ink); flex-shrink: 0;
+    transition: background 0.15s;
+  }
+  .back-btn:hover { background: rgba(26,24,20,0.12); }
+
+  .section-label {
+    padding: 0 22px;
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em;
+    color: var(--ink-soft); font-weight: 600;
+    margin: 16px 0 8px;
+  }
+
+  /* Card base */
+  .card {
+    margin: 0 22px 10px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-divide);
+    border-radius: 16px;
+    padding: 16px 18px;
+  }
+
+  /* Tap target */
+  .tappable { cursor: pointer; transition: transform 0.15s; }
+  .tappable:active { transform: scale(0.98); }
+
+  /* ========== UPSCORE CARD ========== */
+  .upscore-card {
+    margin: 0 22px 14px;
+    background: linear-gradient(135deg, var(--ink) 0%, #2a251e 100%);
+    color: var(--card-bg); border-radius: 20px; padding: 20px;
+    position: relative; overflow: hidden; cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .upscore-card:active { transform: scale(0.98); }
+  .upscore-card::before {
+    content: ''; position: absolute; top: -50px; right: -50px;
+    width: 160px; height: 160px;
+    border: 1px solid rgba(232,168,144,0.15); border-radius: 50%;
+  }
+  .upscore-card::after {
+    content: ''; position: absolute; top: -30px; right: -30px;
+    width: 120px; height: 120px;
+    border: 1px solid rgba(232,168,144,0.1); border-radius: 50%;
+  }
+  .us-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.22em; color: var(--accent-soft); font-weight: 600; margin-bottom: 6px; position: relative; z-index: 1; }
+  .us-row { display: flex; align-items: baseline; gap: 10px; position: relative; z-index: 1; }
+  .us-num { font-family: 'Fraunces', serif; font-size: 56px; font-weight: 500; line-height: 1; letter-spacing: -0.02em; color: var(--card-bg); }
+  .us-band { font-family: 'Fraunces', serif; font-style: italic; font-size: 14px; color: var(--accent-soft); }
+  .us-delta { margin-top: 10px; font-size: 11px; color: var(--accent-soft); position: relative; z-index: 1; }
+  .us-cta { margin-top: 10px; font-size: 10px; color: rgba(250,247,240,0.45); text-transform: uppercase; letter-spacing: 0.18em; position: relative; z-index: 1; }
+
+  /* ========== SNAPSHOTS ========== */
+  .snapshots { margin: 0 22px 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .snapshot {
+    background: var(--card-bg); border: 1px solid var(--card-divide);
+    border-radius: 14px; padding: 14px; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .snapshot:hover { transform: translateY(-2px); border-color: rgba(26,24,20,0.2); }
+  .snapshot:active { transform: scale(0.98); }
+  .snapshot-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.18em; color: var(--ink-soft); font-weight: 600; margin-bottom: 6px; }
+  .snapshot-value { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 400; letter-spacing: -0.02em; }
+  .snapshot-sub { font-size: 10px; color: var(--ink-soft); margin-top: 3px; }
+  .snapshot.credit .snapshot-value { color: var(--accent); }
+  .snapshot-arrow { font-size: 12px; color: var(--ink-mute); float: right; margin-top: 2px; }
+
+  /* ========== EMI ALERT ========== */
+  .emi-alert {
+    margin: 0 22px 12px; background: var(--accent-bg);
+    border-left: 3px solid var(--accent); border-radius: 10px;
+    padding: 11px 14px; display: flex; align-items: center; gap: 10px;
+  }
+  .emi-alert-icon { width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: var(--card-bg); display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
+  .emi-alert-text { font-size: 12px; line-height: 1.35; }
+  .emi-alert-text strong { color: var(--ink); }
+  .emi-alert-text em { color: var(--accent); font-style: italic; font-family: 'Fraunces', serif; font-size: 14px; }
+
+  /* ========== PILL SELECTOR ========== */
+  .pill-bar {
+    margin: 4px 22px 12px;
+    display: flex; gap: 6px;
+  }
+  .pill {
+    padding: 7px 16px;
+    border-radius: 20px;
+    font-size: 12px; font-weight: 600;
+    font-family: inherit;
+    border: 1px solid var(--card-divide);
+    background: transparent;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .pill.active {
+    background: var(--ink); color: var(--card-bg);
+    border-color: var(--ink);
+  }
+  .pill:hover:not(.active) { border-color: var(--ink); color: var(--ink); }
+
+  /* ========== UPDATE CARDS ========== */
+  .update-card {
+    margin: 0 22px 8px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-divide);
+    border-radius: 14px;
+    padding: 14px 16px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .update-icon {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+  }
+  .update-icon.green { background: var(--positive-bg); }
+  .update-icon.red { background: var(--accent-bg); }
+  .update-icon.blue { background: #ddeeff; }
+  .update-icon.gold { background: var(--gold-bg); }
+  .update-icon.neutral { background: rgba(26,24,20,0.06); }
+
+  .update-body { flex: 1; }
+  .update-title { font-size: 13px; font-weight: 500; color: var(--ink); margin-bottom: 2px; }
+  .update-sub { font-size: 11px; color: var(--ink-soft); line-height: 1.4; }
+  .update-time { font-size: 10px; color: var(--ink-mute); flex-shrink: 0; }
+  .update-amount { font-family: 'Fraunces', serif; font-style: italic; font-size: 15px; margin-top: 2px; }
+  .update-amount.pos { color: var(--positive); }
+  .update-amount.neg { color: var(--negative); }
+
+  /* ========== INSIGHT CARDS ========== */
+  .insight-card {
+    margin: 0 22px 10px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-divide);
+    border-radius: 16px;
+    padding: 18px 18px 14px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .insight-card.peer {
+    background: var(--gold-bg);
+    border-color: var(--gold-soft);
+  }
+
+  /* Hook — the big number / statement */
+  .insight-hook {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    font-weight: 400;
+    margin-bottom: 10px;
+    font-variation-settings: "SOFT" 30;
+  }
+  .insight-hook .big {
+    display: block;
+    font-size: 44px;
+    line-height: 0.9;
+    color: var(--accent);
+    font-style: italic;
+    font-weight: 500;
+    margin: 4px 0 6px;
+    font-variation-settings: "SOFT" 100, "WONK" 1;
+  }
+  .insight-hook .big.gold { color: var(--gold); }
+
+  /* Fact — the supporting data */
+  .insight-fact {
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    padding-top: 10px;
+    border-top: 1px solid var(--card-divide);
+    margin-bottom: 10px;
+  }
+  .insight-card.peer .insight-fact { border-color: rgba(198,156,77,0.25); }
+
+  /* Action — the lever */
+  .insight-action {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--ink); color: var(--card-bg);
+    border-radius: 10px; padding: 8px 14px;
+    font-size: 11px; font-weight: 600;
+    cursor: pointer; border: none; font-family: inherit;
+    transition: transform 0.15s;
+  }
+  .insight-action:active { transform: scale(0.97); }
+  .insight-card.peer .insight-action { background: var(--gold); }
+
+  /* Peer footer */
+  .peer-footer {
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(198,156,77,0.25);
+    font-size: 10px; color: var(--ink-soft);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .peer-footer-dot {
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--gold); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--card-bg); font-size: 7px; font-weight: 700;
+  }
+
+  /* ========== CASHFLOW CARD (money dashboard) ========== */
+  .cashflow-card {
+    margin: 0 22px 14px;
+    background: var(--ink); color: var(--card-bg);
+    border-radius: 20px; padding: 20px;
+    position: relative; overflow: hidden;
+  }
+  .cashflow-card::before {
+    content: ''; position: absolute; top: -40px; right: -40px;
+    width: 130px; height: 130px;
+    border: 1px solid rgba(255,255,255,0.08); border-radius: 50%;
+  }
+  .cf-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.22em; color: rgba(250,247,240,0.5); font-weight: 600; margin-bottom: 4px; position: relative; z-index: 1; }
+  .cf-net { font-family: 'Fraunces', serif; font-size: 36px; font-style: italic; font-weight: 400; letter-spacing: -0.02em; color: var(--positive-bg); position: relative; z-index: 1; }
+  .cf-compare { font-size: 11px; color: rgba(250,247,240,0.5); margin-top: 4px; position: relative; z-index: 1; }
+  .cf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; position: relative; z-index: 1; }
+  .cf-cell .lbl { font-size: 9px; text-transform: uppercase; letter-spacing: 0.18em; color: rgba(250,247,240,0.45); margin-bottom: 2px; }
+  .cf-cell .val { font-family: 'Fraunces', serif; font-style: italic; font-size: 18px; }
+
+  /* ========== ACCOUNT LIST ========== */
+  .account-item {
+    margin: 0 22px;
+    padding: 13px 0;
+    border-bottom: 1px solid var(--card-divide);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .account-item:last-child { border-bottom: none; }
+  .account-logo {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: var(--ink); color: var(--card-bg);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Fraunces', serif; font-size: 13px; font-style: italic;
+    flex-shrink: 0;
+  }
+  .account-info { flex: 1; }
+  .account-name { font-size: 13px; font-weight: 500; color: var(--ink); }
+  .account-num { font-size: 10px; color: var(--ink-soft); margin-top: 1px; }
+  .account-right { text-align: right; }
+  .account-balance { font-family: 'Fraunces', serif; font-style: italic; font-size: 16px; }
+  .account-delta { font-size: 10px; margin-top: 2px; }
+  .account-delta.pos { color: var(--positive); }
+  .account-delta.neg { color: var(--negative); }
+
+  /* ========== SPEND BREAKDOWN ========== */
+  .spend-bar-row { margin: 0 22px 10px; }
+  .spend-bar-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+  .spend-bar-label { font-size: 13px; font-weight: 500; color: var(--ink); }
+  .spend-bar-amount { font-family: 'Fraunces', serif; font-style: italic; font-size: 14px; color: var(--ink); }
+  .spend-bar-track { height: 5px; background: rgba(26,24,20,0.08); border-radius: 3px; overflow: hidden; }
+  .spend-bar-fill { height: 100%; border-radius: 3px; transition: width 0.8s cubic-bezier(0.22,1,0.36,1); }
+  .spend-bar-fill.lifestyle { background: var(--accent); }
+  .spend-bar-fill.essentials { background: var(--ink); }
+  .spend-bar-fill.emi { background: var(--accent-soft); }
+  .spend-bar-fill.invest { background: var(--positive); }
+
+  /* Section divider */
+  .divider { height: 1px; background: var(--card-divide); margin: 8px 22px 16px; }
+
+  /* Tab indicator */
+  .tab-indicator {
+    font-size: 10px; color: var(--ink-mute); text-align: center;
+    padding: 8px 0 4px;
+    text-transform: uppercase; letter-spacing: 0.18em;
+  }
+
+  /* Feed container */
+  .feed { transition: opacity 0.25s ease; }
+  .feed.hidden { opacity: 0; pointer-events: none; height: 0; overflow: hidden; }
+
+  @media (max-width: 900px) {
+    body { flex-direction: column; gap: 28px; padding: 24px 16px; }
+    .controls { width: 100%; max-width: 360px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="controls">
+  <div class="ctrl-tag">Screen</div>
+  <div class="ctrl-step" id="ctrlStep">01 of 02</div>
+  <div class="ctrl-name" id="ctrlName">PFM Dashboard</div>
+  <div class="ctrl-hint" id="ctrlHint">Tap the Money snapshot to go to the Money dashboard. Use Updates / Insights pills to switch views.</div>
+  <div class="progress-rail" id="progressRail"></div>
+  <div class="nav-row">
+    <button class="nav-btn" onclick="goPrev()">← Back</button>
+    <button class="nav-btn" onclick="goNext()">Next →</button>
+  </div>
+</div>
+
+<div class="phone">
+  <div class="phone-screen">
+    <div class="dynamic-island"></div>
+
+    <!-- ========== SCREEN 0: PFM DASHBOARD ========== -->
+    <div class="screen active" data-screen="0">
+      <div class="status-bar">
+        <span>9:41</span>
+        <div class="icons">
+          <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="0.5"/><rect x="4" y="4" width="3" height="6" rx="0.5"/><rect x="8" y="2" width="3" height="8" rx="0.5"/><rect x="12" y="0" width="3" height="10" rx="0.5"/></svg>
+          <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x="0.5" y="0.5" width="20" height="10" rx="2" stroke="currentColor" opacity="0.4"/><rect x="22" y="3.5" width="1.5" height="4" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg>
+        </div>
+      </div>
+      <div class="scroll-body">
+        <div class="screen-header">
+          <div class="screen-header-title">Your <em>Upscore</em></div>
+          <div class="avatar">A</div>
+        </div>
+
+        <!-- Upscore -->
+        <div class="upscore-card">
+          <div class="us-label">Your Upscore</div>
+          <div class="us-row">
+            <div class="us-num">724</div>
+            <div class="us-band">Healthy</div>
+          </div>
+          <div class="us-delta">↑ 12 points since last refresh · May 2026</div>
+          <div class="us-cta">Tap to see what moved →</div>
+        </div>
+
+        <!-- Snapshots -->
+        <div class="snapshots">
+          <div class="snapshot tappable" onclick="goTo(1)">
+            <div class="snapshot-label">Money <span class="snapshot-arrow">→</span></div>
+            <div class="snapshot-value">₹2.4L</div>
+            <div class="snapshot-sub">across 3 accounts</div>
+          </div>
+          <div class="snapshot credit">
+            <div class="snapshot-label">Credit <span class="snapshot-arrow">→</span></div>
+            <div class="snapshot-value">₹38k</div>
+            <div class="snapshot-sub">outstanding</div>
+          </div>
+        </div>
+
+        <!-- EMI Alert -->
+        <div class="emi-alert">
+          <div class="emi-alert-icon">!</div>
+          <div class="emi-alert-text">HDFC card bill <em>₹12,400</em> due in <strong>4 days</strong></div>
+        </div>
+
+        <!-- Pill selector -->
+        <div class="pill-bar">
+          <button class="pill active" onclick="switchPfmTab('updates', this)">Updates</button>
+          <button class="pill" onclick="switchPfmTab('insights', this)">Insights</button>
+        </div>
+
+        <!-- UPDATES FEED -->
+        <div class="feed" id="pfm-updates">
+          <div class="update-card">
+            <div class="update-icon green">↓</div>
+            <div class="update-body">
+              <div class="update-title">Salary credited</div>
+              <div class="update-amount pos">+ ₹1,55,000</div>
+              <div class="update-sub">HDFC Salary •••• 4521 · Today, 9:02am</div>
+            </div>
+          </div>
+          <div class="update-card">
+            <div class="update-icon red">↑</div>
+            <div class="update-body">
+              <div class="update-title">EMI debited</div>
+              <div class="update-amount neg">− ₹18,500</div>
+              <div class="update-sub">SBI Home Loan · Today, 9:15am</div>
+            </div>
+          </div>
+          <div class="update-card">
+            <div class="update-icon red">↑</div>
+            <div class="update-body">
+              <div class="update-title">Large transaction</div>
+              <div class="update-amount neg">− ₹24,000</div>
+              <div class="update-sub">Amazon · Yesterday, 11:40pm</div>
+            </div>
+          </div>
+          <div class="update-card">
+            <div class="update-icon gold">★</div>
+            <div class="update-body">
+              <div class="update-title">Credit score moved</div>
+              <div class="update-sub">742 → <strong>756</strong> &nbsp;↑ 14 points · May refresh</div>
+            </div>
+          </div>
+          <div class="update-card">
+            <div class="update-icon neutral">↻</div>
+            <div class="update-body">
+              <div class="update-title">3 new subscriptions detected</div>
+              <div class="update-sub">Total ₹1,240/month · Tap to review</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- INSIGHTS FEED -->
+        <div class="feed hidden" id="pfm-insights">
+
+          <div class="insight-card">
+            <div class="insight-hook">
+              This month, you worked
+              <span class="big">3 days</span>
+              to keep Zomato in business.
+            </div>
+            <div class="insight-fact">₹21,000 went to food delivery. At ₹7,000 a day of work, that's three full days of your salary, gone to one app.</div>
+            <button class="insight-action">Set a dining limit →</button>
+          </div>
+
+          <div class="insight-card peer">
+            <div class="insight-hook">
+              Someone exactly like you saves
+              <span class="big gold">₹14k more</span>
+              every month.
+            </div>
+            <div class="insight-fact">Same age, same salary, same city. One habit different. Over 10 years, that gap is the down payment on a small home.</div>
+            <button class="insight-action">See what they do differently →</button>
+            <div class="peer-footer">
+              <div class="peer-footer-dot">i</div>
+              Based on comparing your profile against millions of similar users.
+            </div>
+          </div>
+
+          <div class="insight-card">
+            <div class="insight-hook">
+              Your credit card interest this year =
+              <span class="big">5 weeks</span>
+              of your salary, gone.
+            </div>
+            <div class="insight-fact">Roughly ₹18,000 paid to the bank in interest. You bought nothing new with that. It just went.</div>
+            <button class="insight-action">Clear balance, stop the bleed →</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== SCREEN 1: MONEY DASHBOARD ========== -->
+    <div class="screen" data-screen="1">
+      <div class="status-bar">
+        <span>9:41</span>
+        <div class="icons">
+          <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="0.5"/><rect x="4" y="4" width="3" height="6" rx="0.5"/><rect x="8" y="2" width="3" height="8" rx="0.5"/><rect x="12" y="0" width="3" height="10" rx="0.5"/></svg>
+          <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x="0.5" y="0.5" width="20" height="10" rx="2" stroke="currentColor" opacity="0.4"/><rect x="22" y="3.5" width="1.5" height="4" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg>
+        </div>
+      </div>
+      <div class="scroll-body">
+        <div class="screen-header">
+          <button class="back-btn" onclick="goTo(0)">←</button>
+          <div class="screen-header-title"><em>Money</em></div>
+          <div style="width:30px;"></div>
+        </div>
+
+        <!-- Cashflow summary -->
+        <div class="cashflow-card">
+          <div class="cf-label">May cashflow</div>
+          <div class="cf-net">+ ₹38,440</div>
+          <div class="cf-compare">↑ ₹6,200 better than April</div>
+          <div class="cf-row">
+            <div class="cf-cell">
+              <div class="lbl">In</div>
+              <div class="val">₹1,55,000</div>
+            </div>
+            <div class="cf-cell">
+              <div class="lbl">Out</div>
+              <div class="val">₹1,16,560</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Accounts -->
+        <div class="section-label">Linked accounts</div>
+        <div style="margin: 0 22px; background: var(--card-bg); border: 1px solid var(--card-divide); border-radius: 16px; overflow: hidden; margin-bottom: 14px;">
+          <div class="account-item" style="padding-left: 16px; padding-right: 16px;">
+            <div class="account-logo">H</div>
+            <div class="account-info">
+              <div class="account-name">HDFC Salary</div>
+              <div class="account-num">•••• 4521 · Savings</div>
+            </div>
+            <div class="account-right">
+              <div class="account-balance">₹1,84,250</div>
+              <div class="account-delta pos">↑ ₹1,55,000 this month</div>
+            </div>
+          </div>
+          <div class="account-item" style="padding-left: 16px; padding-right: 16px;">
+            <div class="account-logo">I</div>
+            <div class="account-info">
+              <div class="account-name">ICICI Savings</div>
+              <div class="account-num">•••• 8830 · Savings</div>
+            </div>
+            <div class="account-right">
+              <div class="account-balance">₹48,720</div>
+              <div class="account-delta neg">↓ ₹3,200 this month</div>
+            </div>
+          </div>
+          <div class="account-item" style="padding-left: 16px; padding-right: 16px;">
+            <div class="account-logo">S</div>
+            <div class="account-info">
+              <div class="account-name">SBI Savings</div>
+              <div class="account-num">•••• 2241 · Savings</div>
+            </div>
+            <div class="account-right">
+              <div class="account-balance">₹12,080</div>
+              <div class="account-delta pos">↑ ₹800 this month</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Spend breakdown -->
+        <div class="section-label">Where money went · May</div>
+        <div style="margin-bottom: 6px;">
+          <div class="spend-bar-row">
+            <div class="spend-bar-header">
+              <span class="spend-bar-label">Essentials</span>
+              <span class="spend-bar-amount">₹46,500</span>
+            </div>
+            <div class="spend-bar-track"><div class="spend-bar-fill essentials" style="width:80%;"></div></div>
+          </div>
+          <div class="spend-bar-row">
+            <div class="spend-bar-header">
+              <span class="spend-bar-label">Lifestyle</span>
+              <span class="spend-bar-amount">₹34,100</span>
+            </div>
+            <div class="spend-bar-track"><div class="spend-bar-fill lifestyle" style="width:59%;"></div></div>
+          </div>
+          <div class="spend-bar-row">
+            <div class="spend-bar-header">
+              <span class="spend-bar-label">EMIs</span>
+              <span class="spend-bar-amount">₹23,250</span>
+            </div>
+            <div class="spend-bar-track"><div class="spend-bar-fill emi" style="width:40%;"></div></div>
+          </div>
+          <div class="spend-bar-row">
+            <div class="spend-bar-header">
+              <span class="spend-bar-label">Investments</span>
+              <span class="spend-bar-amount">₹12,400</span>
+            </div>
+            <div class="spend-bar-track"><div class="spend-bar-fill invest" style="width:21%;"></div></div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Pill selector -->
+        <div class="pill-bar">
+          <button class="pill active" onclick="switchMoneyTab('updates', this)">Updates</button>
+          <button class="pill" onclick="switchMoneyTab('insights', this)">Insights</button>
+        </div>
+
+        <!-- MONEY UPDATES -->
+        <div class="feed" id="money-updates">
+          <div class="update-card">
+            <div class="update-icon green">↓</div>
+            <div class="update-body">
+              <div class="update-title">Salary credited</div>
+              <div class="update-amount pos">+ ₹1,55,000</div>
+              <div class="update-sub">HDFC •••• 4521 · Today, 9:02am</div>
+            </div>
+          </div>
+          <div class="update-card">
+            <div class="update-icon neutral">↻</div>
+            <div class="update-body">
+              <div class="update-title">3 new subscriptions detected</div>
+              <div class="update-sub">Notion ₹440, Adobe ₹540, Duolingo ₹260 · Total ₹1,240/mo</div>
+            </div>
+          </div>
+          <div class="update-card">
+            <div class="update-icon red">↑</div>
+            <div class="update-body">
+              <div class="update-title">Large transaction</div>
+              <div class="update-amount neg">− ₹24,000</div>
+              <div class="update-sub">Amazon · Yesterday, 11:40pm</div>
+            </div>
+          </div>
+          <div class="update-card">
+            <div class="update-icon neutral">📊</div>
+            <div class="update-body">
+              <div class="update-title">Month closing summary</div>
+              <div class="update-sub">Saved ₹38,440 in May · ↑ ₹6,200 vs April</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MONEY INSIGHTS -->
+        <div class="feed hidden" id="money-insights">
+
+          <div class="insight-card">
+            <div class="insight-hook">
+              You're paying for
+              <span class="big">11 subscriptions.</span>
+              3 you haven't used in 60 days.
+            </div>
+            <div class="insight-fact">₹4,280/month across all recurring debits. The 3 unused ones alone are ₹1,890/month — ₹22,680 a year.</div>
+            <button class="insight-action">Review and cancel →</button>
+          </div>
+
+          <div class="insight-card peer">
+            <div class="insight-hook">
+              Your Zomato spend is
+              <span class="big gold">2x</span>
+              what software developers in Bangalore typically spend.
+            </div>
+            <div class="insight-fact">You spent ₹21,000 on food delivery this month. Peers in your bracket average ₹9,400.</div>
+            <button class="insight-action">Set a monthly limit →</button>
+            <div class="peer-footer">
+              <div class="peer-footer-dot">i</div>
+              Based on comparing your profile against millions of similar users.
+            </div>
+          </div>
+
+          <div class="insight-card">
+            <div class="insight-hook">
+              You paid
+              <span class="big">₹3,200</span>
+              for speed, not for things.
+            </div>
+            <div class="insight-fact">Delivery fees, surge pricing, and 10-minute premiums this month. You paid for convenience, not the product.</div>
+            <button class="insight-action">See the breakdown →</button>
+          </div>
+
+          <div class="insight-card">
+            <div class="insight-hook">
+              ₹40,000 is sitting idle
+              <span class="big">earning ₹0.</span>
+            </div>
+            <div class="insight-fact">Your ICICI and SBI accounts have ₹40k earning 3.5% in savings — losing to 6% inflation every year. A liquid fund earns 7–8%.</div>
+            <button class="insight-action">Move to liquid fund →</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const screens = document.querySelectorAll('.screen');
+  const screenMeta = [
+    { name: 'PFM Dashboard', hint: 'Tap the Money snapshot to open the money dashboard. Switch between Updates and Insights with the pills.' },
+    { name: 'Money Dashboard', hint: 'Cashflow summary, linked accounts, spend breakdown. Switch between Updates and Insights with the pills below.' }
+  ];
+  let current = 0;
+
+  // Build progress rail
+  const rail = document.getElementById('progressRail');
+  screenMeta.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'progress-dot';
+    d.onclick = () => goTo(i);
+    rail.appendChild(d);
+  });
+
+  function updateCtrl() {
+    document.getElementById('ctrlStep').textContent = `0${current + 1} of 0${screenMeta.length}`;
+    document.getElementById('ctrlName').textContent = screenMeta[current].name;
+    document.getElementById('ctrlHint').textContent = screenMeta[current].hint;
+    document.querySelectorAll('.progress-dot').forEach((d, i) => {
+      d.classList.remove('current', 'passed');
+      if (i === current) d.classList.add('current');
+      else if (i < current) d.classList.add('passed');
+    });
+  }
+
+  function goTo(idx) {
+    if (idx < 0 || idx >= screens.length) return;
+    screens[current].classList.remove('active');
+    screens[current].classList.add('exit');
+    setTimeout(() => screens[current].classList.remove('exit'), 450);
+    screens[idx].classList.add('active');
+    current = idx;
+    updateCtrl();
+  }
+
+  function goNext() { goTo(current + 1); }
+  function goPrev() { goTo(current - 1); }
+
+  // Pill tab logic
+  function switchTab(feedPrefix, tabName, btn) {
+    const updates = document.getElementById(`${feedPrefix}-updates`);
+    const insights = document.getElementById(`${feedPrefix}-insights`);
+    const pills = btn.parentElement.querySelectorAll('.pill');
+    pills.forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    if (tabName === 'updates') {
+      updates.classList.remove('hidden');
+      insights.classList.add('hidden');
+    } else {
+      updates.classList.add('hidden');
+      insights.classList.remove('hidden');
+    }
+  }
+
+  function switchPfmTab(tab, btn) { switchTab('pfm', tab, btn); }
+  function switchMoneyTab(tab, btn) { switchTab('money', tab, btn); }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') goNext();
+    if (e.key === 'ArrowLeft') goPrev();
+  });
+
+  updateCtrl();
+</script>
+</body>
+</html>
