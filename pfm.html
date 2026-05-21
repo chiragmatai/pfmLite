@@ -3,767 +3,717 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Upscore — PFM Dashboard</title>
+<title>Upscore PFM</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..900,0..100,0..1&family=Inter+Tight:wght@300..700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #efebe3;
-    --ink: #1a1814;
-    --ink-soft: #4a4438;
-    --ink-mute: #8a8278;
-    --accent: #c8442a;
-    --accent-soft: #e8a890;
-    --accent-bg: #f5d9cc;
-    --gold: #c69c4d;
-    --gold-soft: #e8d4a8;
-    --gold-bg: #f5ebd2;
-    --positive: #2d6a4f;
-    --positive-bg: #d4ede2;
-    --negative: #c8442a;
-    --card-bg: #faf7f0;
-    --card-divide: rgba(26,24,20,0.07);
-    --phone-frame: #1a1814;
-  }
+:root {
+  --bg: #efebe3;
+  --ink: #1a1814;
+  --ink-soft: #4a4438;
+  --ink-mute: #8a8278;
+  --accent: #c8442a;
+  --accent-soft: #e8a890;
+  --accent-bg: #f5d9cc;
+  --gold: #c69c4d;
+  --gold-soft: #e8d4a8;
+  --gold-bg: #f5ebd2;
+  --green: #2d6a4f;
+  --green-bg: #d4ede2;
+  --card: #faf7f0;
+  --divide: rgba(26,24,20,0.07);
+  --frame: #1a1814;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html,body { min-height: 100%; }
+body {
+  background: var(--bg);
+  font-family: 'Inter Tight', sans-serif;
+  color: var(--ink);
+  min-height: 100vh;
+  padding: 40px 20px;
+  display: flex; align-items: center; justify-content: center; gap: 60px;
+  position: relative;
+}
+body::before {
+  content: ''; position: fixed; inset: 0;
+  background: radial-gradient(circle at 20% 30%, #e8e2d4 0%, transparent 40%),
+              radial-gradient(circle at 80% 70%, #e8e2d4 0%, transparent 40%);
+  opacity: 0.5; pointer-events: none; z-index: 0;
+}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  html, body { min-height: 100%; }
+/* CONTROLS */
+.ctrl { position: relative; z-index: 2; width: 180px; display: flex; flex-direction: column; gap: 10px; }
+.ctrl-tag { font-size: 10px; text-transform: uppercase; letter-spacing: 0.22em; color: var(--ink-soft); font-weight: 600; }
+.ctrl-step { font-family: 'Fraunces', serif; font-size: 13px; font-style: italic; color: var(--accent); }
+.ctrl-name { font-family: 'Fraunces', serif; font-size: 20px; line-height: 1.1; letter-spacing: -0.01em; }
+.ctrl-hint { font-size: 11px; color: var(--ink-soft); line-height: 1.5; margin-top: 2px; }
+.ctrl-nav { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+.ctrl-btn {
+  background: var(--card); border: 1px solid var(--divide);
+  color: var(--ink); border-radius: 8px; padding: 6px 10px;
+  font-size: 11px; cursor: pointer; font-family: inherit; transition: all 0.2s;
+}
+.ctrl-btn:hover { background: var(--ink); color: var(--card); }
+.progress-rail { display: flex; gap: 3px; margin-top: 10px; }
+.p-dot { flex: 1; height: 3px; background: rgba(26,24,20,0.1); border-radius: 2px; cursor: pointer; transition: background 0.3s; }
+.p-dot.passed { background: var(--accent-soft); }
+.p-dot.current { background: var(--accent); }
 
-  body {
-    background: var(--bg);
-    font-family: 'Inter Tight', sans-serif;
-    color: var(--ink);
-    min-height: 100vh;
-    padding: 40px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 60px;
-    position: relative;
-  }
+/* PHONE */
+.phone {
+  width: 360px; height: 740px; background: var(--frame);
+  border-radius: 50px; padding: 10px; flex-shrink: 0;
+  box-shadow: 0 40px 80px -20px rgba(26,24,20,0.3), inset 0 0 0 2px #2a2620;
+  position: relative; z-index: 2;
+}
+.phone-screen {
+  width: 100%; height: 100%; background: var(--card);
+  border-radius: 40px; overflow: hidden; position: relative;
+}
+.di {
+  position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+  width: 120px; height: 32px; background: var(--frame); border-radius: 20px; z-index: 100;
+}
 
-  body::before {
-    content: '';
-    position: fixed; inset: 0;
-    background-image:
-      radial-gradient(circle at 20% 30%, #e8e2d4 0%, transparent 40%),
-      radial-gradient(circle at 80% 70%, #e8e2d4 0%, transparent 40%);
-    opacity: 0.5; pointer-events: none; z-index: 0;
-  }
+/* SCREENS */
+.screen {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  background: var(--card); opacity: 0; pointer-events: none;
+  transition: opacity 0.35s cubic-bezier(0.22,1,0.36,1), transform 0.4s cubic-bezier(0.22,1,0.36,1);
+  transform: translateX(24px);
+}
+.screen.active { opacity: 1; pointer-events: auto; transform: translateX(0); }
+.screen.exit { transform: translateX(-24px); opacity: 0; }
+.screen.slide-up { transform: translateY(24px); }
+.screen.slide-up.active { transform: translateY(0); }
+.screen.slide-up.exit { transform: translateY(24px); }
 
-  /* Controls */
-  .controls {
-    position: relative; z-index: 2;
-    width: 180px;
-    display: flex; flex-direction: column; gap: 12px;
-  }
-  .ctrl-tag { font-size: 10px; text-transform: uppercase; letter-spacing: 0.22em; color: var(--ink-soft); font-weight: 600; }
-  .ctrl-step { font-family: 'Fraunces', serif; font-size: 13px; font-style: italic; color: var(--accent); }
-  .ctrl-name { font-family: 'Fraunces', serif; font-size: 20px; line-height: 1.1; letter-spacing: -0.01em; }
-  .ctrl-hint { font-size: 11px; color: var(--ink-soft); line-height: 1.5; margin-top: 4px; }
-  .nav-row { display: flex; gap: 6px; margin-top: 8px; }
-  .nav-btn {
-    background: var(--card-bg); border: 1px solid var(--card-divide);
-    color: var(--ink); border-radius: 8px; padding: 6px 10px;
-    font-size: 11px; cursor: pointer; font-family: inherit;
-    transition: all 0.2s;
-  }
-  .nav-btn:hover { background: var(--ink); color: var(--card-bg); }
-  .progress-rail { display: flex; gap: 3px; margin-top: 12px; }
-  .progress-dot { flex: 1; height: 3px; background: rgba(26,24,20,0.1); border-radius: 2px; cursor: pointer; transition: background 0.3s; }
-  .progress-dot.passed { background: var(--accent-soft); }
-  .progress-dot.current { background: var(--accent); }
+/* STATUS BAR */
+.sb {
+  height: 50px; padding: 14px 28px 0;
+  display: flex; align-items: flex-start; justify-content: space-between;
+  font-size: 14px; font-weight: 600; color: var(--ink);
+  flex-shrink: 0; position: relative; z-index: 50;
+}
+.sb.inv { color: var(--card); }
+.sb .ic { display: flex; gap: 5px; align-items: center; }
 
-  /* Phone */
-  .phone {
-    width: 360px; height: 740px;
-    background: var(--phone-frame);
-    border-radius: 50px; padding: 10px;
-    flex-shrink: 0;
-    box-shadow: 0 40px 80px -20px rgba(26,24,20,0.3), inset 0 0 0 2px #2a2620;
-    position: relative; z-index: 2;
-  }
-  .phone-screen {
-    width: 100%; height: 100%;
-    background: var(--card-bg); border-radius: 40px;
-    overflow: hidden; position: relative;
-  }
-  .dynamic-island {
-    position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
-    width: 120px; height: 32px;
-    background: var(--phone-frame); border-radius: 20px; z-index: 100;
-  }
+/* SCROLL BODY */
+.sb-body { flex: 1; overflow-y: auto; padding-bottom: 24px; }
+.sb-body::-webkit-scrollbar { display: none; }
 
-  /* Screen system */
-  .screen {
-    position: absolute; inset: 0;
-    display: flex; flex-direction: column;
-    background: var(--card-bg);
-    opacity: 0; pointer-events: none;
-    transition: opacity 0.4s cubic-bezier(0.22,1,0.36,1), transform 0.45s cubic-bezier(0.22,1,0.36,1);
-    transform: translateX(28px);
-  }
-  .screen.active { opacity: 1; pointer-events: auto; transform: translateX(0); }
-  .screen.exit { transform: translateX(-28px); opacity: 0; }
+/* SHARED */
+.page-header {
+  padding: 10px 22px 14px;
+  display: flex; align-items: center; gap: 12px;
+}
+.page-title {
+  font-family: 'Fraunces', serif; font-size: 22px; font-weight: 400;
+  letter-spacing: -0.02em; flex: 1;
+}
+.page-title em { font-style: italic; color: var(--accent); }
+.avatar {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: var(--accent); color: var(--card);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Fraunces', serif; font-size: 14px;
+}
+.back {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: rgba(26,24,20,0.06); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; color: var(--ink); transition: background 0.15s; flex-shrink: 0;
+}
+.back:hover { background: rgba(26,24,20,0.12); }
+.sec-label {
+  padding: 0 22px;
+  font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em;
+  color: var(--ink-soft); font-weight: 600; margin: 14px 0 8px;
+}
+.divider { height: 1px; background: var(--divide); margin: 12px 22px; }
 
-  .status-bar {
-    height: 50px; padding: 14px 28px 0;
-    display: flex; align-items: flex-start; justify-content: space-between;
-    font-size: 14px; font-weight: 600; color: var(--ink);
-    flex-shrink: 0; z-index: 50; position: relative;
-  }
-  .status-bar.inv { color: var(--card-bg); }
-  .status-bar .icons { display: flex; gap: 5px; align-items: center; }
+/* ===== UPSCORE CARD ===== */
+.us-card {
+  margin: 0 22px 14px;
+  background: linear-gradient(135deg, #1a1814 0%, #2a251e 100%);
+  color: var(--card); border-radius: 20px; padding: 20px;
+  position: relative; overflow: hidden; cursor: pointer; transition: transform 0.2s;
+}
+.us-card:active { transform: scale(0.98); }
+.us-card::before {
+  content: ''; position: absolute; top: -50px; right: -50px;
+  width: 160px; height: 160px; border: 1px solid rgba(232,168,144,0.15); border-radius: 50%;
+}
+.us-card::after {
+  content: ''; position: absolute; top: -30px; right: -30px;
+  width: 120px; height: 120px; border: 1px solid rgba(232,168,144,0.1); border-radius: 50%;
+}
+.us-lbl { font-size: 9px; text-transform: uppercase; letter-spacing: 0.22em; color: var(--accent-soft); font-weight: 600; margin-bottom: 6px; position: relative; z-index: 1; }
+.us-row { display: flex; align-items: baseline; gap: 10px; position: relative; z-index: 1; }
+.us-num { font-family: 'Fraunces', serif; font-size: 56px; font-weight: 500; line-height: 1; letter-spacing: -0.02em; }
+.us-band { font-family: 'Fraunces', serif; font-style: italic; font-size: 14px; color: var(--accent-soft); }
+.us-delta { margin-top: 8px; font-size: 11px; color: var(--accent-soft); position: relative; z-index: 1; }
+.us-cta { margin-top: 8px; font-size: 10px; color: rgba(250,247,240,0.4); text-transform: uppercase; letter-spacing: 0.18em; position: relative; z-index: 1; }
 
-  /* Shared scrollable body */
-  .scroll-body { flex: 1; overflow-y: auto; padding-bottom: 20px; }
-  .scroll-body::-webkit-scrollbar { display: none; }
+/* ===== SNAPSHOTS ===== */
+.snaps { margin: 0 22px 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.snap {
+  background: var(--card); border: 1px solid var(--divide); border-radius: 14px;
+  padding: 14px; cursor: pointer; transition: all 0.18s;
+}
+.snap:hover { transform: translateY(-2px); border-color: rgba(26,24,20,0.18); }
+.snap:active { transform: scale(0.97); }
+.snap-lbl { font-size: 9px; text-transform: uppercase; letter-spacing: 0.18em; color: var(--ink-soft); font-weight: 600; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; }
+.snap-lbl .arr { font-size: 12px; color: var(--ink-mute); }
+.snap-val { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 400; letter-spacing: -0.02em; }
+.snap-sub { font-size: 10px; color: var(--ink-soft); margin-top: 3px; }
+.snap.credit .snap-val { color: var(--accent); }
 
-  /* ========== SHARED COMPONENTS ========== */
+/* ===== EMI ALERT ===== */
+.emi-alert {
+  margin: 0 22px 12px; background: var(--accent-bg);
+  border-left: 3px solid var(--accent); border-radius: 10px;
+  padding: 11px 14px; display: flex; align-items: center; gap: 10px;
+}
+.emi-ic { width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: var(--card); display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
+.emi-txt { font-size: 12px; line-height: 1.35; }
+.emi-txt strong { color: var(--ink); }
+.emi-txt em { color: var(--accent); font-style: italic; font-family: 'Fraunces', serif; font-size: 14px; }
 
-  .screen-header {
-    padding: 10px 22px 16px;
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .screen-header-title {
-    font-family: 'Fraunces', serif; font-size: 22px; font-weight: 400;
-    letter-spacing: -0.02em;
-  }
-  .screen-header-title em { font-style: italic; color: var(--accent); }
-  .avatar {
-    width: 34px; height: 34px; border-radius: 50%;
-    background: var(--accent); color: var(--card-bg);
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Fraunces', serif; font-size: 14px;
-  }
-  .back-btn {
-    width: 30px; height: 30px; border-radius: 50%;
-    background: rgba(26,24,20,0.06); display: flex; align-items: center;
-    justify-content: center; font-size: 16px; cursor: pointer;
-    border: none; color: var(--ink); flex-shrink: 0;
-    transition: background 0.15s;
-  }
-  .back-btn:hover { background: rgba(26,24,20,0.12); }
+/* ===== PILLS ===== */
+.pill-bar { margin: 4px 22px 10px; display: flex; gap: 6px; }
+.pill {
+  padding: 7px 16px; border-radius: 20px; font-size: 12px; font-weight: 600;
+  font-family: inherit; border: 1px solid var(--divide);
+  background: transparent; color: var(--ink-soft); cursor: pointer; transition: all 0.2s;
+}
+.pill.on { background: var(--ink); color: var(--card); border-color: var(--ink); }
+.pill:hover:not(.on) { border-color: var(--ink); color: var(--ink); }
 
-  .section-label {
-    padding: 0 22px;
-    font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em;
-    color: var(--ink-soft); font-weight: 600;
-    margin: 16px 0 8px;
-  }
+/* ===== UPDATE CARD ===== */
+.upd-card {
+  margin: 0 22px 8px; background: var(--card);
+  border: 1px solid var(--divide); border-radius: 14px;
+  padding: 13px 16px; display: flex; align-items: center; gap: 12px;
+}
+.upd-ic { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
+.upd-ic.g { background: var(--green-bg); }
+.upd-ic.r { background: var(--accent-bg); }
+.upd-ic.o { background: var(--gold-bg); }
+.upd-ic.n { background: rgba(26,24,20,0.06); }
+.upd-body { flex: 1; }
+.upd-title { font-size: 13px; font-weight: 500; color: var(--ink); margin-bottom: 2px; }
+.upd-sub { font-size: 11px; color: var(--ink-soft); line-height: 1.4; }
+.upd-amt { font-family: 'Fraunces', serif; font-style: italic; font-size: 15px; margin-top: 1px; }
+.upd-amt.pos { color: var(--green); }
+.upd-amt.neg { color: var(--negative, var(--accent)); }
 
-  /* Card base */
-  .card {
-    margin: 0 22px 10px;
-    background: var(--card-bg);
-    border: 1px solid var(--card-divide);
-    border-radius: 16px;
-    padding: 16px 18px;
-  }
+/* ===== INSIGHT CARD ===== */
+.ins-card {
+  margin: 0 22px 10px; background: var(--card);
+  border: 1px solid var(--divide); border-radius: 18px;
+  padding: 20px 18px 16px; position: relative; overflow: hidden;
+}
+.ins-card.peer { background: var(--gold-bg); border-color: var(--gold-soft); }
+.ins-hook {
+  font-family: 'Fraunces', serif; font-size: 20px; line-height: 1.1;
+  letter-spacing: -0.02em; font-weight: 400; font-variation-settings: "SOFT" 30;
+}
+.ins-big {
+  display: block; font-size: 44px; line-height: 0.9;
+  color: var(--accent); font-style: italic; font-weight: 500;
+  margin: 5px 0 6px; font-variation-settings: "SOFT" 100, "WONK" 1;
+}
+.ins-big.gold { color: var(--gold); }
+.ins-fact {
+  font-size: 12px; line-height: 1.5; color: var(--ink-soft);
+  padding-top: 10px; border-top: 1px solid var(--divide); margin: 10px 0;
+}
+.ins-card.peer .ins-fact { border-color: rgba(198,156,77,0.25); }
+.ins-action {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: var(--ink); color: var(--card);
+  border-radius: 10px; padding: 8px 14px;
+  font-size: 11px; font-weight: 600; cursor: pointer;
+  border: none; font-family: inherit; transition: transform 0.15s;
+}
+.ins-action:active { transform: scale(0.97); }
+.ins-card.peer .ins-action { background: var(--gold); }
+.peer-note {
+  margin-top: 10px; padding-top: 8px;
+  border-top: 1px solid rgba(198,156,77,0.25);
+  font-size: 10px; color: var(--ink-soft);
+  display: flex; align-items: center; gap: 6px;
+}
+.peer-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--gold); flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: var(--card); font-size: 7px; font-weight: 700; }
 
-  /* Tap target */
-  .tappable { cursor: pointer; transition: transform 0.15s; }
-  .tappable:active { transform: scale(0.98); }
+/* ===== FEED TOGGLE ===== */
+.feed { }
+.feed.off { display: none; }
 
-  /* ========== UPSCORE CARD ========== */
-  .upscore-card {
-    margin: 0 22px 14px;
-    background: linear-gradient(135deg, var(--ink) 0%, #2a251e 100%);
-    color: var(--card-bg); border-radius: 20px; padding: 20px;
-    position: relative; overflow: hidden; cursor: pointer;
-    transition: transform 0.2s;
-  }
-  .upscore-card:active { transform: scale(0.98); }
-  .upscore-card::before {
-    content: ''; position: absolute; top: -50px; right: -50px;
-    width: 160px; height: 160px;
-    border: 1px solid rgba(232,168,144,0.15); border-radius: 50%;
-  }
-  .upscore-card::after {
-    content: ''; position: absolute; top: -30px; right: -30px;
-    width: 120px; height: 120px;
-    border: 1px solid rgba(232,168,144,0.1); border-radius: 50%;
-  }
-  .us-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.22em; color: var(--accent-soft); font-weight: 600; margin-bottom: 6px; position: relative; z-index: 1; }
-  .us-row { display: flex; align-items: baseline; gap: 10px; position: relative; z-index: 1; }
-  .us-num { font-family: 'Fraunces', serif; font-size: 56px; font-weight: 500; line-height: 1; letter-spacing: -0.02em; color: var(--card-bg); }
-  .us-band { font-family: 'Fraunces', serif; font-style: italic; font-size: 14px; color: var(--accent-soft); }
-  .us-delta { margin-top: 10px; font-size: 11px; color: var(--accent-soft); position: relative; z-index: 1; }
-  .us-cta { margin-top: 10px; font-size: 10px; color: rgba(250,247,240,0.45); text-transform: uppercase; letter-spacing: 0.18em; position: relative; z-index: 1; }
+/* ===== CASHFLOW CARD ===== */
+.cf-card {
+  margin: 0 22px 14px;
+  background: linear-gradient(135deg, #1a1814 0%, #2a251e 100%);
+  color: var(--card); border-radius: 20px; padding: 20px;
+  position: relative; overflow: hidden;
+}
+.cf-card::before {
+  content: ''; position: absolute; top: -40px; right: -40px;
+  width: 130px; height: 130px; border: 1px solid rgba(255,255,255,0.08); border-radius: 50%;
+}
+.cf-lbl { font-size: 9px; text-transform: uppercase; letter-spacing: 0.22em; color: rgba(250,247,240,0.45); font-weight: 600; margin-bottom: 4px; position: relative; z-index: 1; }
+.cf-net { font-family: 'Fraunces', serif; font-size: 38px; font-style: italic; font-weight: 400; letter-spacing: -0.02em; color: #a8d8c0; position: relative; z-index: 1; }
+.cf-vs { font-size: 11px; color: rgba(250,247,240,0.45); margin-top: 4px; position: relative; z-index: 1; }
+.cf-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 16px; position: relative; z-index: 1; }
+.cf-cell .l { font-size: 9px; text-transform: uppercase; letter-spacing: 0.18em; color: rgba(250,247,240,0.4); margin-bottom: 2px; }
+.cf-cell .v { font-family: 'Fraunces', serif; font-style: italic; font-size: 18px; }
 
-  /* ========== SNAPSHOTS ========== */
-  .snapshots { margin: 0 22px 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .snapshot {
-    background: var(--card-bg); border: 1px solid var(--card-divide);
-    border-radius: 14px; padding: 14px; cursor: pointer;
-    transition: all 0.2s;
-  }
-  .snapshot:hover { transform: translateY(-2px); border-color: rgba(26,24,20,0.2); }
-  .snapshot:active { transform: scale(0.98); }
-  .snapshot-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.18em; color: var(--ink-soft); font-weight: 600; margin-bottom: 6px; }
-  .snapshot-value { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 400; letter-spacing: -0.02em; }
-  .snapshot-sub { font-size: 10px; color: var(--ink-soft); margin-top: 3px; }
-  .snapshot.credit .snapshot-value { color: var(--accent); }
-  .snapshot-arrow { font-size: 12px; color: var(--ink-mute); float: right; margin-top: 2px; }
+/* ===== MONTH PICKER ===== */
+.month-picker {
+  margin: 0 22px 14px; display: flex; align-items: center; justify-content: space-between;
+  background: var(--card); border: 1px solid var(--divide);
+  border-radius: 12px; padding: 10px 14px;
+}
+.mp-arrow { font-size: 18px; color: var(--ink-soft); cursor: pointer; padding: 0 4px; transition: color 0.15s; user-select: none; }
+.mp-arrow:hover { color: var(--ink); }
+.mp-label { font-family: 'Fraunces', serif; font-style: italic; font-size: 16px; letter-spacing: -0.01em; }
 
-  /* ========== EMI ALERT ========== */
-  .emi-alert {
-    margin: 0 22px 12px; background: var(--accent-bg);
-    border-left: 3px solid var(--accent); border-radius: 10px;
-    padding: 11px 14px; display: flex; align-items: center; gap: 10px;
-  }
-  .emi-alert-icon { width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: var(--card-bg); display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
-  .emi-alert-text { font-size: 12px; line-height: 1.35; }
-  .emi-alert-text strong { color: var(--ink); }
-  .emi-alert-text em { color: var(--accent); font-style: italic; font-family: 'Fraunces', serif; font-size: 14px; }
+/* ===== ACCOUNTS ===== */
+.accs-wrap { margin: 0 22px 14px; background: var(--card); border: 1px solid var(--divide); border-radius: 16px; overflow: hidden; }
+.acc-item { padding: 13px 16px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--divide); }
+.acc-item:last-child { border-bottom: none; }
+.acc-logo { width: 36px; height: 36px; border-radius: 10px; background: var(--ink); color: var(--card); display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-size: 13px; font-style: italic; flex-shrink: 0; }
+.acc-info { flex: 1; }
+.acc-name { font-size: 13px; font-weight: 500; }
+.acc-num { font-size: 10px; color: var(--ink-soft); margin-top: 1px; }
+.acc-right { text-align: right; }
+.acc-bal { font-family: 'Fraunces', serif; font-style: italic; font-size: 16px; }
+.acc-delta { font-size: 10px; margin-top: 2px; }
+.acc-delta.pos { color: var(--green); }
+.acc-delta.neg { color: var(--accent); }
 
-  /* ========== PILL SELECTOR ========== */
-  .pill-bar {
-    margin: 4px 22px 12px;
-    display: flex; gap: 6px;
-  }
-  .pill {
-    padding: 7px 16px;
-    border-radius: 20px;
-    font-size: 12px; font-weight: 600;
-    font-family: inherit;
-    border: 1px solid var(--card-divide);
-    background: transparent;
-    color: var(--ink-soft);
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .pill.active {
-    background: var(--ink); color: var(--card-bg);
-    border-color: var(--ink);
-  }
-  .pill:hover:not(.active) { border-color: var(--ink); color: var(--ink); }
+/* ===== SPEND BARS ===== */
+.spend-wrap { margin: 0 22px 6px; }
+.spend-row { margin-bottom: 12px; cursor: pointer; transition: opacity 0.15s; }
+.spend-row:active { opacity: 0.7; }
+.spend-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+.spend-name { font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 6px; }
+.spend-name .cat-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.spend-amt { font-family: 'Fraunces', serif; font-style: italic; font-size: 14px; }
+.spend-track { height: 5px; background: rgba(26,24,20,0.08); border-radius: 3px; overflow: hidden; }
+.spend-fill { height: 100%; border-radius: 3px; transition: width 0.8s cubic-bezier(0.22,1,0.36,1); }
+.spend-fill.c-ess { background: var(--ink); }
+.spend-fill.c-life { background: var(--accent); }
+.spend-fill.c-emi { background: var(--accent-soft); }
+.spend-fill.c-inv { background: var(--green); }
+.spend-tap-hint { font-size: 9px; color: var(--ink-mute); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.15em; }
 
-  /* ========== UPDATE CARDS ========== */
-  .update-card {
-    margin: 0 22px 8px;
-    background: var(--card-bg);
-    border: 1px solid var(--card-divide);
-    border-radius: 14px;
-    padding: 14px 16px;
-    display: flex; align-items: center; gap: 14px;
-  }
-  .update-icon {
-    width: 36px; height: 36px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 16px; flex-shrink: 0;
-  }
-  .update-icon.green { background: var(--positive-bg); }
-  .update-icon.red { background: var(--accent-bg); }
-  .update-icon.blue { background: #ddeeff; }
-  .update-icon.gold { background: var(--gold-bg); }
-  .update-icon.neutral { background: rgba(26,24,20,0.06); }
+/* ===== CATEGORY DRILL DOWN ===== */
+.cat-header {
+  padding: 12px 22px 16px;
+  display: flex; align-items: center; gap: 12px;
+}
+.cat-badge {
+  display: flex; align-items: center; gap: 8px;
+}
+.cat-badge .dot { width: 10px; height: 10px; border-radius: 50%; }
+.cat-badge .name { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 400; letter-spacing: -0.02em; }
 
-  .update-body { flex: 1; }
-  .update-title { font-size: 13px; font-weight: 500; color: var(--ink); margin-bottom: 2px; }
-  .update-sub { font-size: 11px; color: var(--ink-soft); line-height: 1.4; }
-  .update-time { font-size: 10px; color: var(--ink-mute); flex-shrink: 0; }
-  .update-amount { font-family: 'Fraunces', serif; font-style: italic; font-size: 15px; margin-top: 2px; }
-  .update-amount.pos { color: var(--positive); }
-  .update-amount.neg { color: var(--negative); }
+.cat-summary {
+  margin: 0 22px 16px;
+  background: var(--card); border: 1px solid var(--divide); border-radius: 16px;
+  padding: 16px 18px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.cat-sum-val { font-family: 'Fraunces', serif; font-size: 32px; font-style: italic; font-weight: 400; letter-spacing: -0.02em; }
+.cat-sum-meta { text-align: right; }
+.cat-sum-vs { font-size: 11px; color: var(--ink-soft); }
+.cat-sum-vs .bad { color: var(--accent); }
+.cat-sum-vs .good { color: var(--green); }
+.cat-peer { font-size: 11px; color: var(--gold); margin-top: 4px; font-family: 'Fraunces', serif; font-style: italic; }
 
-  /* ========== INSIGHT CARDS ========== */
-  .insight-card {
-    margin: 0 22px 10px;
-    background: var(--card-bg);
-    border: 1px solid var(--card-divide);
-    border-radius: 16px;
-    padding: 18px 18px 14px;
-    position: relative;
-    overflow: hidden;
-  }
+.txn-item {
+  margin: 0 22px; padding: 12px 0;
+  border-bottom: 1px solid var(--divide);
+  display: flex; align-items: center; gap: 12px;
+}
+.txn-item:last-child { border-bottom: none; }
+.txn-ic { width: 34px; height: 34px; border-radius: 10px; background: rgba(26,24,20,0.06); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+.txn-info { flex: 1; }
+.txn-name { font-size: 13px; font-weight: 500; }
+.txn-sub { font-size: 10px; color: var(--ink-soft); margin-top: 1px; }
+.txn-amt { font-family: 'Fraunces', serif; font-style: italic; font-size: 15px; color: var(--accent); }
 
-  .insight-card.peer {
-    background: var(--gold-bg);
-    border-color: var(--gold-soft);
-  }
+.cat-ins-card {
+  margin: 16px 22px 10px; background: var(--accent-bg);
+  border: 1px solid var(--accent-soft); border-radius: 16px;
+  padding: 16px 18px;
+}
+.cat-ins-hook { font-family: 'Fraunces', serif; font-size: 17px; line-height: 1.2; letter-spacing: -0.01em; margin-bottom: 10px; }
+.cat-ins-hook .big { font-style: italic; color: var(--accent); font-size: 22px; }
+.cat-ins-action {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: var(--accent); color: var(--card);
+  border-radius: 10px; padding: 8px 14px;
+  font-size: 11px; font-weight: 600; cursor: pointer; border: none; font-family: inherit;
+}
 
-  /* Hook — the big number / statement */
-  .insight-hook {
-    font-family: 'Fraunces', serif;
-    font-size: 22px;
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-    font-weight: 400;
-    margin-bottom: 10px;
-    font-variation-settings: "SOFT" 30;
-  }
-  .insight-hook .big {
-    display: block;
-    font-size: 44px;
-    line-height: 0.9;
-    color: var(--accent);
-    font-style: italic;
-    font-weight: 500;
-    margin: 4px 0 6px;
-    font-variation-settings: "SOFT" 100, "WONK" 1;
-  }
-  .insight-hook .big.gold { color: var(--gold); }
-
-  /* Fact — the supporting data */
-  .insight-fact {
-    font-size: 12px;
-    line-height: 1.5;
-    color: var(--ink-soft);
-    padding-top: 10px;
-    border-top: 1px solid var(--card-divide);
-    margin-bottom: 10px;
-  }
-  .insight-card.peer .insight-fact { border-color: rgba(198,156,77,0.25); }
-
-  /* Action — the lever */
-  .insight-action {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: var(--ink); color: var(--card-bg);
-    border-radius: 10px; padding: 8px 14px;
-    font-size: 11px; font-weight: 600;
-    cursor: pointer; border: none; font-family: inherit;
-    transition: transform 0.15s;
-  }
-  .insight-action:active { transform: scale(0.97); }
-  .insight-card.peer .insight-action { background: var(--gold); }
-
-  /* Peer footer */
-  .peer-footer {
-    margin-top: 10px;
-    padding-top: 8px;
-    border-top: 1px solid rgba(198,156,77,0.25);
-    font-size: 10px; color: var(--ink-soft);
-    display: flex; align-items: center; gap: 6px;
-  }
-  .peer-footer-dot {
-    width: 12px; height: 12px; border-radius: 50%;
-    background: var(--gold); flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-    color: var(--card-bg); font-size: 7px; font-weight: 700;
-  }
-
-  /* ========== CASHFLOW CARD (money dashboard) ========== */
-  .cashflow-card {
-    margin: 0 22px 14px;
-    background: var(--ink); color: var(--card-bg);
-    border-radius: 20px; padding: 20px;
-    position: relative; overflow: hidden;
-  }
-  .cashflow-card::before {
-    content: ''; position: absolute; top: -40px; right: -40px;
-    width: 130px; height: 130px;
-    border: 1px solid rgba(255,255,255,0.08); border-radius: 50%;
-  }
-  .cf-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.22em; color: rgba(250,247,240,0.5); font-weight: 600; margin-bottom: 4px; position: relative; z-index: 1; }
-  .cf-net { font-family: 'Fraunces', serif; font-size: 36px; font-style: italic; font-weight: 400; letter-spacing: -0.02em; color: var(--positive-bg); position: relative; z-index: 1; }
-  .cf-compare { font-size: 11px; color: rgba(250,247,240,0.5); margin-top: 4px; position: relative; z-index: 1; }
-  .cf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; position: relative; z-index: 1; }
-  .cf-cell .lbl { font-size: 9px; text-transform: uppercase; letter-spacing: 0.18em; color: rgba(250,247,240,0.45); margin-bottom: 2px; }
-  .cf-cell .val { font-family: 'Fraunces', serif; font-style: italic; font-size: 18px; }
-
-  /* ========== ACCOUNT LIST ========== */
-  .account-item {
-    margin: 0 22px;
-    padding: 13px 0;
-    border-bottom: 1px solid var(--card-divide);
-    display: flex; align-items: center; gap: 12px;
-  }
-  .account-item:last-child { border-bottom: none; }
-  .account-logo {
-    width: 36px; height: 36px; border-radius: 10px;
-    background: var(--ink); color: var(--card-bg);
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Fraunces', serif; font-size: 13px; font-style: italic;
-    flex-shrink: 0;
-  }
-  .account-info { flex: 1; }
-  .account-name { font-size: 13px; font-weight: 500; color: var(--ink); }
-  .account-num { font-size: 10px; color: var(--ink-soft); margin-top: 1px; }
-  .account-right { text-align: right; }
-  .account-balance { font-family: 'Fraunces', serif; font-style: italic; font-size: 16px; }
-  .account-delta { font-size: 10px; margin-top: 2px; }
-  .account-delta.pos { color: var(--positive); }
-  .account-delta.neg { color: var(--negative); }
-
-  /* ========== SPEND BREAKDOWN ========== */
-  .spend-bar-row { margin: 0 22px 10px; }
-  .spend-bar-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
-  .spend-bar-label { font-size: 13px; font-weight: 500; color: var(--ink); }
-  .spend-bar-amount { font-family: 'Fraunces', serif; font-style: italic; font-size: 14px; color: var(--ink); }
-  .spend-bar-track { height: 5px; background: rgba(26,24,20,0.08); border-radius: 3px; overflow: hidden; }
-  .spend-bar-fill { height: 100%; border-radius: 3px; transition: width 0.8s cubic-bezier(0.22,1,0.36,1); }
-  .spend-bar-fill.lifestyle { background: var(--accent); }
-  .spend-bar-fill.essentials { background: var(--ink); }
-  .spend-bar-fill.emi { background: var(--accent-soft); }
-  .spend-bar-fill.invest { background: var(--positive); }
-
-  /* Section divider */
-  .divider { height: 1px; background: var(--card-divide); margin: 8px 22px 16px; }
-
-  /* Tab indicator */
-  .tab-indicator {
-    font-size: 10px; color: var(--ink-mute); text-align: center;
-    padding: 8px 0 4px;
-    text-transform: uppercase; letter-spacing: 0.18em;
-  }
-
-  /* Feed container */
-  .feed { transition: opacity 0.25s ease; }
-  .feed.hidden { opacity: 0; pointer-events: none; height: 0; overflow: hidden; }
-
-  @media (max-width: 900px) {
-    body { flex-direction: column; gap: 28px; padding: 24px 16px; }
-    .controls { width: 100%; max-width: 360px; }
-  }
+@media (max-width: 900px) {
+  body { flex-direction: column; gap: 28px; padding: 24px 16px; }
+  .ctrl { width: 100%; max-width: 360px; }
+}
 </style>
 </head>
 <body>
 
-<div class="controls">
+<div class="ctrl">
   <div class="ctrl-tag">Screen</div>
-  <div class="ctrl-step" id="ctrlStep">01 of 02</div>
-  <div class="ctrl-name" id="ctrlName">PFM Dashboard</div>
-  <div class="ctrl-hint" id="ctrlHint">Tap the Money snapshot to go to the Money dashboard. Use Updates / Insights pills to switch views.</div>
-  <div class="progress-rail" id="progressRail"></div>
-  <div class="nav-row">
-    <button class="nav-btn" onclick="goPrev()">← Back</button>
-    <button class="nav-btn" onclick="goNext()">Next →</button>
+  <div class="ctrl-step" id="cStep">01 of 03</div>
+  <div class="ctrl-name" id="cName">PFM Dashboard</div>
+  <div class="ctrl-hint" id="cHint">Tap Money to open Money Dashboard. Switch Updates / Insights with the pills.</div>
+  <div class="progress-rail" id="pRail"></div>
+  <div class="ctrl-nav">
+    <button class="ctrl-btn" onclick="goPrev()">← Back</button>
+    <button class="ctrl-btn" onclick="goNext()">Next →</button>
+    <button class="ctrl-btn" onclick="goTo(0)">Home</button>
   </div>
 </div>
 
 <div class="phone">
   <div class="phone-screen">
-    <div class="dynamic-island"></div>
+    <div class="di"></div>
 
-    <!-- ========== SCREEN 0: PFM DASHBOARD ========== -->
-    <div class="screen active" data-screen="0">
-      <div class="status-bar">
+    <!-- ============ SCREEN 0: PFM DASHBOARD ============ -->
+    <div class="screen active" data-s="0">
+      <div class="sb">
         <span>9:41</span>
-        <div class="icons">
+        <div class="ic">
           <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="0.5"/><rect x="4" y="4" width="3" height="6" rx="0.5"/><rect x="8" y="2" width="3" height="8" rx="0.5"/><rect x="12" y="0" width="3" height="10" rx="0.5"/></svg>
           <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x="0.5" y="0.5" width="20" height="10" rx="2" stroke="currentColor" opacity="0.4"/><rect x="22" y="3.5" width="1.5" height="4" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg>
         </div>
       </div>
-      <div class="scroll-body">
-        <div class="screen-header">
-          <div class="screen-header-title">Your <em>Upscore</em></div>
+      <div class="sb-body">
+        <div class="page-header">
+          <div class="page-title">Your <em>Upscore</em></div>
           <div class="avatar">A</div>
         </div>
 
-        <!-- Upscore -->
-        <div class="upscore-card">
-          <div class="us-label">Your Upscore</div>
-          <div class="us-row">
-            <div class="us-num">724</div>
-            <div class="us-band">Healthy</div>
-          </div>
-          <div class="us-delta">↑ 12 points since last refresh · May 2026</div>
+        <div class="us-card">
+          <div class="us-lbl">Your Upscore</div>
+          <div class="us-row"><div class="us-num">724</div><div class="us-band">Healthy</div></div>
+          <div class="us-delta">↑ 12 points this month · May 2026</div>
           <div class="us-cta">Tap to see what moved →</div>
         </div>
 
-        <!-- Snapshots -->
-        <div class="snapshots">
-          <div class="snapshot tappable" onclick="goTo(1)">
-            <div class="snapshot-label">Money <span class="snapshot-arrow">→</span></div>
-            <div class="snapshot-value">₹2.4L</div>
-            <div class="snapshot-sub">across 3 accounts</div>
+        <div class="snaps">
+          <div class="snap" onclick="goTo(1)">
+            <div class="snap-lbl">Money <span class="arr">→</span></div>
+            <div class="snap-val">₹2.4L</div>
+            <div class="snap-sub">3 accounts · ↑ this month</div>
           </div>
-          <div class="snapshot credit">
-            <div class="snapshot-label">Credit <span class="snapshot-arrow">→</span></div>
-            <div class="snapshot-value">₹38k</div>
-            <div class="snapshot-sub">outstanding</div>
+          <div class="snap credit" onclick="goTo(1)">
+            <div class="snap-lbl">Credit <span class="arr">→</span></div>
+            <div class="snap-val">₹38k</div>
+            <div class="snap-sub">outstanding · 742 score</div>
           </div>
         </div>
 
-        <!-- EMI Alert -->
         <div class="emi-alert">
-          <div class="emi-alert-icon">!</div>
-          <div class="emi-alert-text">HDFC card bill <em>₹12,400</em> due in <strong>4 days</strong></div>
+          <div class="emi-ic">!</div>
+          <div class="emi-txt">HDFC card bill <em>₹12,400</em> due in <strong>4 days</strong></div>
         </div>
 
-        <!-- Pill selector -->
         <div class="pill-bar">
-          <button class="pill active" onclick="switchPfmTab('updates', this)">Updates</button>
-          <button class="pill" onclick="switchPfmTab('insights', this)">Insights</button>
+          <button class="pill on" onclick="pfmTab('upd',this)">Updates</button>
+          <button class="pill" onclick="pfmTab('ins',this)">Insights</button>
         </div>
 
-        <!-- UPDATES FEED -->
-        <div class="feed" id="pfm-updates">
-          <div class="update-card">
-            <div class="update-icon green">↓</div>
-            <div class="update-body">
-              <div class="update-title">Salary credited</div>
-              <div class="update-amount pos">+ ₹1,55,000</div>
-              <div class="update-sub">HDFC Salary •••• 4521 · Today, 9:02am</div>
+        <div id="pfm-upd">
+          <div class="upd-card">
+            <div class="upd-ic g">↓</div>
+            <div class="upd-body">
+              <div class="upd-title">Salary credited</div>
+              <div class="upd-amt pos">+ ₹1,55,000</div>
+              <div class="upd-sub">HDFC •••• 4521 · Today 9:02am</div>
             </div>
           </div>
-          <div class="update-card">
-            <div class="update-icon red">↑</div>
-            <div class="update-body">
-              <div class="update-title">EMI debited</div>
-              <div class="update-amount neg">− ₹18,500</div>
-              <div class="update-sub">SBI Home Loan · Today, 9:15am</div>
+          <div class="upd-card">
+            <div class="upd-ic r">↑</div>
+            <div class="upd-body">
+              <div class="upd-title">EMI debited</div>
+              <div class="upd-amt neg">− ₹18,500</div>
+              <div class="upd-sub">SBI Home Loan · Today 9:15am</div>
             </div>
           </div>
-          <div class="update-card">
-            <div class="update-icon red">↑</div>
-            <div class="update-body">
-              <div class="update-title">Large transaction</div>
-              <div class="update-amount neg">− ₹24,000</div>
-              <div class="update-sub">Amazon · Yesterday, 11:40pm</div>
+          <div class="upd-card">
+            <div class="upd-ic r">↑</div>
+            <div class="upd-body">
+              <div class="upd-title">Large transaction</div>
+              <div class="upd-amt neg">− ₹24,000</div>
+              <div class="upd-sub">Amazon · Yesterday 11:40pm</div>
             </div>
           </div>
-          <div class="update-card">
-            <div class="update-icon gold">★</div>
-            <div class="update-body">
-              <div class="update-title">Credit score moved</div>
-              <div class="update-sub">742 → <strong>756</strong> &nbsp;↑ 14 points · May refresh</div>
+          <div class="upd-card">
+            <div class="upd-ic o">★</div>
+            <div class="upd-body">
+              <div class="upd-title">Credit score moved</div>
+              <div class="upd-sub">742 → <strong>756</strong> &nbsp;↑ 14 points · May refresh</div>
             </div>
           </div>
-          <div class="update-card">
-            <div class="update-icon neutral">↻</div>
-            <div class="update-body">
-              <div class="update-title">3 new subscriptions detected</div>
-              <div class="update-sub">Total ₹1,240/month · Tap to review</div>
+          <div class="upd-card">
+            <div class="upd-ic n">↻</div>
+            <div class="upd-body">
+              <div class="upd-title">3 new subscriptions detected</div>
+              <div class="upd-sub">₹1,240/month total · Tap to review</div>
             </div>
           </div>
         </div>
 
-        <!-- INSIGHTS FEED -->
-        <div class="feed hidden" id="pfm-insights">
-
-          <div class="insight-card">
-            <div class="insight-hook">
+        <div id="pfm-ins" class="off">
+          <div class="ins-card">
+            <div class="ins-hook">
               This month, you worked
-              <span class="big">3 days</span>
+              <span class="ins-big">3 days</span>
               to keep Zomato in business.
             </div>
-            <div class="insight-fact">₹21,000 went to food delivery. At ₹7,000 a day of work, that's three full days of your salary, gone to one app.</div>
-            <button class="insight-action">Set a dining limit →</button>
+            <div class="ins-fact">₹21,000 went to food delivery. At ₹7,000 a day, that's three working days of your salary — gone to one app.</div>
+            <button class="ins-action" onclick="goTo(1)">See my dining spend →</button>
           </div>
-
-          <div class="insight-card peer">
-            <div class="insight-hook">
+          <div class="ins-card peer">
+            <div class="ins-hook">
               Someone exactly like you saves
-              <span class="big gold">₹14k more</span>
+              <span class="ins-big gold">₹14k more</span>
               every month.
             </div>
-            <div class="insight-fact">Same age, same salary, same city. One habit different. Over 10 years, that gap is the down payment on a small home.</div>
-            <button class="insight-action">See what they do differently →</button>
-            <div class="peer-footer">
-              <div class="peer-footer-dot">i</div>
-              Based on comparing your profile against millions of similar users.
-            </div>
+            <div class="ins-fact">Same age, salary, city. One habit different. Over 10 years that gap is the down payment on a home.</div>
+            <button class="ins-action">What habit? →</button>
+            <div class="peer-note"><div class="peer-dot">i</div>Based on comparing your profile against millions of similar users.</div>
           </div>
-
-          <div class="insight-card">
-            <div class="insight-hook">
-              Your credit card interest this year =
-              <span class="big">5 weeks</span>
-              of your salary, gone.
+          <div class="ins-card">
+            <div class="ins-hook">
+              Your credit interest this year =
+              <span class="ins-big">5 weeks</span>
+              of salary, gone.
             </div>
-            <div class="insight-fact">Roughly ₹18,000 paid to the bank in interest. You bought nothing new with that. It just went.</div>
-            <button class="insight-action">Clear balance, stop the bleed →</button>
+            <div class="ins-fact">~₹18,000 paid to the bank in interest. You bought nothing new with that. It just went.</div>
+            <button class="ins-action">Clear balance →</button>
           </div>
-
         </div>
       </div>
     </div>
 
-    <!-- ========== SCREEN 1: MONEY DASHBOARD ========== -->
-    <div class="screen" data-screen="1">
-      <div class="status-bar">
+    <!-- ============ SCREEN 1: MONEY DASHBOARD ============ -->
+    <div class="screen" data-s="1">
+      <div class="sb">
         <span>9:41</span>
-        <div class="icons">
+        <div class="ic">
           <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="0.5"/><rect x="4" y="4" width="3" height="6" rx="0.5"/><rect x="8" y="2" width="3" height="8" rx="0.5"/><rect x="12" y="0" width="3" height="10" rx="0.5"/></svg>
           <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x="0.5" y="0.5" width="20" height="10" rx="2" stroke="currentColor" opacity="0.4"/><rect x="22" y="3.5" width="1.5" height="4" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg>
         </div>
       </div>
-      <div class="scroll-body">
-        <div class="screen-header">
-          <button class="back-btn" onclick="goTo(0)">←</button>
-          <div class="screen-header-title"><em>Money</em></div>
+      <div class="sb-body">
+        <div class="page-header">
+          <button class="back" onclick="goTo(0)">←</button>
+          <div class="page-title"><em>Money</em></div>
           <div style="width:30px;"></div>
         </div>
 
+        <!-- Month picker -->
+        <div class="month-picker">
+          <div class="mp-arrow" onclick="prevMonth()">‹</div>
+          <div class="mp-label" id="monthLabel">May 2026</div>
+          <div class="mp-arrow" onclick="nextMonth()">›</div>
+        </div>
+
         <!-- Cashflow summary -->
-        <div class="cashflow-card">
-          <div class="cf-label">May cashflow</div>
-          <div class="cf-net">+ ₹38,440</div>
-          <div class="cf-compare">↑ ₹6,200 better than April</div>
-          <div class="cf-row">
-            <div class="cf-cell">
-              <div class="lbl">In</div>
-              <div class="val">₹1,55,000</div>
-            </div>
-            <div class="cf-cell">
-              <div class="lbl">Out</div>
-              <div class="val">₹1,16,560</div>
-            </div>
+        <div class="cf-card">
+          <div class="cf-lbl">Cashflow</div>
+          <div class="cf-net" id="cfNet">+ ₹38,440</div>
+          <div class="cf-vs" id="cfVs">↑ ₹6,200 better than April</div>
+          <div class="cf-grid">
+            <div class="cf-cell"><div class="l">In</div><div class="v" id="cfIn">₹1,55,000</div></div>
+            <div class="cf-cell"><div class="l">Out</div><div class="v" id="cfOut">₹1,16,560</div></div>
           </div>
         </div>
 
         <!-- Accounts -->
-        <div class="section-label">Linked accounts</div>
-        <div style="margin: 0 22px; background: var(--card-bg); border: 1px solid var(--card-divide); border-radius: 16px; overflow: hidden; margin-bottom: 14px;">
-          <div class="account-item" style="padding-left: 16px; padding-right: 16px;">
-            <div class="account-logo">H</div>
-            <div class="account-info">
-              <div class="account-name">HDFC Salary</div>
-              <div class="account-num">•••• 4521 · Savings</div>
-            </div>
-            <div class="account-right">
-              <div class="account-balance">₹1,84,250</div>
-              <div class="account-delta pos">↑ ₹1,55,000 this month</div>
-            </div>
+        <div class="sec-label">Accounts</div>
+        <div class="accs-wrap">
+          <div class="acc-item">
+            <div class="acc-logo">H</div>
+            <div class="acc-info"><div class="acc-name">HDFC Salary</div><div class="acc-num">•••• 4521 · Savings</div></div>
+            <div class="acc-right"><div class="acc-bal">₹1,84,250</div><div class="acc-delta pos">↑ ₹1,55,000</div></div>
           </div>
-          <div class="account-item" style="padding-left: 16px; padding-right: 16px;">
-            <div class="account-logo">I</div>
-            <div class="account-info">
-              <div class="account-name">ICICI Savings</div>
-              <div class="account-num">•••• 8830 · Savings</div>
-            </div>
-            <div class="account-right">
-              <div class="account-balance">₹48,720</div>
-              <div class="account-delta neg">↓ ₹3,200 this month</div>
-            </div>
+          <div class="acc-item">
+            <div class="acc-logo">I</div>
+            <div class="acc-info"><div class="acc-name">ICICI Savings</div><div class="acc-num">•••• 8830 · Savings</div></div>
+            <div class="acc-right"><div class="acc-bal">₹48,720</div><div class="acc-delta neg">↓ ₹3,200</div></div>
           </div>
-          <div class="account-item" style="padding-left: 16px; padding-right: 16px;">
-            <div class="account-logo">S</div>
-            <div class="account-info">
-              <div class="account-name">SBI Savings</div>
-              <div class="account-num">•••• 2241 · Savings</div>
-            </div>
-            <div class="account-right">
-              <div class="account-balance">₹12,080</div>
-              <div class="account-delta pos">↑ ₹800 this month</div>
-            </div>
+          <div class="acc-item">
+            <div class="acc-logo">S</div>
+            <div class="acc-info"><div class="acc-name">SBI Savings</div><div class="acc-num">•••• 2241 · Savings</div></div>
+            <div class="acc-right"><div class="acc-bal">₹12,080</div><div class="acc-delta pos">↑ ₹800</div></div>
           </div>
         </div>
 
-        <!-- Spend breakdown -->
-        <div class="section-label">Where money went · May</div>
-        <div style="margin-bottom: 6px;">
-          <div class="spend-bar-row">
-            <div class="spend-bar-header">
-              <span class="spend-bar-label">Essentials</span>
-              <span class="spend-bar-amount">₹46,500</span>
+        <!-- Spend breakdown — tappable -->
+        <div class="sec-label">Where it went · tap to drill in</div>
+        <div class="spend-wrap">
+          <div class="spend-row" onclick="openCategory('essentials')">
+            <div class="spend-header">
+              <div class="spend-name"><div class="cat-dot" style="background:var(--ink);"></div>Essentials</div>
+              <div class="spend-amt">₹46,500</div>
             </div>
-            <div class="spend-bar-track"><div class="spend-bar-fill essentials" style="width:80%;"></div></div>
+            <div class="spend-track"><div class="spend-fill c-ess" style="width:80%;"></div></div>
+            <div class="spend-tap-hint">Rent, bills, groceries, commute →</div>
           </div>
-          <div class="spend-bar-row">
-            <div class="spend-bar-header">
-              <span class="spend-bar-label">Lifestyle</span>
-              <span class="spend-bar-amount">₹34,100</span>
+          <div class="spend-row" onclick="openCategory('lifestyle')">
+            <div class="spend-header">
+              <div class="spend-name"><div class="cat-dot" style="background:var(--accent);"></div>Lifestyle</div>
+              <div class="spend-amt">₹34,100</div>
             </div>
-            <div class="spend-bar-track"><div class="spend-bar-fill lifestyle" style="width:59%;"></div></div>
+            <div class="spend-track"><div class="spend-fill c-life" style="width:59%;"></div></div>
+            <div class="spend-tap-hint">Dining, shopping, going out →</div>
           </div>
-          <div class="spend-bar-row">
-            <div class="spend-bar-header">
-              <span class="spend-bar-label">EMIs</span>
-              <span class="spend-bar-amount">₹23,250</span>
+          <div class="spend-row" onclick="openCategory('emis')">
+            <div class="spend-header">
+              <div class="spend-name"><div class="cat-dot" style="background:var(--accent-soft);"></div>EMIs</div>
+              <div class="spend-amt">₹23,250</div>
             </div>
-            <div class="spend-bar-track"><div class="spend-bar-fill emi" style="width:40%;"></div></div>
+            <div class="spend-track"><div class="spend-fill c-emi" style="width:40%;"></div></div>
+            <div class="spend-tap-hint">Home loan, car loan →</div>
           </div>
-          <div class="spend-bar-row">
-            <div class="spend-bar-header">
-              <span class="spend-bar-label">Investments</span>
-              <span class="spend-bar-amount">₹12,400</span>
+          <div class="spend-row" onclick="openCategory('investments')">
+            <div class="spend-header">
+              <div class="spend-name"><div class="cat-dot" style="background:var(--green);"></div>Investments</div>
+              <div class="spend-amt">₹12,400</div>
             </div>
-            <div class="spend-bar-track"><div class="spend-bar-fill invest" style="width:21%;"></div></div>
+            <div class="spend-track"><div class="spend-fill c-inv" style="width:21%;"></div></div>
+            <div class="spend-tap-hint">SIPs, PPF, stocks →</div>
           </div>
         </div>
 
         <div class="divider"></div>
 
-        <!-- Pill selector -->
+        <!-- Pills -->
         <div class="pill-bar">
-          <button class="pill active" onclick="switchMoneyTab('updates', this)">Updates</button>
-          <button class="pill" onclick="switchMoneyTab('insights', this)">Insights</button>
+          <button class="pill on" onclick="moneyTab('upd',this)">Updates</button>
+          <button class="pill" onclick="moneyTab('ins',this)">Insights</button>
         </div>
 
         <!-- MONEY UPDATES -->
-        <div class="feed" id="money-updates">
-          <div class="update-card">
-            <div class="update-icon green">↓</div>
-            <div class="update-body">
-              <div class="update-title">Salary credited</div>
-              <div class="update-amount pos">+ ₹1,55,000</div>
-              <div class="update-sub">HDFC •••• 4521 · Today, 9:02am</div>
+        <div id="money-upd">
+          <div class="upd-card">
+            <div class="upd-ic g">↓</div>
+            <div class="upd-body">
+              <div class="upd-title">Salary credited</div>
+              <div class="upd-amt pos">+ ₹1,55,000</div>
+              <div class="upd-sub">HDFC •••• 4521 · Today 9:02am</div>
             </div>
           </div>
-          <div class="update-card">
-            <div class="update-icon neutral">↻</div>
-            <div class="update-body">
-              <div class="update-title">3 new subscriptions detected</div>
-              <div class="update-sub">Notion ₹440, Adobe ₹540, Duolingo ₹260 · Total ₹1,240/mo</div>
+          <div class="upd-card">
+            <div class="upd-ic n">↻</div>
+            <div class="upd-body">
+              <div class="upd-title">3 new subscriptions detected</div>
+              <div class="upd-sub">Notion ₹440 · Adobe ₹540 · Duolingo ₹260</div>
             </div>
           </div>
-          <div class="update-card">
-            <div class="update-icon red">↑</div>
-            <div class="update-body">
-              <div class="update-title">Large transaction</div>
-              <div class="update-amount neg">− ₹24,000</div>
-              <div class="update-sub">Amazon · Yesterday, 11:40pm</div>
+          <div class="upd-card">
+            <div class="upd-ic r">↑</div>
+            <div class="upd-body">
+              <div class="upd-title">Large transaction</div>
+              <div class="upd-amt neg">− ₹24,000</div>
+              <div class="upd-sub">Amazon · Yesterday 11:40pm</div>
             </div>
           </div>
-          <div class="update-card">
-            <div class="update-icon neutral">📊</div>
-            <div class="update-body">
-              <div class="update-title">Month closing summary</div>
-              <div class="update-sub">Saved ₹38,440 in May · ↑ ₹6,200 vs April</div>
+          <div class="upd-card">
+            <div class="upd-ic n">📊</div>
+            <div class="upd-body">
+              <div class="upd-title">Month closing · April</div>
+              <div class="upd-sub">Saved ₹32,240 · ↓ ₹6,200 vs March</div>
             </div>
           </div>
         </div>
 
         <!-- MONEY INSIGHTS -->
-        <div class="feed hidden" id="money-insights">
-
-          <div class="insight-card">
-            <div class="insight-hook">
+        <div id="money-ins" class="off">
+          <div class="ins-card">
+            <div class="ins-hook">
               You're paying for
-              <span class="big">11 subscriptions.</span>
-              3 you haven't used in 60 days.
+              <span class="ins-big">11 subscriptions.</span>
+              3 unused in 60 days.
             </div>
-            <div class="insight-fact">₹4,280/month across all recurring debits. The 3 unused ones alone are ₹1,890/month — ₹22,680 a year.</div>
-            <button class="insight-action">Review and cancel →</button>
+            <div class="ins-fact">₹4,280/month. The 3 unused ones alone cost ₹1,890/month — ₹22,680 a year for nothing.</div>
+            <button class="ins-action">Review and cancel →</button>
           </div>
-
-          <div class="insight-card peer">
-            <div class="insight-hook">
-              Your Zomato spend is
-              <span class="big gold">2x</span>
-              what software developers in Bangalore typically spend.
+          <div class="ins-card peer">
+            <div class="ins-hook">
+              Your Zomato is
+              <span class="ins-big gold">2x</span>
+              what peers spend.
             </div>
-            <div class="insight-fact">You spent ₹21,000 on food delivery this month. Peers in your bracket average ₹9,400.</div>
-            <button class="insight-action">Set a monthly limit →</button>
-            <div class="peer-footer">
-              <div class="peer-footer-dot">i</div>
-              Based on comparing your profile against millions of similar users.
-            </div>
+            <div class="ins-fact">You spent ₹21,000 on food delivery. Software developers in Bangalore your age average ₹9,400.</div>
+            <button class="ins-action" onclick="openCategory('lifestyle')">See my dining →</button>
+            <div class="peer-note"><div class="peer-dot">i</div>Based on comparing your profile against millions of similar users.</div>
           </div>
-
-          <div class="insight-card">
-            <div class="insight-hook">
+          <div class="ins-card">
+            <div class="ins-hook">
               You paid
-              <span class="big">₹3,200</span>
-              for speed, not for things.
+              <span class="ins-big">₹3,200</span>
+              for speed, not things.
             </div>
-            <div class="insight-fact">Delivery fees, surge pricing, and 10-minute premiums this month. You paid for convenience, not the product.</div>
-            <button class="insight-action">See the breakdown →</button>
+            <div class="ins-fact">Delivery fees, surge pricing, 10-min premiums this month. Money for convenience, not the product.</div>
+            <button class="ins-action">See breakdown →</button>
           </div>
-
-          <div class="insight-card">
-            <div class="insight-hook">
-              ₹40,000 is sitting idle
-              <span class="big">earning ₹0.</span>
+          <div class="ins-card">
+            <div class="ins-hook">
+              ₹40k sitting idle,
+              <span class="ins-big">earning ₹0.</span>
             </div>
-            <div class="insight-fact">Your ICICI and SBI accounts have ₹40k earning 3.5% in savings — losing to 6% inflation every year. A liquid fund earns 7–8%.</div>
-            <button class="insight-action">Move to liquid fund →</button>
+            <div class="ins-fact">Your ICICI and SBI accounts earn 3.5% while inflation runs at 6%. A liquid fund earns 7–8%.</div>
+            <button class="ins-action">Move to liquid fund →</button>
           </div>
+        </div>
+      </div>
+    </div>
 
+    <!-- ============ SCREEN 2: CATEGORY DRILL DOWN ============ -->
+    <div class="screen slide-up" data-s="2">
+      <div class="sb">
+        <span>9:41</span>
+        <div class="ic">
+          <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="0.5"/><rect x="4" y="4" width="3" height="6" rx="0.5"/><rect x="8" y="2" width="3" height="8" rx="0.5"/><rect x="12" y="0" width="3" height="10" rx="0.5"/></svg>
+          <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x="0.5" y="0.5" width="20" height="10" rx="2" stroke="currentColor" opacity="0.4"/><rect x="22" y="3.5" width="1.5" height="4" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg>
+        </div>
+      </div>
+      <div class="sb-body">
+        <div class="cat-header">
+          <button class="back" onclick="goTo(1)">←</button>
+          <div class="cat-badge">
+            <div class="dot" id="catDot" style="background:var(--accent);"></div>
+            <div class="name" id="catName">Lifestyle</div>
+          </div>
+          <div style="width:30px;"></div>
+        </div>
+
+        <div class="cat-summary">
+          <div class="cat-sum-val" id="catTotal">₹34,100</div>
+          <div class="cat-sum-meta">
+            <div class="cat-sum-vs" id="catVs"><span class="bad">↑ ₹4,200 vs April</span></div>
+            <div class="cat-peer" id="catPeer">Peers spend ₹18,200 ✦</div>
+          </div>
+        </div>
+
+        <div class="sec-label" id="catTxnLabel">Transactions · May</div>
+        <div id="catTxns" style="margin: 0 22px; background: var(--card); border: 1px solid var(--divide); border-radius: 16px; overflow: hidden; margin-bottom: 4px; margin-left: 22px; margin-right: 22px;">
+        </div>
+
+        <div class="cat-ins-card" id="catInsCard">
+          <div class="cat-ins-hook" id="catInsHook"></div>
+          <button class="cat-ins-action" id="catInsAction"></button>
         </div>
       </div>
     </div>
@@ -772,71 +722,160 @@
 </div>
 
 <script>
-  const screens = document.querySelectorAll('.screen');
-  const screenMeta = [
-    { name: 'PFM Dashboard', hint: 'Tap the Money snapshot to open the money dashboard. Switch between Updates and Insights with the pills.' },
-    { name: 'Money Dashboard', hint: 'Cashflow summary, linked accounts, spend breakdown. Switch between Updates and Insights with the pills below.' }
-  ];
-  let current = 0;
+const screens = document.querySelectorAll('.screen');
+const meta = [
+  { name: 'PFM Dashboard', hint: 'Tap Money or Credit snapshot to open Money dashboard. Use pills to switch Updates / Insights.' },
+  { name: 'Money Dashboard', hint: 'Tap any spend bar to drill into that category. Use pills to switch Updates / Insights.' },
+  { name: 'Category Detail', hint: 'Transactions for the selected category, with peer comparison and insight card.' }
+];
+let cur = 0;
 
-  // Build progress rail
-  const rail = document.getElementById('progressRail');
-  screenMeta.forEach((_, i) => {
-    const d = document.createElement('div');
-    d.className = 'progress-dot';
-    d.onclick = () => goTo(i);
-    rail.appendChild(d);
+// Build rail
+const rail = document.getElementById('pRail');
+meta.forEach((_,i) => {
+  const d = document.createElement('div');
+  d.className = 'p-dot';
+  d.onclick = () => goTo(i);
+  rail.appendChild(d);
+});
+
+function updateCtrl() {
+  document.getElementById('cStep').textContent = `0${cur+1} of 0${meta.length}`;
+  document.getElementById('cName').textContent = meta[cur].name;
+  document.getElementById('cHint').textContent = meta[cur].hint;
+  document.querySelectorAll('.p-dot').forEach((d,i) => {
+    d.classList.remove('current','passed');
+    if (i === cur) d.classList.add('current');
+    else if (i < cur) d.classList.add('passed');
   });
+}
 
-  function updateCtrl() {
-    document.getElementById('ctrlStep').textContent = `0${current + 1} of 0${screenMeta.length}`;
-    document.getElementById('ctrlName').textContent = screenMeta[current].name;
-    document.getElementById('ctrlHint').textContent = screenMeta[current].hint;
-    document.querySelectorAll('.progress-dot').forEach((d, i) => {
-      d.classList.remove('current', 'passed');
-      if (i === current) d.classList.add('current');
-      else if (i < current) d.classList.add('passed');
-    });
-  }
-
-  function goTo(idx) {
-    if (idx < 0 || idx >= screens.length) return;
-    screens[current].classList.remove('active');
-    screens[current].classList.add('exit');
-    setTimeout(() => screens[current].classList.remove('exit'), 450);
-    screens[idx].classList.add('active');
-    current = idx;
-    updateCtrl();
-  }
-
-  function goNext() { goTo(current + 1); }
-  function goPrev() { goTo(current - 1); }
-
-  // Pill tab logic
-  function switchTab(feedPrefix, tabName, btn) {
-    const updates = document.getElementById(`${feedPrefix}-updates`);
-    const insights = document.getElementById(`${feedPrefix}-insights`);
-    const pills = btn.parentElement.querySelectorAll('.pill');
-    pills.forEach(p => p.classList.remove('active'));
-    btn.classList.add('active');
-    if (tabName === 'updates') {
-      updates.classList.remove('hidden');
-      insights.classList.add('hidden');
-    } else {
-      updates.classList.add('hidden');
-      insights.classList.remove('hidden');
-    }
-  }
-
-  function switchPfmTab(tab, btn) { switchTab('pfm', tab, btn); }
-  function switchMoneyTab(tab, btn) { switchTab('money', tab, btn); }
-
-  document.addEventListener('keydown', e => {
-    if (e.key === 'ArrowRight') goNext();
-    if (e.key === 'ArrowLeft') goPrev();
-  });
-
+function goTo(idx) {
+  if (idx < 0 || idx >= screens.length) return;
+  screens[cur].classList.remove('active');
+  screens[cur].classList.add('exit');
+  setTimeout(() => screens[cur].classList.remove('exit'), 400);
+  screens[idx].classList.add('active');
+  cur = idx;
   updateCtrl();
+}
+function goNext() { goTo(cur + 1); }
+function goPrev() { goTo(cur - 1); }
+
+// Tab helpers
+function switchTab(updId, insId, tab, btn) {
+  const upd = document.getElementById(updId);
+  const ins = document.getElementById(insId);
+  btn.parentElement.querySelectorAll('.pill').forEach(p => p.classList.remove('on'));
+  btn.classList.add('on');
+  if (tab === 'upd') { upd.classList.remove('off'); ins.classList.add('off'); }
+  else { upd.classList.add('off'); ins.classList.remove('off'); }
+}
+function pfmTab(t, btn) { switchTab('pfm-upd','pfm-ins',t,btn); }
+function moneyTab(t, btn) { switchTab('money-upd','money-ins',t,btn); }
+
+// Month picker
+const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const monthData = {
+  'May 2026': { net:'+ ₹38,440', vs:'↑ ₹6,200 better than April', in:'₹1,55,000', out:'₹1,16,560' },
+  'Apr 2026': { net:'+ ₹32,240', vs:'↓ ₹6,200 vs March', in:'₹1,55,000', out:'₹1,22,760' },
+  'Mar 2026': { net:'+ ₹38,440', vs:'↑ ₹4,100 vs February', in:'₹1,55,000', out:'₹1,16,560' },
+};
+let mIdx = 4; let mYear = 2026;
+function renderMonth() {
+  const key = `${months[mIdx]} ${mYear}`;
+  document.getElementById('monthLabel').textContent = key;
+  const d = monthData[key] || { net:'+ ₹35,000', vs:'Similar to last month', in:'₹1,55,000', out:'₹1,20,000' };
+  document.getElementById('cfNet').textContent = d.net;
+  document.getElementById('cfVs').textContent = d.vs;
+  document.getElementById('cfIn').textContent = d.in;
+  document.getElementById('cfOut').textContent = d.out;
+}
+function prevMonth() {
+  mIdx--; if (mIdx < 0) { mIdx = 11; mYear--; }
+  renderMonth();
+}
+function nextMonth() {
+  mIdx++; if (mIdx > 11) { mIdx = 0; mYear++; }
+  renderMonth();
+}
+
+// Category data
+const catData = {
+  lifestyle: {
+    color: 'var(--accent)', total: '₹34,100', vs: '<span class="bad">↑ ₹4,200 vs April</span>',
+    peer: 'Peers spend ₹18,200 ✦',
+    txns: [
+      { ic: '🍕', name: 'Zomato', sub: 'Food delivery · 14 orders', amt: '₹21,000' },
+      { ic: '🛍️', name: 'Amazon', sub: 'Shopping · 3 orders', amt: '₹8,400' },
+      { ic: '🎬', name: 'BookMyShow', sub: 'Entertainment · 2 movies', amt: '₹2,800' },
+      { ic: '☕', name: 'Starbucks', sub: 'Coffee · 6 visits', amt: '₹1,900' },
+    ],
+    insHook: 'Zomato alone is <span class="big">3 working days</span> of your salary.',
+    insAction: 'Set a ₹12k dining limit →'
+  },
+  essentials: {
+    color: 'var(--ink)', total: '₹46,500', vs: '<span class="good">↓ ₹1,200 vs April</span>',
+    peer: 'Peers spend ₹44,800 ✦',
+    txns: [
+      { ic: '🏠', name: 'Rent', sub: 'Housing society · Monthly', amt: '₹23,000' },
+      { ic: '🛒', name: 'BigBasket', sub: 'Groceries · 3 orders', amt: '₹9,200' },
+      { ic: '⚡', name: 'BESCOM', sub: 'Electricity bill', amt: '₹4,800' },
+      { ic: '🚗', name: 'Ola / Uber', sub: 'Commute · 42 rides', amt: '₹5,600' },
+      { ic: '💊', name: 'Pharmeasy', sub: 'Health & medicine', amt: '₹3,900' },
+    ],
+    insHook: 'Rent takes <span class="big">6 working days</span> every month.',
+    insAction: 'See if your area has cheaper options →'
+  },
+  emis: {
+    color: 'var(--accent-soft)', total: '₹23,250', vs: '<span style="color:var(--ink-soft);">Same as last month</span>',
+    peer: 'Peers carry ₹18,400 in EMIs ✦',
+    txns: [
+      { ic: '🏡', name: 'SBI Home Loan', sub: 'Principal + Interest · 22 EMIs left', amt: '₹18,500' },
+      { ic: '🚘', name: 'HDFC Car Loan', sub: 'Principal + Interest · 8 EMIs left', amt: '₹4,750' },
+    ],
+    insHook: 'EMIs eat the first <span class="big">4.5 days</span> of every working month.',
+    insAction: 'Foreclosure calculator →'
+  },
+  investments: {
+    color: 'var(--green)', total: '₹12,400', vs: '<span style="color:var(--ink-soft);">Same as last month</span>',
+    peer: 'Peers invest ₹19,200/month ✦',
+    txns: [
+      { ic: '📈', name: 'Zerodha SIP', sub: 'Nifty 50 Index · Monthly', amt: '₹8,000' },
+      { ic: '🏦', name: 'SBI PPF', sub: 'Public Provident Fund · Quarterly', amt: '₹2,500' },
+      { ic: '💰', name: 'Groww MF', sub: 'ELSS Fund · Monthly', amt: '₹1,900' },
+    ],
+    insHook: 'You invest <span class="big">₹6,800 less</span> than peers your age.',
+    insAction: 'Increase SIP by ₹5,000 →'
+  }
+};
+
+function openCategory(cat) {
+  const d = catData[cat];
+  document.getElementById('catDot').style.background = d.color;
+  document.getElementById('catName').textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
+  document.getElementById('catTotal').textContent = d.total;
+  document.getElementById('catVs').innerHTML = d.vs;
+  document.getElementById('catPeer').textContent = d.peer;
+  const txnWrap = document.getElementById('catTxns');
+  txnWrap.innerHTML = d.txns.map(t => `
+    <div class="txn-item">
+      <div class="txn-ic">${t.ic}</div>
+      <div class="txn-info"><div class="txn-name">${t.name}</div><div class="txn-sub">${t.sub}</div></div>
+      <div class="txn-amt">${t.amt}</div>
+    </div>
+  `).join('');
+  document.getElementById('catInsHook').innerHTML = d.insHook;
+  document.getElementById('catInsAction').textContent = d.insAction;
+  goTo(2);
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') goNext();
+  if (e.key === 'ArrowLeft') goPrev();
+});
+
+updateCtrl();
 </script>
 </body>
 </html>
