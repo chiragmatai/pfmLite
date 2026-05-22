@@ -757,37 +757,50 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 <!-- ════════════ S9: LITE DASHBOARD ════════════ -->
 <div class="scr" data-s="9">
 <div class="sb"><span>9:41</span><div class="ic"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
-<div class="lite-body">
-  <div class="lite-hdr">
-    <div class="lite-title">Good morning, Arjun</div>
-  </div>
+<div class="lite-body" style="display:flex;flex-direction:column;padding:0;">
 
+  <!-- INSIGHT CARDS — two tall cards filling the top half -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:16px 16px 10px;flex:1;">
 
-
-  <!-- INSIGHT CARDS side by side -->
-  <div class="sec-lbl">Your insights</div>
-  <div class="insights-pair">
-    <div class="ins-pair-card money-pair" onclick="goTo(11)">
-      <div class="ipc-tag">Money</div>
-      <div class="ipc-hook">You worked <span class="n">3 days</span> for Zomato this month.</div>
-      <div class="ipc-arr">→</div>
+    <!-- MONEY CARD -->
+    <div onclick="goTo(11)" style="background:var(--card);border:1px solid var(--div);border-radius:20px;padding:18px 16px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;justify-content:space-between;min-height:260px;" onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''">
+      <div>
+        <div style="font-size:9px;text-transform:uppercase;letter-spacing:.22em;color:var(--ink-soft);font-weight:600;margin-bottom:16px;">Money</div>
+        <div style="font-family:'Fraunces',serif;font-size:26px;line-height:1.1;letter-spacing:-.02em;font-weight:400;">You worked <em style="font-style:italic;color:var(--accent);font-weight:500;">3 days</em> for Zomato this month.</div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--ink-soft);margin-bottom:10px;line-height:1.4;">₹21,000 on delivery. That's 14% of your salary.</div>
+        <div style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--accent);">See full insight →</div>
+      </div>
     </div>
-    <div class="ins-pair-card credit-pair" onclick="goTo(14)">
-      <div class="ipc-tag">Credit</div>
-      <div class="ipc-hook">Interest = <span class="n">5 weeks</span> of your salary.</div>
-      <div class="ipc-arr">→</div>
+
+    <!-- CREDIT CARD -->
+    <div onclick="goTo(14)" style="background:var(--ink);border-radius:20px;padding:18px 16px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;justify-content:space-between;min-height:260px;position:relative;overflow:hidden;" onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''">
+      <div style="position:absolute;top:-24px;right:-24px;width:90px;height:90px;border:1px solid rgba(255,255,255,.08);border-radius:50%;"></div>
+      <div style="position:relative;z-index:1;">
+        <div style="font-size:9px;text-transform:uppercase;letter-spacing:.22em;color:var(--accent-soft);font-weight:600;margin-bottom:16px;">Credit</div>
+        <div style="font-family:'Fraunces',serif;font-size:26px;line-height:1.1;letter-spacing:-.02em;font-weight:400;color:var(--card);">Interest this year = <em style="font-style:italic;color:var(--accent-soft);">5 weeks</em> of salary.</div>
+      </div>
+      <div style="position:relative;z-index:1;">
+        <div style="font-size:11px;color:rgba(250,247,240,.45);margin-bottom:10px;line-height:1.4;">₹18,000 paid to banks. You got nothing for it.</div>
+        <div style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--accent-soft);">See full insight →</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SINGLE UNLOCK BANNER -->
+  <div style="margin:0 16px 20px;background:var(--accent);border-radius:20px;padding:22px 20px;cursor:pointer;transition:transform .2s;position:relative;overflow:hidden;" onclick="goTo(15)" onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''">
+    <div style="position:absolute;top:-30px;right:-30px;width:120px;height:120px;border:1px solid rgba(255,255,255,.15);border-radius:50%;"></div>
+    <div style="position:absolute;top:-50px;right:-50px;width:170px;height:170px;border:1px solid rgba(255,255,255,.08);border-radius:50%;"></div>
+    <div style="font-size:9px;text-transform:uppercase;letter-spacing:.22em;color:rgba(250,247,240,.7);font-weight:600;margin-bottom:8px;position:relative;z-index:1;">Your Upscore is locked</div>
+    <div style="font-family:'Fraunces',serif;font-size:22px;line-height:1.1;letter-spacing:-.02em;color:var(--card);margin-bottom:14px;position:relative;z-index:1;">Connect your accounts to unlock <em style="font-style:italic;">the full picture.</em></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1;">
+      <div style="font-size:11px;color:rgba(250,247,240,.75);">Live score · Real transactions</div>
+      <div style="background:var(--card);color:var(--accent);border-radius:10px;padding:10px 14px;font-size:12px;font-weight:700;">₹99/month →</div>
     </div>
   </div>
 
-  <!-- SINGLE UNLOCK BANNER at bottom -->
-  <div style="margin:24px 22px 0;background:var(--ink);border-radius:20px;padding:22px 20px;cursor:pointer;transition:transform .2s;position:relative;overflow:hidden;" onclick="goTo(15)" onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''">
-    <div style="position:absolute;top:-30px;right:-30px;width:110px;height:110px;border:1px solid rgba(255,255,255,.07);border-radius:50%;"></div>
-    <div style="position:absolute;top:-50px;right:-50px;width:150px;height:150px;border:1px solid rgba(255,255,255,.04);border-radius:50%;"></div>
-    <div style="font-size:9px;text-transform:uppercase;letter-spacing:.22em;color:var(--accent-soft);font-weight:600;margin-bottom:10px;position:relative;z-index:1;">Your Upscore is locked</div>
-    <div style="font-family:'Fraunces',serif;font-size:22px;line-height:1.1;letter-spacing:-.02em;color:var(--card);margin-bottom:6px;position:relative;z-index:1;">Connect your accounts to <em style="font-style:italic;color:var(--accent-soft);">unlock the full picture.</em></div>
-    <div style="font-size:11px;color:rgba(250,247,240,.45);margin-bottom:18px;line-height:1.5;position:relative;z-index:1;">Live score · Real transactions · Monthly insights</div>
-    <div style="background:var(--accent);color:var(--card);border-radius:12px;padding:13px 18px;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:8px;position:relative;z-index:1;">Unlock for ₹99/month →</div>
-  </div>
 </div>
 </div>
 
