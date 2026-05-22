@@ -175,6 +175,64 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .sc-explain{font-size:11px;color:rgba(250,247,240,.5);line-height:1.5;margin-top:10px;position:relative;z-index:1;}
 .sc-cta{margin-top:12px;font-size:10px;color:rgba(250,247,240,.35);text-transform:uppercase;letter-spacing:.18em;display:flex;align-items:center;gap:4px;position:relative;z-index:1;}
 
+/* LOCKED SCORE CARD — full width, no side margins */
+.score-card-locked{
+  margin:0 0 14px;
+  background:var(--ink);color:var(--card);
+  position:relative;overflow:hidden;cursor:pointer;
+  transition:transform .15s;
+  min-height:160px;display:flex;align-items:center;justify-content:center;
+}
+.score-card-locked:active{transform:scale(.99);}
+.scl-blur{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  filter:blur(16px);opacity:.15;
+}
+.scl-num{
+  font-family:'Fraunces',serif;font-size:120px;font-weight:500;
+  color:var(--card);letter-spacing:-.04em;
+}
+.scl-overlay{
+  position:relative;z-index:2;text-align:center;padding:24px 28px;
+}
+.scl-lock{font-size:28px;margin-bottom:12px;}
+.scl-title{font-family:'Fraunces',serif;font-size:20px;font-weight:400;margin-bottom:8px;}
+.scl-sub{font-size:11px;color:rgba(250,247,240,.55);line-height:1.5;max-width:240px;margin:0 auto 14px;}
+.scl-cta{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--accent);color:var(--card);
+  border-radius:10px;padding:9px 16px;
+  font-size:11px;font-weight:600;
+}
+
+/* INSIGHTS PAIR — side by side */
+.insights-pair{
+  margin:0 22px 12px;
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;
+}
+.ins-pair-card{
+  border-radius:14px;padding:14px 14px 12px;cursor:pointer;
+  transition:all .2s;position:relative;min-height:120px;
+  display:flex;flex-direction:column;justify-content:space-between;
+}
+.ins-pair-card:hover{transform:translateY(-2px);}
+.ins-pair-card:active{transform:scale(.98);}
+.money-pair{background:var(--card);border:1px solid var(--div);}
+.credit-pair{background:var(--ink);color:var(--card);}
+.ipc-tag{font-size:9px;text-transform:uppercase;letter-spacing:.2em;
+  font-weight:600;margin-bottom:8px;}
+.money-pair .ipc-tag{color:var(--ink-soft);}
+.credit-pair .ipc-tag{color:var(--accent-soft);}
+.ipc-hook{font-family:'Fraunces',serif;font-size:13px;line-height:1.3;
+  letter-spacing:-.01em;font-weight:400;flex:1;}
+.money-pair .ipc-hook .n{font-style:italic;color:var(--accent);font-weight:500;}
+.credit-pair .ipc-hook{color:var(--card);}
+.credit-pair .ipc-hook .n{font-style:italic;color:var(--accent-soft);font-weight:500;}
+.ipc-arr{font-size:11px;margin-top:10px;}
+.money-pair .ipc-arr{color:var(--ink-mute);}
+.credit-pair .ipc-arr{color:rgba(250,247,240,.3);}
+
 /* UPCOMING CARD */
 .upcoming{margin:0 22px 14px;background:var(--card);border:1px solid var(--div);border-radius:16px;padding:14px 16px;}
 .up-title{font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:var(--ink-mute);font-weight:600;margin-bottom:10px;}
@@ -591,36 +649,35 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 <div class="sb"><span>9:41</span><div class="ic"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
 <div class="lite-body">
   <div class="lite-hdr">
-    <div class="lite-title">Your <em>Upscore</em></div>
-    <div class="av">A</div>
+    <div class="lite-title">Good morning, Arjun</div>
   </div>
 
-  <!-- SCORE CARD ~30% -->
-  <div class="score-card" onclick="goTo(14)">
-    <div class="sc-top">
-      <div>
-        <div class="sc-lbl">Your Upscore</div>
-        <div class="sc-num">724 <span class="sc-band">Healthy</span></div>
-        <div class="sc-delta">↑ 12 points this month</div>
-      </div>
+  <!-- SCORE CARD — LOCKED (no AA = no score) edge to edge -->
+  <div class="score-card-locked" onclick="goTo(15)">
+    <div class="scl-blur">
+      <div class="scl-num">—</div>
     </div>
-    <div class="sc-explain">Your score reflects payment history, credit usage, and savings behaviour. Higher score = cheaper loans, better offers.</div>
-    <div class="sc-cta">Know about your score →</div>
+    <div class="scl-overlay">
+      <div class="scl-lock">🔒</div>
+      <div class="scl-title">Your Upscore is locked</div>
+      <div class="scl-sub">Your credit score is calculated from your actual bank and credit data. Connect your accounts to unlock it.</div>
+      <div class="scl-cta">Unlock Upscore →</div>
+    </div>
   </div>
 
-  <!-- SUMMARY INSIGHT CARDS -->
-  <div class="sec-lbl">Money</div>
-  <div class="sum-card money" onclick="goTo(10)">
-    <div class="sc2-tag">Money summary →</div>
-    <div class="sc2-hook">You worked <span class="n">3 days</span> for Zomato. Your lifestyle is running <span class="n">22% over</span> last month.</div>
-    <div class="sc2-sub">Tap to see your money dashboard</div>
-  </div>
-
-  <div class="sec-lbl">Credit</div>
-  <div class="sum-card credit" onclick="goTo(13)">
-    <div class="sc2-tag">Credit summary →</div>
-    <div class="sc2-hook">₹38k outstanding. Credit interest this year = <span class="n">5 weeks</span> of salary.</div>
-    <div class="sc2-sub">Tap to see your credit dashboard</div>
+  <!-- INSIGHT CARDS side by side -->
+  <div class="sec-lbl">Your insights</div>
+  <div class="insights-pair">
+    <div class="ins-pair-card money-pair" onclick="goTo(10)">
+      <div class="ipc-tag">Money</div>
+      <div class="ipc-hook">You worked <span class="n">3 days</span> for Zomato this month.</div>
+      <div class="ipc-arr">→</div>
+    </div>
+    <div class="ins-pair-card credit-pair" onclick="goTo(13)">
+      <div class="ipc-tag">Credit</div>
+      <div class="ipc-hook">Interest = <span class="n">5 weeks</span> of your salary.</div>
+      <div class="ipc-arr">→</div>
+    </div>
   </div>
 
   <!-- UNLOCK -->
@@ -972,7 +1029,7 @@ const meta = [
   {name:'EMIs & loans',hint:'What you owe. Last step before insights.'},
   {name:'Loader',hint:'Dark screen, cycling comparisons, progress bar. Auto-advances after 4s.'},
   {name:'Reveal stack',hint:'4 cards. <b>Swipe right</b> with mouse drag. After all 4 swiped → auto-navigates to Lite dashboard.'},
-  {name:'Lite dashboard',hint:'<b>Score occupies ~30%.</b> Short explanation + "Know about your score →". No upcoming payments (Lite has no bank data). Summary insight cards for Money and Credit — derived from sliders + bureau only. Single unlock banner.'},
+  {name:'Lite dashboard',hint:'<b>Score is LOCKED</b> — full-width edge-to-edge card, no number, no data. Lite has no AA so score cannot be shown. Money + Credit insight cards are <b>side by side</b>. Single unlock banner at bottom.'},
   {name:'Money dashboard (Lite)',hint:'<b>Lite version — no real bank data.</b> Hero shows salary + estimated breakdown from sliders. Graph shows estimated category spend vs peer average. 4 insight cards derived from sliders — each leads to a feature. Note: no transactions, no real balances.'},
   {name:'Insight: Category spend',hint:'Full detail page. Hook → fact → data table → peer comparison. Bottom: <b>feature band</b> — "Open spend tracker →". Also schedule / not now.'},
   {name:'Insight: Recurring charges',hint:'Unused subscriptions named and flagged. Bottom feature band: <b>"Cancel unused subscriptions →"</b>'},
