@@ -1109,6 +1109,144 @@
     body { flex-direction: column; gap: 30px; padding: 30px 16px; }
     .controls { width: 100%; max-width: 360px; }
   }
+
+/* SCORE BOOSTERS */
+.boosters-section {
+  margin: 18px 22px 0;
+}
+.boosters-label {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .2em;
+  color: var(--ink-soft); font-weight: 600; margin-bottom: 10px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.boosters-label .count {
+  font-size: 9px; color: var(--ink-mute); font-weight: 500;
+}
+.booster-card {
+  background: var(--card-bg); border: 1px solid var(--card-divide);
+  border-radius: 16px; padding: 16px; margin-bottom: 10px;
+  cursor: pointer; transition: all .2s; position: relative;
+}
+.booster-card:hover { transform: translateY(-1px); border-color: rgba(26,24,20,.18); }
+.booster-card.improving { border-left: 3px solid var(--positive, #2d6a4f); }
+.booster-card.at-risk { border-left: 3px solid var(--accent); }
+.booster-card.achieved { background: var(--green-bg, #d4ede2); border-color: rgba(45,106,79,.25); }
+.booster-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+.booster-name {
+  font-family: 'Fraunces', serif; font-size: 16px; font-weight: 400;
+  letter-spacing: -.01em; line-height: 1.2;
+}
+.booster-state {
+  font-size: 9px; text-transform: uppercase; letter-spacing: .15em;
+  font-weight: 600; padding: 3px 8px; border-radius: 6px; flex-shrink: 0;
+}
+.booster-state.improving { background: var(--green-bg, #d4ede2); color: var(--positive, #2d6a4f); }
+.booster-state.at-risk { background: var(--accent-bg); color: var(--accent); }
+.booster-state.achieved { background: var(--positive, #2d6a4f); color: var(--card-bg); }
+.booster-state.active { background: rgba(26,24,20,.06); color: var(--ink-soft); }
+.booster-progress {
+  background: rgba(26,24,20,.04); border-radius: 10px;
+  padding: 10px 12px; margin-bottom: 10px;
+}
+.booster-stat {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 3px 0; font-size: 11px;
+}
+.booster-stat .lbl { color: var(--ink-soft); }
+.booster-stat .val { font-family: 'Fraunces', serif; font-style: italic; font-size: 13px; }
+.booster-stat .val.pos { color: var(--positive, #2d6a4f); }
+.booster-stat .val.acc { color: var(--accent); }
+.booster-trend {
+  display: flex; align-items: flex-end; gap: 3px; height: 24px; margin-top: 6px;
+}
+.booster-trend-bar {
+  flex: 1; background: var(--accent-soft); border-radius: 2px 2px 0 0;
+  min-height: 4px;
+}
+.booster-trend-bar.last { background: var(--positive, #2d6a4f); }
+.booster-impact {
+  display: flex; justify-content: space-between; padding-top: 8px;
+  border-top: 1px solid var(--card-divide); font-size: 11px;
+}
+.booster-impact .lbl { color: var(--ink-soft); }
+.booster-impact .val { font-family: 'Fraunces', serif; font-style: italic; color: var(--accent); font-weight: 500; }
+
+/* IMPROVEMENT SECTION on insight detail */
+.improvement-section {
+  margin: 14px 22px 0; padding: 20px 18px;
+  background: linear-gradient(135deg, #2a2620 0%, #1a1814 100%);
+  color: var(--card-bg); border-radius: 18px;
+  position: relative; overflow: hidden;
+}
+.improvement-section::before {
+  content: ''; position: absolute; top: -30px; right: -30px;
+  width: 120px; height: 120px;
+  border: 1px solid rgba(232,168,144,.1); border-radius: 50%;
+}
+.imp-label {
+  font-size: 9px; text-transform: uppercase; letter-spacing: .22em;
+  color: var(--accent-soft); font-weight: 600; margin-bottom: 10px;
+  position: relative; z-index: 1;
+}
+.imp-title {
+  font-family: 'Fraunces', serif; font-size: 22px; line-height: 1.15;
+  letter-spacing: -.02em; font-weight: 400; margin-bottom: 18px;
+  position: relative; z-index: 1;
+}
+.imp-title em { font-style: italic; color: var(--accent-soft); }
+.imp-impact-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  padding: 14px 0; border-top: 1px solid rgba(255,255,255,.1);
+  border-bottom: 1px solid rgba(255,255,255,.1);
+  margin-bottom: 16px; position: relative; z-index: 1;
+}
+.imp-impact-row .impact-cell .ic-label {
+  font-size: 9px; text-transform: uppercase; letter-spacing: .18em;
+  color: rgba(250,247,240,.5); font-weight: 600; margin-bottom: 4px;
+}
+.imp-impact-row .impact-cell .ic-value {
+  font-family: 'Fraunces', serif; font-style: italic; font-size: 20px;
+  color: var(--card-bg); line-height: 1;
+}
+.imp-impact-row .impact-cell .ic-value.score {
+  color: var(--accent-soft);
+}
+.imp-cta {
+  display: flex; gap: 8px; position: relative; z-index: 1;
+}
+.imp-cta-primary {
+  flex: 1; background: var(--accent); color: var(--card-bg);
+  border: none; border-radius: 12px; padding: 13px;
+  font-size: 13px; font-weight: 600; font-family: inherit;
+  cursor: pointer; transition: transform .15s;
+}
+.imp-cta-primary:active { transform: scale(.98); }
+.imp-cta-secondary {
+  background: transparent; color: rgba(250,247,240,.5);
+  border: 1px solid rgba(255,255,255,.15); border-radius: 12px;
+  padding: 13px 16px; font-size: 12px; font-family: inherit; cursor: pointer;
+}
+
+/* Activated state — confirmation */
+.imp-activated {
+  margin: 14px 22px 0; padding: 18px;
+  background: var(--green-bg, #d4ede2); border: 1px solid rgba(45,106,79,.2);
+  border-radius: 16px; display: flex; align-items: center; gap: 14px;
+}
+.imp-activated-icon {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--positive, #2d6a4f); color: var(--card-bg);
+  display: flex; align-items: center; justify-content: center; font-size: 16px;
+  flex-shrink: 0;
+}
+.imp-activated-text {
+  flex: 1; font-size: 12px; line-height: 1.4;
+}
+.imp-activated-text strong {
+  display: block; font-family: 'Fraunces', serif; font-size: 14px;
+  font-weight: 500; margin-bottom: 2px; color: var(--ink);
+}
+
 </style>
 </head>
 <body>
@@ -1811,6 +1949,56 @@
             <div class="emi-alert-icon">!</div>
             <div class="emi-alert-text">HDFC card bill <em>₹12,400</em> due in <strong>4 days</strong></div>
           </div>
+          <!-- ACTIVE BOOSTERS — earned, opt-in -->
+          <div class="boosters-section">
+            <div class="boosters-label">
+              <span>Active improvements</span>
+              <span class="count">2 boosters</span>
+            </div>
+
+            <!-- Booster 1: Improving state -->
+            <div class="booster-card improving">
+              <div class="booster-top">
+                <div class="booster-name">Reducing dining spend</div>
+                <div class="booster-state improving">Improving</div>
+              </div>
+              <div class="booster-progress">
+                <div class="booster-stat"><span class="lbl">This month</span><span class="val">₹16,200</span></div>
+                <div class="booster-stat"><span class="lbl">Last month</span><span class="val">₹21,000</span></div>
+                <div class="booster-stat"><span class="lbl">Trend</span><span class="val pos">↓ 23%</span></div>
+                <div class="booster-trend">
+                  <div class="booster-trend-bar" style="height:50%"></div>
+                  <div class="booster-trend-bar" style="height:75%"></div>
+                  <div class="booster-trend-bar" style="height:90%"></div>
+                  <div class="booster-trend-bar" style="height:100%"></div>
+                  <div class="booster-trend-bar" style="height:65%"></div>
+                  <div class="booster-trend-bar last" style="height:40%"></div>
+                </div>
+              </div>
+              <div class="booster-impact">
+                <span class="lbl">Projected savings · year</span>
+                <span class="val">₹57,600 · +8 Upscore</span>
+              </div>
+            </div>
+
+            <!-- Booster 2: At Risk state -->
+            <div class="booster-card at-risk">
+              <div class="booster-top">
+                <div class="booster-name">Reducing recurring waste</div>
+                <div class="booster-state at-risk">At risk</div>
+              </div>
+              <div class="booster-progress">
+                <div class="booster-stat"><span class="lbl">Cancelled subs</span><span class="val">1 of 3</span></div>
+                <div class="booster-stat"><span class="lbl">2 still active</span><span class="val acc">Notion · Adobe</span></div>
+                <div class="booster-stat"><span class="lbl">Saved so far</span><span class="val pos">₹260/mo</span></div>
+              </div>
+              <div class="booster-impact">
+                <span class="lbl">Potential annual savings</span>
+                <span class="val">₹22,680 · +12 Upscore</span>
+              </div>
+            </div>
+          </div>
+
           <div class="section-title">Today's update</div>
           <div class="daily-update">
             <div class="daily-update-header">
@@ -2375,8 +2563,12 @@
 
   function onCardDown(e) {
     if (this.classList.contains('swiped-out')) return;
-    // Find which stack this card belongs to
+    // Find which stack this card belongs to and rebind counter
     activeStack = this.closest('.stack-area');
+    const stackId = activeStack ? activeStack.id : '';
+    if (stackId === 'revealStack') { counterElId = 'revealCounter'; stackTotalCards = 4; continueElId = 'revealContinue'; }
+    else if (stackId === 'moneyStack') { counterElId = 'moneyStackCounter'; stackTotalCards = 4; continueElId = 'moneyStackContinue'; }
+    else if (stackId === 'creditStack') { counterElId = 'creditStackCounter'; stackTotalCards = 3; continueElId = 'creditStackContinue'; }
     const top = getTopCardEl();
     if (this !== top) return;
     // If it's a locked card, don't allow drag
@@ -2423,23 +2615,27 @@
         });
         stackTopIndex++;
         const counterEl = document.getElementById(counterElId);
-        if (counterEl) {
-          const left = stackTotalCards - stackTopIndex;
-          if (left > 0) {
-            counterEl.textContent = stackTopIndex + 1;
+        const left = stackTotalCards - stackTopIndex;
+        if (left > 0) {
+          // Update counter to current card number
+          if (counterEl) counterEl.textContent = stackTopIndex + 1;
+        } else {
+          // All cards swiped — show completion state, no empty screen
+          const isReveal = activeStack && activeStack.id === 'revealStack';
+          if (isReveal) {
+            // Show a brief completion overlay, then navigate
+            const stackArea = activeStack;
+            const completionMsg = document.createElement('div');
+            completionMsg.style.cssText = 'position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(180deg,#f5f0e6 0%,#ebe4d4 100%);padding:40px 28px;text-align:center;opacity:0;transition:opacity .4s ease;z-index:100;';
+            completionMsg.innerHTML = '<div style="font-size:10px;text-transform:uppercase;letter-spacing:.22em;color:var(--accent);font-weight:600;margin-bottom:14px;">All caught up</div><div style="font-family:Fraunces,serif;font-size:26px;line-height:1.15;letter-spacing:-.02em;font-weight:400;color:var(--ink);margin-bottom:8px;">That\'s your starting picture.</div><div style="font-size:13px;color:var(--ink-soft);line-height:1.5;max-width:240px;">Take a closer look at your full dashboard.</div>';
+            stackArea.parentElement.appendChild(completionMsg);
+            requestAnimationFrame(() => { completionMsg.style.opacity = '1'; });
+            setTimeout(() => { goTo(9); }, 1400);
           } else {
-            // All cards swiped
-            const isReveal = activeStack && activeStack.id === 'revealStack';
-            if (isReveal) {
-              // Auto-navigate to dashboard after a short pause — cards settle into dashboard
-              counterEl.parentElement.style.opacity = '0';
-              setTimeout(() => { goTo(9); }, 600);
-            } else {
-              counterEl.textContent = stackTotalCards;
-              if (continueElId) {
-                const cw = document.getElementById(continueElId);
-                if (cw) cw.classList.add('show');
-              }
+            if (counterEl) counterEl.textContent = stackTotalCards;
+            if (continueElId) {
+              const cw = document.getElementById(continueElId);
+              if (cw) cw.classList.add('show');
             }
           }
         }
@@ -2467,6 +2663,13 @@
         c.classList.add('flying-in');
       }, delay);
     });
+  }
+
+  function activateBooster(btn) {
+    const section = btn.closest('.improvement-section');
+    if (!section) return;
+    const activatedHTML = '<div class="imp-activated"><div class="imp-activated-icon">✓</div><div class="imp-activated-text"><strong>Booster active</strong>We\'ll track your progress and surface it on your dashboard. You can stop anytime.</div></div>';
+    section.outerHTML = activatedHTML;
   }
 
   function selectUpi(el) {
