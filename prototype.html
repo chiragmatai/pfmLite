@@ -1,2145 +1,1182 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Upscore — Prototype</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Upscore — Lite Prototype</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..900,0..100,0..1&family=Inter+Tight:wght@300..700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #efebe3;
-    --bg-grain: #e8e2d4;
-    --ink: #1a1814;
-    --ink-soft: #4a4438;
-    --ink-mute: #8a8278;
-    --accent: #c8442a;
-    --accent-soft: #e8a890;
-    --accent-bg: #f5d9cc;
-    --gold: #c69c4d;
-    --gold-soft: #e8d4a8;
-    --gold-bg: #f5ebd2;
-    --positive: #2d6a4f;
-    --negative: #c8442a;
-    --card-bg: #faf7f0;
-    --card-divide: rgba(26, 24, 20, 0.08);
-    --phone-frame: #1a1814;
-    --phone-screen: #faf7f0;
-  }
+:root{
+  --bg:#efebe3;--ink:#1a1814;--ink-soft:#4a4438;--ink-mute:#8a8278;
+  --accent:#c8442a;--accent-soft:#e8a890;--accent-bg:#f5d9cc;
+  --gold:#c69c4d;--gold-soft:#e8d4a8;--gold-bg:#f5ebd2;
+  --green:#2d6a4f;--green-bg:#d4ede2;
+  --card:#faf7f0;--div:rgba(26,24,20,.07);--frame:#1a1814;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{min-height:100%;}
+body{
+  background:var(--bg);font-family:'Inter Tight',sans-serif;color:var(--ink);
+  min-height:100vh;padding:36px 20px;
+  display:flex;align-items:flex-start;justify-content:center;gap:48px;
+}
+body::before{content:'';position:fixed;inset:0;
+  background:radial-gradient(circle at 20% 30%,#e8e2d4 0%,transparent 40%),
+             radial-gradient(circle at 80% 70%,#e8e2d4 0%,transparent 40%);
+  opacity:.5;pointer-events:none;z-index:0;}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  html, body { min-height: 100%; }
+/* SIDEBAR */
+.side{position:sticky;top:36px;z-index:2;width:190px;display:flex;flex-direction:column;gap:10px;}
+.s-tag{font-size:10px;text-transform:uppercase;letter-spacing:.22em;color:var(--ink-soft);font-weight:600;}
+.s-step{font-family:'Fraunces',serif;font-size:12px;font-style:italic;color:var(--accent);}
+.s-name{font-family:'Fraunces',serif;font-size:20px;line-height:1.1;letter-spacing:-.01em;}
+.s-hint{font-size:11px;color:var(--ink-soft);line-height:1.6;margin-top:4px;padding:10px 12px;background:var(--card);border-radius:10px;border:1px solid var(--div);}
+.s-hint b{color:var(--ink);}
+.nav-row{display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;}
+.nb{background:var(--card);border:1px solid var(--div);color:var(--ink);border-radius:8px;padding:6px 10px;font-size:11px;cursor:pointer;font-family:inherit;transition:all .2s;}
+.nb:hover{background:var(--ink);color:var(--card);}
+.rail{display:flex;gap:3px;margin-top:8px;flex-wrap:wrap;}
+.rd{width:14px;height:3px;background:rgba(26,24,20,.1);border-radius:2px;cursor:pointer;transition:background .3s;}
+.rd.p{background:var(--accent-soft);}
+.rd.c{background:var(--accent);}
 
-  body {
-    background: var(--bg);
-    font-family: 'Inter Tight', sans-serif;
-    color: var(--ink);
-    min-height: 100vh;
-    padding: 40px 20px;
-    position: relative;
-    overflow-x: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 60px;
-  }
+/* PHONE */
+.phone{width:360px;height:740px;background:var(--frame);border-radius:50px;padding:10px;flex-shrink:0;box-shadow:0 40px 80px -20px rgba(26,24,20,.3),inset 0 0 0 2px #2a2620;position:relative;z-index:2;}
+.ps{width:100%;height:100%;background:var(--card);border-radius:40px;overflow:hidden;position:relative;}
+.di{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:120px;height:32px;background:var(--frame);border-radius:20px;z-index:100;}
 
-  body::before {
-    content: ''; position: fixed; inset: 0;
-    background-image:
-      radial-gradient(circle at 20% 30%, var(--bg-grain) 0%, transparent 40%),
-      radial-gradient(circle at 80% 70%, var(--bg-grain) 0%, transparent 40%);
-    opacity: 0.5; pointer-events: none; z-index: 0;
-  }
-  body::after {
-    content: ''; position: fixed; inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
-    opacity: 0.1; pointer-events: none; mix-blend-mode: multiply; z-index: 1;
-  }
+/* SCREEN SYSTEM */
+.scr{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--card);opacity:0;pointer-events:none;transition:opacity .35s cubic-bezier(.22,1,.36,1),transform .4s cubic-bezier(.22,1,.36,1);transform:translateX(28px);}
+.scr.on{opacity:1;pointer-events:auto;transform:translateX(0);}
+.scr.out{transform:translateX(-28px);opacity:0;}
 
-  .controls {
-    position: relative; z-index: 2;
-    width: 200px;
-    display: flex; flex-direction: column;
-    gap: 14px;
-  }
-  .control-tag {
-    font-size: 10px; text-transform: uppercase; letter-spacing: 0.22em;
-    color: var(--ink-soft); font-weight: 600;
-  }
-  .control-step {
-    font-family: 'Fraunces', serif; font-size: 14px;
-    font-style: italic; color: var(--accent);
-  }
-  .control-name {
-    font-family: 'Fraunces', serif; font-size: 22px;
-    line-height: 1.1; letter-spacing: -0.01em;
-  }
-  .nav-buttons { display: flex; gap: 8px; margin-top: 8px; }
-  .nav-mini {
-    background: var(--card-bg); border: 1px solid var(--card-divide);
-    color: var(--ink); border-radius: 8px; padding: 6px 12px;
-    font-size: 11px; cursor: pointer; font-family: inherit;
-    transition: all 0.2s;
-  }
-  .nav-mini:hover { background: var(--ink); color: var(--card-bg); }
-  .progress-rail { margin-top: 16px; display: flex; gap: 3px; }
-  .progress-rail-dot {
-    flex: 1; height: 3px;
-    background: rgba(26,24,20,0.1); border-radius: 2px;
-    cursor: pointer; transition: background 0.3s;
-  }
-  .progress-rail-dot.passed { background: var(--accent-soft); }
-  .progress-rail-dot.current { background: var(--accent); }
+/* STATUS BAR */
+.sb{height:50px;padding:14px 24px 0;display:flex;align-items:flex-start;justify-content:space-between;font-size:14px;font-weight:600;color:var(--ink);flex-shrink:0;z-index:50;position:relative;}
+.sb.inv{color:var(--card);}
+.sb .ic{display:flex;gap:5px;align-items:center;}
 
-  .phone {
-    width: 360px; height: 740px;
-    background: var(--phone-frame);
-    border-radius: 50px; padding: 10px;
-    flex-shrink: 0;
-    box-shadow:
-      0 40px 80px -20px rgba(26, 24, 20, 0.3),
-      0 0 0 1px rgba(26, 24, 20, 0.05),
-      inset 0 0 0 2px #2a2620;
-    position: relative; z-index: 2;
-  }
-  .phone-screen {
-    width: 100%; height: 100%;
-    background: var(--phone-screen); border-radius: 40px;
-    overflow: hidden; position: relative;
-  }
-  .dynamic-island {
-    position: absolute; top: 12px; left: 50%;
-    transform: translateX(-50%);
-    width: 120px; height: 32px;
-    background: var(--phone-frame); border-radius: 20px;
-    z-index: 100;
-  }
-  .screen {
-    position: absolute; inset: 0;
-    display: flex; flex-direction: column;
-    background: var(--phone-screen);
-    opacity: 0; pointer-events: none;
-    transition: opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1), transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-    transform: translateX(20px);
-  }
-  .screen.active { opacity: 1; pointer-events: auto; transform: translateX(0); }
-  .screen.exit-left { transform: translateX(-20px); opacity: 0; }
+/* SCROLL */
+.body{flex:1;overflow-y:auto;padding-bottom:32px;}
+.body::-webkit-scrollbar{display:none;}
 
-  .status-bar {
-    height: 50px; padding: 14px 28px 0;
-    display: flex; align-items: flex-start; justify-content: space-between;
-    font-size: 14px; font-weight: 600; color: var(--ink);
-    flex-shrink: 0; position: relative; z-index: 50;
-  }
-  .status-bar.dark { color: var(--card-bg); }
-  .status-bar .icons { display: flex; gap: 5px; align-items: center; }
+/* ATOMS */
+.back{width:30px;height:30px;border-radius:50%;background:rgba(26,24,20,.06);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;border:none;color:var(--ink);transition:background .15s;}
+.back:hover{background:rgba(26,24,20,.12);}
+.back.inv{background:rgba(255,255,255,.1);color:var(--card);}
 
-  /* HOME */
-  .screen-home {
-    flex: 1;
-    background: linear-gradient(180deg, #f5f0e6 0%, #ebe4d4 100%);
-    position: relative;
-  }
-  .home-blur-content {
-    filter: blur(8px); opacity: 0.55; pointer-events: none;
-    padding: 12px 22px;
-  }
-  .home-blur-content .row {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 24px;
-  }
-  .home-blur-content .blob {
-    background: rgba(0,0,0,0.08); border-radius: 14px;
-    margin-bottom: 12px;
-  }
-  .home-overlay {
-    position: absolute; inset: 0;
-    background: linear-gradient(180deg, rgba(245, 240, 230, 0.3) 0%, rgba(26, 24, 20, 0.15) 60%, rgba(26, 24, 20, 0.7) 100%);
-    z-index: 1;
-  }
-  .bottomsheet {
-    position: absolute; bottom: 0; left: 0; right: 0;
-    background: var(--ink); color: var(--card-bg);
-    border-radius: 28px 28px 0 0; padding: 26px 24px 28px;
-    z-index: 10; box-shadow: 0 -20px 60px rgba(0,0,0,0.25);
-  }
-  .screen.active .bottomsheet { animation: slideUp 0.7s 0.3s cubic-bezier(0.22, 1, 0.36, 1) both; }
-  @keyframes slideUp {
-    from { transform: translateY(100%); }
-    to { transform: translateY(0); }
-  }
-  .bottomsheet-handle {
-    width: 36px; height: 4px; background: rgba(255,255,255,0.2);
-    border-radius: 2px; margin: 0 auto 18px;
-  }
-  .bottomsheet-tag {
-    font-size: 9px; text-transform: uppercase; letter-spacing: 0.22em;
-    color: var(--accent-soft); margin-bottom: 12px; font-weight: 600;
-  }
-  .bottomsheet-title {
-    font-family: 'Fraunces', serif; font-size: 26px; line-height: 1.1;
-    letter-spacing: -0.02em; margin-bottom: 18px; font-weight: 400;
-  }
-  .bottomsheet-title em { font-style: italic; color: var(--accent-soft); }
+/* BUTTONS */
+.btn-dark{background:var(--ink);color:var(--card);border:none;border-radius:13px;padding:14px;width:100%;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;transition:transform .15s;display:flex;align-items:center;justify-content:center;gap:6px;}
+.btn-dark:active{transform:scale(.98);}
+.btn-light{background:var(--card);color:var(--ink);border:none;border-radius:13px;padding:14px;width:100%;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;transition:transform .15s;display:flex;align-items:center;justify-content:center;gap:6px;}
+.btn-light:active{transform:scale(.98);}
+.btn-accent{background:var(--accent);color:var(--card);border:none;border-radius:13px;padding:14px;width:100%;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;transition:transform .15s;}
+.btn-accent:active{transform:scale(.98);}
 
-  .btn-cta {
-    background: var(--card-bg); color: var(--ink); border: none;
-    border-radius: 12px; padding: 15px; width: 100%; font-size: 13px;
-    font-weight: 600; font-family: inherit; cursor: pointer;
-    transition: transform 0.15s; display: flex; align-items: center;
-    justify-content: center; gap: 6px;
-  }
-  .btn-cta:active { transform: scale(0.97); }
-  .btn-cta-dark {
-    background: var(--ink); color: var(--card-bg); border: none;
-    border-radius: 12px; padding: 15px; width: 100%; font-size: 13px;
-    font-weight: 600; font-family: inherit; cursor: pointer;
-    transition: transform 0.15s; display: flex; align-items: center;
-    justify-content: center; gap: 6px;
-  }
-  .btn-cta-dark:active { transform: scale(0.97); }
-  .btn-cta-accent {
-    background: var(--accent); color: var(--card-bg); border: none;
-    border-radius: 12px; padding: 15px; width: 100%; font-size: 13px;
-    font-weight: 600; font-family: inherit; cursor: pointer;
-    transition: transform 0.15s;
-  }
-  .btn-cta-accent:active { transform: scale(0.97); }
+/* ONBOARDING SHARED */
+.ob-hdr{padding:14px 22px 12px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--div);}
+.ob-step{font-size:10px;text-transform:uppercase;letter-spacing:.18em;color:var(--ink-soft);font-weight:600;flex:1;text-align:right;}
+.ob-prog{height:3px;background:rgba(26,24,20,.08);border-radius:2px;overflow:hidden;margin:0 22px;}
+.ob-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .5s cubic-bezier(.22,1,.36,1);}
+.sec-block{padding:26px 26px 0;text-align:center;}
+.sec-tag{font-size:10px;text-transform:uppercase;letter-spacing:.25em;color:var(--ink-mute);font-weight:600;margin-bottom:10px;}
+.sec-title{font-family:'Fraunces',serif;font-size:38px;line-height:.95;letter-spacing:-.03em;font-weight:400;}
+.sec-title em{font-style:italic;color:var(--accent);}
+.ob-body{padding:22px 26px;flex:1;overflow-y:auto;display:flex;flex-direction:column;}
+.ob-foot{padding:14px 22px 22px;border-top:1px solid var(--div);}
 
-  /* ONBOARDING */
-  .onboard-header {
-    padding: 14px 22px 12px; display: flex; align-items: center; gap: 12px;
-    border-bottom: 1px solid var(--card-divide);
-  }
-  .back-btn {
-    width: 30px; height: 30px; border-radius: 50%;
-    background: rgba(26,24,20,0.06); display: flex; align-items: center;
-    justify-content: center; font-size: 16px; color: var(--ink);
-    flex-shrink: 0; cursor: pointer; transition: background 0.15s;
-  }
-  .back-btn:hover { background: rgba(26,24,20,0.12); }
-  .onboard-header-right {
-    flex: 1; text-align: right; font-size: 10px;
-    color: var(--ink-soft); text-transform: uppercase;
-    letter-spacing: 0.18em; font-weight: 600;
-  }
-  .onboard-progress {
-    height: 3px; background: rgba(26,24,20,0.1);
-    border-radius: 2px; overflow: hidden;
-    margin: 0 22px;
-  }
-  .onboard-progress-fill {
-    height: 100%; background: var(--accent); border-radius: 2px;
-    transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  .section-block {
-    padding: 28px 26px 0; text-align: center;
-  }
-  .section-block-tag {
-    font-size: 10px; text-transform: uppercase; letter-spacing: 0.25em;
-    color: var(--ink-mute); font-weight: 600;
-    margin-bottom: 10px;
-  }
-  .section-block-title {
-    font-family: 'Fraunces', serif;
-    font-size: 38px; line-height: 0.95;
-    letter-spacing: -0.03em; font-weight: 400;
-    font-variation-settings: "SOFT" 30;
-  }
-  .section-block-title em {
-    font-style: italic; color: var(--accent);
-    font-variation-settings: "SOFT" 100, "WONK" 1;
-  }
-  .onboard-body {
-    padding: 24px 26px; flex: 1; overflow-y: auto;
-    display: flex; flex-direction: column;
-  }
-  .profile-form { display: flex; flex-direction: column; gap: 22px; margin-top: 8px; }
-  .form-label {
-    font-size: 11px; text-transform: uppercase; letter-spacing: 0.18em;
-    color: var(--ink-soft); font-weight: 600; margin-bottom: 8px;
-  }
-  .form-input {
-    width: 100%; background: transparent;
-    border: none; border-bottom: 1.5px solid var(--card-divide);
-    padding: 8px 0; font-size: 22px;
-    font-family: 'Fraunces', serif; color: var(--ink);
-    letter-spacing: -0.01em; outline: none;
-    transition: border-color 0.2s;
-  }
-  .form-input:focus { border-color: var(--accent); }
-  .form-input.large { font-size: 32px; font-weight: 400; }
-  .form-helper { font-size: 11px; color: var(--ink-soft); margin-top: 6px; }
+/* FORM */
+.f-label{font-size:11px;text-transform:uppercase;letter-spacing:.18em;color:var(--ink-soft);font-weight:600;margin-bottom:8px;}
+.f-input{width:100%;background:transparent;border:none;border-bottom:1.5px solid var(--div);padding:8px 0;font-size:22px;font-family:'Fraunces',serif;color:var(--ink);letter-spacing:-.01em;outline:none;transition:border-color .2s;}
+.f-input:focus{border-color:var(--accent);}
+.f-input.lg{font-size:30px;}
+.f-help{font-size:11px;color:var(--ink-soft);margin-top:6px;}
+.form-stack{display:flex;flex-direction:column;gap:22px;margin-top:8px;}
 
-  .category-icon-wrap { text-align: center; margin-bottom: 8px; margin-top: 12px; }
-  .category-icon {
-    width: 84px; height: 84px; margin: 0 auto;
-    background: var(--accent-bg); border-radius: 26px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 42px; transform: rotate(-3deg);
-  }
-  .screen.active .category-icon {
-    animation: iconPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-  }
-  @keyframes iconPop {
-    0% { transform: scale(0.6) rotate(-12deg); opacity: 0; }
-    100% { transform: scale(1) rotate(-3deg); opacity: 1; }
-  }
-  .category-sub {
-    font-size: 12px; color: var(--ink-soft);
-    text-align: center; line-height: 1.5;
-    margin-top: 14px; margin-bottom: 24px;
-  }
-  .rupee-display { text-align: center; margin-bottom: 16px; }
-  .rupee-value {
-    font-family: 'Fraunces', serif; font-size: 56px;
-    line-height: 1; color: var(--ink); font-weight: 400;
-    letter-spacing: -0.03em;
-    font-variation-settings: "SOFT" 60;
-  }
-  .rupee-value .num {
-    font-style: italic; color: var(--accent);
-    font-variation-settings: "SOFT" 100, "WONK" 1;
-  }
-  .rupee-label {
-    font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em;
-    color: var(--ink-soft); margin-top: 6px; font-weight: 600;
-  }
-  .rupee-slider-row {
-    display: flex; align-items: center; gap: 12px;
-    margin-bottom: 8px; padding: 0 4px;
-  }
-  .rupee-slider {
-    flex: 1; -webkit-appearance: none; appearance: none;
-    height: 4px; background: rgba(26,24,20,0.1);
-    border-radius: 2px; outline: none; cursor: pointer;
-  }
-  .rupee-slider::-webkit-slider-thumb {
-    -webkit-appearance: none; appearance: none;
-    width: 22px; height: 22px; background: var(--ink);
-    border-radius: 50%; border: 3px solid var(--card-bg);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2); cursor: pointer;
-  }
-  .rupee-slider::-moz-range-thumb {
-    width: 22px; height: 22px; background: var(--ink);
-    border-radius: 50%; border: 3px solid var(--card-bg);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2); cursor: pointer;
-  }
-  .rupee-ends {
-    display: flex; justify-content: space-between;
-    font-size: 10px; color: var(--ink-mute);
-    margin: 8px 4px 0;
-  }
-  .chip-row {
-    display: flex; gap: 8px; justify-content: center;
-    flex-wrap: wrap; margin-top: 22px;
-  }
-  .chip {
-    background: var(--card-bg);
-    border: 1px solid var(--card-divide);
-    color: var(--ink-soft); border-radius: 20px;
-    padding: 8px 14px; font-size: 11px;
-    cursor: pointer; transition: all 0.2s;
-    font-family: inherit; font-weight: 500;
-  }
-  .chip:hover { border-color: var(--ink); color: var(--ink); }
-  .chip.selected {
-    background: var(--ink); color: var(--card-bg); border-color: var(--ink);
-  }
-  .onboard-footer { padding: 16px 22px 24px; border-top: 1px solid var(--card-divide); }
+/* CATEGORY SLIDER */
+.cat-icon-wrap{text-align:center;margin-bottom:8px;margin-top:10px;}
+.cat-icon{width:80px;height:80px;margin:0 auto;background:var(--accent-bg);border-radius:24px;display:flex;align-items:center;justify-content:center;font-size:40px;transform:rotate(-3deg);}
+.scr.on .cat-icon{animation:iconPop .6s cubic-bezier(.34,1.56,.64,1) both;}
+@keyframes iconPop{0%{transform:scale(.6) rotate(-12deg);opacity:0;}100%{transform:scale(1) rotate(-3deg);opacity:1;}}
+.cat-sub{font-size:12px;color:var(--ink-soft);text-align:center;line-height:1.5;margin-top:14px;margin-bottom:22px;}
+.rupee-display{text-align:center;margin-bottom:14px;}
+.rupee-val{font-family:'Fraunces',serif;font-size:54px;line-height:1;letter-spacing:-.03em;font-variation-settings:"SOFT" 60;}
+.rupee-val .n{font-style:italic;color:var(--accent);font-variation-settings:"SOFT" 100,"WONK" 1;}
+.rupee-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:var(--ink-soft);margin-top:4px;font-weight:600;}
+.slider-row{display:flex;align-items:center;gap:12px;margin-bottom:8px;padding:0 4px;}
+input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:4px;background:rgba(26,24,20,.1);border-radius:2px;outline:none;cursor:pointer;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;background:var(--ink);border-radius:50%;border:3px solid var(--card);box-shadow:0 2px 8px rgba(0,0,0,.2);cursor:pointer;}
+.rupee-ends{display:flex;justify-content:space-between;font-size:10px;color:var(--ink-mute);margin:6px 4px 0;}
+.chip-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:20px;}
+.chip{background:var(--card);border:1px solid var(--div);color:var(--ink-soft);border-radius:20px;padding:7px 14px;font-size:11px;cursor:pointer;transition:all .2s;font-family:inherit;font-weight:500;}
+.chip:hover{border-color:var(--ink);color:var(--ink);}
+.chip.on{background:var(--ink);color:var(--card);border-color:var(--ink);}
 
-  /* LOADER */
-  .screen-loader {
-    background: var(--ink); color: var(--card-bg);
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    padding: 40px 28px; text-align: center;
-    position: relative; overflow: hidden;
-  }
-  .ring {
-    position: absolute; border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 50%; animation: pulseRing 3s ease-out infinite;
-  }
-  .ring.r1 { width: 300px; height: 300px; }
-  .ring.r2 { width: 220px; height: 220px; animation-delay: 0.5s; }
-  .ring.r3 { width: 380px; height: 380px; animation-delay: 1s; }
-  @keyframes pulseRing {
-    0% { transform: scale(0.7); opacity: 0.8; }
-    100% { transform: scale(1.2); opacity: 0; }
-  }
-  .loader-dot {
-    width: 14px; height: 14px; background: var(--accent);
-    border-radius: 50%; margin-bottom: 36px;
-    animation: dotPulse 1.4s ease-in-out infinite;
-    position: relative; z-index: 2;
-  }
-  @keyframes dotPulse {
-    0%, 100% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 0 var(--accent); }
-    50% { transform: scale(1.3); opacity: 0.8; box-shadow: 0 0 0 12px rgba(200,68,42,0); }
-  }
-  .loader-text {
-    font-family: 'Fraunces', serif; font-size: 24px; line-height: 1.25;
-    font-weight: 400; letter-spacing: -0.01em; margin-bottom: 18px;
-    position: relative; z-index: 2; max-width: 280px;
-    transition: opacity 0.4s, transform 0.4s;
-  }
-  .loader-text em { font-style: italic; color: var(--accent-soft); }
-  .loader-sub {
-    font-size: 11px; color: rgba(250,247,240,0.4);
-    text-transform: uppercase; letter-spacing: 0.2em;
-    position: relative; z-index: 2;
-  }
-  .loader-bar {
-    width: 200px; height: 2px; background: rgba(255,255,255,0.08);
-    border-radius: 1px; margin-top: 20px; overflow: hidden;
-    position: relative; z-index: 2;
-  }
-  .loader-bar-fill {
-    height: 100%; background: var(--accent); border-radius: 1px;
-    animation: loadProgress 4s ease-out forwards;
-  }
-  @keyframes loadProgress { from { width: 0; } to { width: 100%; } }
+/* LOADER */
+.loader-scr{background:var(--ink);color:var(--card);flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 28px;text-align:center;position:relative;overflow:hidden;}
+.ring{position:absolute;border:1px solid rgba(255,255,255,.07);border-radius:50%;animation:pulseRing 3s ease-out infinite;}
+.ring.r1{width:300px;height:300px;}
+.ring.r2{width:220px;height:220px;animation-delay:.5s;}
+.ring.r3{width:380px;height:380px;animation-delay:1s;}
+@keyframes pulseRing{0%{transform:scale(.7);opacity:.8;}100%{transform:scale(1.2);opacity:0;}}
+.loader-dot{width:14px;height:14px;background:var(--accent);border-radius:50%;margin-bottom:32px;animation:dotPulse 1.4s ease-in-out infinite;position:relative;z-index:2;}
+@keyframes dotPulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 var(--accent);}50%{transform:scale(1.3);box-shadow:0 0 0 12px rgba(200,68,42,0);}}
+.loader-txt{font-family:'Fraunces',serif;font-size:24px;line-height:1.25;font-weight:400;letter-spacing:-.01em;margin-bottom:16px;position:relative;z-index:2;max-width:280px;transition:opacity .4s,transform .4s;}
+.loader-txt em{font-style:italic;color:var(--accent-soft);}
+.loader-sub{font-size:11px;color:rgba(250,247,240,.35);text-transform:uppercase;letter-spacing:.2em;position:relative;z-index:2;}
+.loader-bar{width:200px;height:2px;background:rgba(255,255,255,.08);border-radius:1px;margin-top:18px;overflow:hidden;position:relative;z-index:2;}
+.loader-bar-fill{height:100%;background:var(--accent);border-radius:1px;}
 
-  /* ========== UNIVERSAL STACK VIEWER ========== */
-  .stack-screen {
-    flex: 1;
-    background: linear-gradient(180deg, #f5f0e6 0%, #ebe4d4 100%);
-    position: relative;
-    display: flex; flex-direction: column;
-  }
-  .stack-top-bar {
-    padding: 16px 22px 0;
-    display: flex; justify-content: space-between; align-items: center;
-  }
-  .stack-top-label {
-    font-size: 10px; text-transform: uppercase; letter-spacing: 0.22em;
-    color: var(--ink-soft); font-weight: 600;
-  }
-  .stack-close {
-    width: 30px; height: 30px; border-radius: 50%;
-    background: rgba(26,24,20,0.06); border: none;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 14px; color: var(--ink); cursor: pointer;
-  }
-  .stack-counter {
-    font-family: 'Fraunces', serif; font-style: italic;
-    font-size: 14px; color: var(--ink-soft);
-    text-align: center;
-    margin-top: 8px;
-  }
-  .stack-counter strong { color: var(--ink); font-style: normal; font-weight: 500; }
-  .stack-area {
-    flex: 1; position: relative; perspective: 1000px;
-    padding: 30px 24px 100px;
-  }
-  .stack-card {
-    position: absolute;
-    top: 30px; left: 24px; right: 24px;
-    height: calc(100% - 130px);
-    background: var(--card-bg);
-    border-radius: 22px;
-    padding: 30px 28px;
-    box-shadow: 0 20px 50px -10px rgba(26, 24, 20, 0.2),
-                0 4px 12px rgba(26, 24, 20, 0.06);
-    cursor: grab;
-    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-                opacity 0.4s ease,
-                box-shadow 0.4s ease;
-    will-change: transform;
-    display: flex; flex-direction: column;
-    justify-content: space-between;
-    user-select: none;
-  }
-  .stack-card:active { cursor: grabbing; }
-  .stack-card.dragging { transition: none; }
-  .stack-card.swiped-out {
-    transform: translateX(450px) rotate(15deg) !important;
-    opacity: 0 !important;
-    transition: transform 0.5s ease-out, opacity 0.4s ease-out;
-  }
+/* REVEAL STACK */
+.reveal-scr{flex:1;background:linear-gradient(180deg,#f5f0e6 0%,#ebe4d4 100%);position:relative;display:flex;flex-direction:column;}
+.reveal-top{padding:16px 22px 0;display:flex;justify-content:space-between;align-items:center;}
+.reveal-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.22em;color:var(--ink-soft);font-weight:600;}
+.reveal-ctr{font-family:'Fraunces',serif;font-style:italic;font-size:14px;color:var(--ink-soft);text-align:center;margin-top:8px;}
+.reveal-ctr b{color:var(--ink);font-style:normal;font-weight:500;}
+.stack-area{flex:1;position:relative;perspective:1000px;padding:28px 22px 100px;}
+.scard{position:absolute;top:28px;left:22px;right:22px;height:calc(100% - 128px);background:var(--card);border-radius:22px;padding:28px 26px;box-shadow:0 20px 50px -10px rgba(26,24,20,.2),0 4px 12px rgba(26,24,20,.06);cursor:grab;transition:transform .5s cubic-bezier(.22,1,.36,1),opacity .4s ease;will-change:transform;display:flex;flex-direction:column;justify-content:space-between;user-select:none;}
+.scard:active{cursor:grabbing;}
+.scard.dragging{transition:none;}
+.scard.gone{transform:translateX(450px) rotate(15deg)!important;opacity:0!important;transition:transform .5s ease-out,opacity .4s ease-out;}
+.scard.peer{background:var(--gold-bg);border:1px solid var(--gold-soft);}
+.scard-hook{font-family:'Fraunces',serif;font-size:29px;line-height:1.05;letter-spacing:-.025em;font-weight:400;font-variation-settings:"SOFT" 30;margin-top:10px;}
+.scard-big{display:block;font-size:60px;line-height:.88;color:var(--accent);font-style:italic;font-weight:500;margin:5px 0 7px;font-variation-settings:"SOFT" 100,"WONK" 1;}
+.scard.peer .scard-big{color:var(--gold);}
+.scard-body{font-size:13px;line-height:1.5;color:var(--ink-soft);margin-top:16px;max-width:260px;}
+.peer-mark{position:absolute;top:22px;left:26px;font-size:20px;}
+.peer-foot{margin-top:12px;padding-top:10px;border-top:1px solid rgba(198,156,77,.3);font-size:10px;color:var(--ink-soft);display:flex;align-items:center;gap:6px;}
+.peer-dot{width:10px;height:10px;border-radius:50%;background:var(--gold);flex-shrink:0;}
+.swipe-hint{position:absolute;bottom:12px;left:0;right:0;text-align:center;font-size:10px;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.18em;opacity:.7;pointer-events:none;}
+.reveal-continue{position:absolute;bottom:22px;left:22px;right:22px;z-index:50;opacity:0;transform:translateY(16px);pointer-events:none;transition:opacity .5s ease,transform .5s ease;}
+.reveal-continue.show{opacity:1;transform:translateY(0);pointer-events:auto;}
 
-  .stack-card.peer {
-    background: var(--gold-bg);
-    border: 1px solid var(--gold-soft);
-  }
-  .stack-card.peer .stack-card-big { color: var(--gold); }
-  .stack-card.peer .peer-mark {
-    position: absolute;
-    top: 24px; left: 28px;
-    font-size: 22px; opacity: 0.9;
-  }
-  .stack-card.peer .peer-footer {
-    margin-top: 18px;
-    padding-top: 14px;
-    border-top: 1px solid rgba(198, 156, 77, 0.3);
-    font-size: 10px;
-    color: var(--ink-soft);
-    line-height: 1.4;
-    display: flex; align-items: center; gap: 6px;
-  }
-  .stack-card.peer .peer-footer-icon {
-    width: 14px; height: 14px;
-    background: var(--gold);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    color: var(--card-bg);
-    font-size: 8px;
-    flex-shrink: 0;
-  }
+/* ═══════════════════════════════
+   LITE DASHBOARD
+═══════════════════════════════ */
+.lite-body{flex:1;overflow-y:auto;padding-bottom:32px;}
+.lite-body::-webkit-scrollbar{display:none;}
 
-  /* Credit cards in stack viewer */
-  .stack-card.credit {
-    background: var(--ink);
-    color: var(--card-bg);
-  }
-  .stack-card.credit .stack-card-headline { color: var(--card-bg); }
-  .stack-card.credit .stack-card-big { color: var(--accent-soft); }
-  .stack-card.credit .stack-card-body { color: rgba(250, 247, 240, 0.65); }
-  .stack-card.credit::before {
-    content: ''; position: absolute;
-    top: -30px; right: -30px;
-    width: 120px; height: 120px;
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 50%;
-  }
-  .stack-card.credit::after {
-    content: ''; position: absolute;
-    top: -50px; right: -50px;
-    width: 160px; height: 160px;
-    border: 1px solid rgba(255,255,255,0.05);
-    border-radius: 50%;
-  }
+.lite-hdr{padding:14px 22px 18px;display:flex;justify-content:space-between;align-items:center;}
+.lite-title{font-family:'Fraunces',serif;font-size:22px;font-weight:400;letter-spacing:-.02em;}
+.lite-title em{font-style:italic;color:var(--accent);}
+.av{width:32px;height:32px;border-radius:50%;background:var(--accent);color:var(--card);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:13px;}
 
-  /* Locked card in stack */
-  .stack-card.locked {
-    background: var(--ink);
-    color: var(--card-bg);
-    cursor: pointer;
-  }
-  .stack-card.locked .stack-card-headline {
-    color: var(--card-bg);
-    filter: blur(6px);
-    user-select: none;
-  }
-  .stack-card.locked .stack-card-body {
-    color: rgba(250, 247, 240, 0.5);
-    filter: blur(4px);
-  }
-  .stack-card.locked .locked-overlay {
-    position: absolute;
-    inset: 0;
-    display: flex; align-items: center; justify-content: center;
-    flex-direction: column;
-    padding: 30px;
-    background: linear-gradient(180deg, rgba(26,24,20,0.3) 0%, rgba(26,24,20,0.85) 100%);
-    border-radius: 22px;
-    text-align: center;
-  }
-  .stack-card.locked .locked-lock {
-    width: 56px; height: 56px;
-    border-radius: 50%;
-    background: var(--accent);
-    color: var(--card-bg);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 24px;
-    margin-bottom: 16px;
-  }
-  .stack-card.locked .locked-title {
-    font-family: 'Fraunces', serif;
-    font-size: 22px;
-    line-height: 1.15;
-    margin-bottom: 8px;
-    color: var(--card-bg);
-  }
-  .stack-card.locked .locked-title em {
-    font-style: italic;
-    color: var(--accent-soft);
-  }
-  .stack-card.locked .locked-sub {
-    font-size: 12px;
-    color: rgba(250, 247, 240, 0.6);
-    line-height: 1.5;
-    margin-bottom: 16px;
-    max-width: 220px;
-  }
-  .stack-card.locked .locked-cta {
-    background: var(--accent);
-    color: var(--card-bg);
-    border-radius: 10px;
-    padding: 10px 18px;
-    font-size: 12px;
-    font-weight: 600;
-    display: inline-flex;
-    align-items: center; gap: 6px;
-  }
+/* Score card — 30% height */
+.score-card{margin:0 22px 14px;background:var(--ink);color:var(--card);border-radius:20px;padding:18px 20px;position:relative;overflow:hidden;cursor:pointer;transition:transform .15s;}
+.score-card:active{transform:scale(.98);}
+.score-card::before{content:'';position:absolute;top:-40px;right:-40px;width:140px;height:140px;border:1px solid rgba(232,168,144,.12);border-radius:50%;}
+.score-card::after{content:'';position:absolute;top:-20px;right:-20px;width:100px;height:100px;border:1px solid rgba(232,168,144,.08);border-radius:50%;}
+.sc-top{display:flex;justify-content:space-between;align-items:flex-start;position:relative;z-index:1;}
+.sc-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.2em;color:var(--accent-soft);font-weight:600;margin-bottom:4px;}
+.sc-num{font-family:'Fraunces',serif;font-size:48px;font-weight:500;line-height:1;letter-spacing:-.02em;display:flex;align-items:baseline;gap:8px;}
+.sc-band{font-family:'Fraunces',serif;font-style:italic;font-size:14px;color:var(--accent-soft);font-weight:400;}
+.sc-delta{font-size:12px;color:#a8d5b8;margin-top:2px;}
+.sc-explain{font-size:11px;color:rgba(250,247,240,.5);line-height:1.5;margin-top:10px;position:relative;z-index:1;}
+.sc-cta{margin-top:12px;font-size:10px;color:rgba(250,247,240,.35);text-transform:uppercase;letter-spacing:.18em;display:flex;align-items:center;gap:4px;position:relative;z-index:1;}
 
-  .stack-card-headline {
-    font-family: 'Fraunces', serif;
-    font-size: 30px;
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-    font-weight: 400;
-    font-variation-settings: "SOFT" 30;
-    margin-top: 12px;
-  }
-  .stack-card-big {
-    display: block;
-    font-size: 64px;
-    line-height: 0.9;
-    color: var(--accent);
-    font-style: italic;
-    font-weight: 500;
-    margin: 8px 0;
-    font-variation-settings: "SOFT" 100, "WONK" 1;
-  }
-  .stack-card-body {
-    font-size: 13px;
-    line-height: 1.5;
-    color: var(--ink-soft);
-    margin-top: 18px;
-    max-width: 260px;
-  }
-  .stack-card-decor {
-    position: absolute;
-    top: 24px; right: 24px;
-    width: 50px; height: 50px;
-    opacity: 0.35;
-  }
-  .swipe-hint {
-    position: absolute;
-    bottom: 14px; left: 0; right: 0;
-    text-align: center;
-    font-size: 10px; color: var(--ink-mute);
-    text-transform: uppercase; letter-spacing: 0.18em;
-    opacity: 0.7;
-    pointer-events: none;
-  }
-  .stack-card.credit .swipe-hint { color: rgba(250,247,240,0.4); }
+/* UPCOMING CARD */
+.upcoming{margin:0 22px 14px;background:var(--card);border:1px solid var(--div);border-radius:16px;padding:14px 16px;}
+.up-title{font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:var(--ink-mute);font-weight:600;margin-bottom:10px;}
+.up-row{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--div);}
+.up-row:last-child{border-bottom:none;}
+.up-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.up-info{flex:1;}
+.up-name{font-size:12px;font-weight:500;}
+.up-date{font-size:10px;color:var(--ink-soft);margin-top:1px;}
+.up-amt{font-family:'Fraunces',serif;font-style:italic;font-size:14px;}
+.up-badge{font-size:9px;font-weight:600;padding:2px 6px;border-radius:5px;}
+.up-badge.urgent{background:var(--accent-bg);color:var(--accent);}
+.up-badge.ok{background:var(--green-bg);color:var(--green);}
 
-  .stack-continue-wrap {
-    position: absolute;
-    bottom: 24px; left: 24px; right: 24px;
-    z-index: 50;
-    opacity: 0;
-    transform: translateY(20px);
-    pointer-events: none;
-    transition: opacity 0.5s ease, transform 0.5s ease;
-  }
-  .stack-continue-wrap.show {
-    opacity: 1; transform: translateY(0); pointer-events: auto;
-  }
+/* SUMMARY INSIGHT CARDS */
+.sum-card{margin:0 22px 10px;border-radius:16px;padding:16px 18px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;}
+.sum-card:hover{transform:translateY(-2px);}
+.sum-card:active{transform:scale(.98);}
+.sum-card.money{background:var(--card);border:1px solid var(--div);}
+.sum-card.credit{background:var(--ink);color:var(--card);}
+.sum-card::after{content:'→';position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--ink-mute);}
+.sum-card.credit::after{color:rgba(255,255,255,.25);}
+.sc2-tag{font-size:9px;text-transform:uppercase;letter-spacing:.2em;font-weight:600;margin-bottom:8px;}
+.sum-card.money .sc2-tag{color:var(--ink-soft);}
+.sum-card.credit .sc2-tag{color:var(--accent-soft);}
+.sc2-hook{font-family:'Fraunces',serif;font-size:17px;line-height:1.2;letter-spacing:-.01em;font-weight:400;padding-right:24px;}
+.sc2-hook .n{font-style:italic;color:var(--accent);font-weight:500;}
+.sum-card.credit .sc2-hook .n{color:var(--accent-soft);}
+.sc2-sub{font-size:10px;margin-top:6px;}
+.sum-card.money .sc2-sub{color:var(--ink-soft);}
+.sum-card.credit .sc2-sub{color:rgba(250,247,240,.4);}
 
-  /* ========== LITE DASHBOARD ========== */
-  .screen-lite { overflow-y: auto; padding-bottom: 20px; }
+.sec-lbl{padding:0 22px;font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:var(--ink-mute);font-weight:600;margin:18px 0 8px;}
 
-  .lite-header {
-    padding: 14px 22px 18px; display: flex;
-    justify-content: space-between; align-items: center;
-  }
-  .lite-title {
-    font-family: 'Fraunces', serif; font-size: 24px;
-    letter-spacing: -0.02em; font-weight: 400;
-  }
-  .lite-title em { font-style: italic; color: var(--accent); }
-  .lite-avatar {
-    width: 34px; height: 34px; border-radius: 50%;
-    background: var(--accent); color: var(--card-bg);
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Fraunces', serif; font-size: 14px; font-weight: 500;
-  }
+/* ═══════════════════════════════
+   MONEY DASHBOARD
+═══════════════════════════════ */
+.sec-hdr{padding:12px 22px 0;display:flex;align-items:center;gap:10px;}
+.sec-ttl{font-family:'Fraunces',serif;font-size:20px;font-weight:400;letter-spacing:-.02em;flex:1;text-align:center;}
+.sec-ttl em{font-style:italic;color:var(--accent);}
 
-  .locked-score {
-    margin: 0 22px 22px; background: var(--ink); color: var(--card-bg);
-    border-radius: 20px; padding: 20px; position: relative; overflow: hidden;
-    cursor: pointer; transition: transform 0.2s;
-  }
-  .locked-score:hover { transform: translateY(-2px); }
-  .locked-score:active { transform: scale(0.98); }
-  .locked-score::before {
-    content: ''; position: absolute; top: -40px; right: -40px;
-    width: 150px; height: 150px;
-    border: 1px solid rgba(255,255,255,0.08); border-radius: 50%;
-  }
-  .locked-score::after {
-    content: ''; position: absolute; top: -20px; right: -20px;
-    width: 110px; height: 110px;
-    border: 1px solid rgba(255,255,255,0.06); border-radius: 50%;
-  }
-  .ls-label {
-    font-size: 9px; text-transform: uppercase; letter-spacing: 0.22em;
-    color: var(--accent-soft); font-weight: 600; margin-bottom: 8px;
-    position: relative; z-index: 1;
-  }
-  .ls-row {
-    display: flex; align-items: baseline; gap: 14px;
-    position: relative; z-index: 1;
-  }
-  .ls-score {
-    font-family: 'Fraunces', serif; font-size: 52px; font-style: italic;
-    line-height: 1; color: rgba(250,247,240,0.2); letter-spacing: -0.02em;
-  }
-  .ls-lock-icon {
-    width: 26px; height: 26px; border-radius: 50%;
-    background: var(--accent); color: var(--card-bg);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 13px;
-  }
-  .ls-msg {
-    font-size: 12px; color: rgba(250,247,240,0.6); line-height: 1.5;
-    margin-top: 12px; position: relative; z-index: 1;
-  }
-  .ls-cta {
-    margin-top: 14px; background: var(--accent);
-    border: none; color: var(--card-bg);
-    border-radius: 10px; padding: 10px 14px; font-size: 11px;
-    font-weight: 600; display: inline-flex; align-items: center; gap: 6px;
-    position: relative; z-index: 1;
-  }
+/* Money hero */
+.money-hero{margin:18px 22px 0;text-align:center;padding-bottom:16px;border-bottom:1px solid var(--div);}
+.mh-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:var(--ink-soft);font-weight:600;margin-bottom:6px;}
+.mh-num{font-family:'Fraunces',serif;font-size:48px;font-weight:400;letter-spacing:-.03em;line-height:1;color:var(--green);}
+.mh-sub{font-size:11px;color:var(--ink-soft);margin-top:4px;}
+.mh-ctx{display:flex;justify-content:center;gap:28px;margin-top:14px;}
+.mh-c .l{font-size:9px;text-transform:uppercase;letter-spacing:.16em;color:var(--ink-mute);font-weight:600;margin-bottom:2px;}
+.mh-c .v{font-family:'Fraunces',serif;font-style:italic;font-size:17px;}
 
-  /* Pile of cards on dashboard */
-  .pile-section {
-    margin: 0 22px 18px;
-  }
+/* Spend vs Forecast graph */
+.graph-card{margin:14px 22px 0;background:var(--card);border:1px solid var(--div);border-radius:16px;padding:16px 18px;}
+.graph-title{font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:var(--ink-soft);font-weight:600;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;}
+.graph-legend{display:flex;gap:12px;}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;}
+.legend-dot{width:8px;height:8px;border-radius:50%;}
+.graph-area{height:90px;position:relative;margin:0 4px;}
+.graph-line{position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--div);}
+.graph-svg{width:100%;height:100%;}
+.graph-dots{display:flex;justify-content:space-between;align-items:flex-end;height:100%;position:absolute;inset:0;}
+/* month labels */
+.graph-months{display:flex;justify-content:space-between;margin-top:6px;padding:0 2px;}
+.gm{font-size:9px;color:var(--ink-mute);}
 
-  .pile-section-label {
-    font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em;
-    color: var(--ink-soft); font-weight: 600;
-    margin-bottom: 10px;
-    display: flex; justify-content: space-between; align-items: center;
-  }
+/* Insight cards on money/credit dashboard */
+.ins-card{margin:10px 22px 0;background:var(--card);border:1px solid var(--div);border-radius:16px;padding:16px 18px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:14px;}
+.ins-card:hover{transform:translateY(-1px);border-color:rgba(26,24,20,.15);}
+.ins-card:active{transform:scale(.98);}
+.ins-card.peer{background:var(--gold-bg);border-color:var(--gold-soft);}
+.ins-card.dark{background:var(--ink);border-color:transparent;}
+.ins-ic{width:40px;height:40px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px;}
+.ins-ic.red{background:var(--accent-bg);}
+.ins-ic.dim{background:rgba(26,24,20,.06);}
+.ins-ic.gold{background:rgba(198,156,77,.18);}
+.ins-ic.inv{background:rgba(255,255,255,.1);}
+.ins-body{flex:1;}
+.ins-hook{font-family:'Fraunces',serif;font-size:15px;line-height:1.25;letter-spacing:-.01em;font-weight:400;}
+.ins-hook .n{font-style:italic;color:var(--accent);font-weight:500;}
+.ins-card.peer .ins-hook .n{color:var(--gold);}
+.ins-card.dark .ins-hook{color:var(--card);}
+.ins-card.dark .ins-hook .n{color:var(--accent-soft);}
+.ins-sub{font-size:10px;color:var(--ink-soft);margin-top:3px;}
+.ins-card.dark .ins-sub{color:rgba(250,247,240,.4);}
+.ins-arr{font-size:12px;color:var(--ink-mute);flex-shrink:0;}
+.ins-card.dark .ins-arr{color:rgba(255,255,255,.25);}
 
-  .pile-section-count {
-    font-family: 'Fraunces', serif;
-    font-style: italic;
-    color: var(--accent);
-    font-size: 11px;
-    text-transform: none;
-    letter-spacing: 0;
-    font-weight: 400;
-  }
+/* ═══════════════════════════════
+   INSIGHT DETAIL PAGE
+═══════════════════════════════ */
+.det-hdr{padding:14px 22px 0;display:flex;align-items:center;gap:10px;}
+.det-ctx{font-size:11px;color:var(--ink-soft);}
+.det-hero{padding:24px 24px 20px;border-bottom:1px solid var(--div);}
+.det-hook{font-family:'Fraunces',serif;font-size:26px;line-height:1.05;letter-spacing:-.025em;font-weight:400;font-variation-settings:"SOFT" 30;}
+.det-hook .big{display:block;font-size:50px;line-height:.88;color:var(--accent);font-style:italic;font-weight:500;margin:5px 0 7px;font-variation-settings:"SOFT" 100,"WONK" 1;}
+.det-body{padding:18px 24px 0;}
+.det-fact{font-size:13px;line-height:1.65;color:var(--ink-soft);margin-bottom:16px;}
+.det-fact strong{color:var(--ink);}
 
-  .pile-stack {
-    position: relative;
-    height: 140px;
-    cursor: pointer;
-    transition: transform 0.25s ease;
-  }
+.data-blk{background:rgba(26,24,20,.03);border-radius:12px;padding:14px 16px;margin-bottom:14px;border:1px solid var(--div);}
+.d-row{display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-bottom:1px solid var(--div);font-size:12px;}
+.d-row:last-child{border-bottom:none;}
+.d-row .dk{color:var(--ink-soft);}
+.d-row .dv{font-family:'Fraunces',serif;font-style:italic;font-size:14px;}
+.d-row .dv.hi{color:var(--accent);}
+.d-row .dv.ok{color:var(--green);}
+.d-row .dv.gd{color:var(--gold);}
 
-  .pile-stack:hover { transform: translateY(-3px); }
-  .pile-stack:active { transform: scale(0.98); }
+.peer-blk{background:var(--gold-bg);border:1px solid var(--gold-soft);border-radius:12px;padding:14px 16px;margin-bottom:16px;}
+.pb-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.2em;color:var(--gold);font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.pb-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);}
+.pb-txt{font-family:'Fraunces',serif;font-size:15px;line-height:1.35;}
+.pb-txt .n{font-style:italic;color:var(--gold);font-weight:500;}
+.pb-foot{font-size:10px;color:var(--ink-soft);margin-top:8px;padding-top:8px;border-top:1px solid rgba(198,156,77,.25);}
 
-  .pile-stack-card {
-    position: absolute;
-    left: 0; right: 0;
-    background: var(--card-bg);
-    border: 1px solid var(--card-divide);
-    border-radius: 16px;
-    padding: 18px 20px;
-    box-shadow: 0 4px 12px rgba(26,24,20,0.06);
-    height: 120px;
-    overflow: hidden;
-    display: flex; flex-direction: column;
-    justify-content: space-between;
-  }
+.act-area{padding:4px 24px 28px;}
+.act-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:var(--ink-soft);font-weight:600;margin-bottom:10px;}
+.act-primary{background:var(--ink);color:var(--card);border:none;border-radius:13px;padding:14px 18px;width:100%;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;transition:transform .15s;}
+.act-primary:active{transform:scale(.98);}
+.act-gain{font-family:'Fraunces',serif;font-style:italic;font-size:13px;color:var(--accent-soft);}
+.act-row{display:flex;gap:8px;}
+.act-sec{flex:1;background:transparent;border:1px solid var(--div);color:var(--ink-soft);border-radius:10px;padding:10px;font-size:11px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .2s;}
+.act-sec:hover{border-color:var(--ink);color:var(--ink);}
 
-  .pile-stack.money .pile-stack-card:nth-child(1) {
-    top: 20px; z-index: 1;
-    transform: rotate(2deg);
-  }
-  .pile-stack.money .pile-stack-card:nth-child(2) {
-    top: 10px; z-index: 2;
-    transform: rotate(-1.5deg);
-  }
-  .pile-stack.money .pile-stack-card:nth-child(3) {
-    top: 0; z-index: 3;
-    transform: rotate(0deg);
-  }
+/* Feature section within detail */
+.feat-band{margin:4px 24px 0;background:var(--accent-bg);border-radius:14px;padding:16px 18px;border:1px solid var(--accent-soft);}
+.feat-band-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.2em;color:var(--accent);font-weight:600;margin-bottom:6px;}
+.feat-band-title{font-family:'Fraunces',serif;font-size:18px;line-height:1.2;margin-bottom:12px;}
+.feat-band-title em{font-style:italic;color:var(--accent);}
 
-  .pile-stack.credit .pile-stack-card:nth-child(1) {
-    top: 20px; z-index: 1;
-    transform: rotate(-2deg);
-    background: var(--ink);
-  }
-  .pile-stack.credit .pile-stack-card:nth-child(2) {
-    top: 10px; z-index: 2;
-    transform: rotate(1.5deg);
-    background: var(--ink);
-  }
-  .pile-stack.credit .pile-stack-card:nth-child(3) {
-    top: 0; z-index: 3;
-    transform: rotate(0deg);
-    background: var(--ink);
-    color: var(--card-bg);
-  }
+/* CVP / UNLOCK */
+.cvp-scr{background:var(--ink);color:var(--card);flex:1;display:flex;flex-direction:column;padding:24px 22px;position:relative;overflow:hidden;}
+.cvp-video{height:170px;background:linear-gradient(135deg,#2a2620 0%,#3a3530 100%);border-radius:18px;margin:16px 0 20px;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.cvp-video::before{content:'';position:absolute;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,var(--accent) 0%,transparent 60%);opacity:.35;animation:pulseBg 4s ease-in-out infinite;}
+@keyframes pulseBg{0%,100%{transform:scale(1);opacity:.35;}50%{transform:scale(1.2);opacity:.55;}}
+.cvp-play{width:52px;height:52px;border-radius:50%;background:var(--card);color:var(--ink);display:flex;align-items:center;justify-content:center;z-index:2;font-size:16px;cursor:pointer;}
+.cvp-tag{font-size:9px;text-transform:uppercase;letter-spacing:.22em;color:var(--accent-soft);font-weight:600;margin-bottom:8px;}
+.cvp-title{font-family:'Fraunces',serif;font-size:26px;line-height:1.05;letter-spacing:-.02em;font-weight:400;margin-bottom:16px;}
+.cvp-title em{font-style:italic;color:var(--accent-soft);}
+.cvp-hook{border-top:1px solid rgba(255,255,255,.1);padding:10px 0;font-size:13px;line-height:1.4;}
+.cvp-hook .hn{font-family:'Fraunces',serif;font-style:italic;color:var(--accent-soft);font-size:11px;display:block;margin-bottom:2px;}
+.cvp-hooks{margin-bottom:16px;}
 
-  .pile-preview {
-    font-family: 'Fraunces', serif;
-    font-size: 15px;
-    line-height: 1.3;
-    letter-spacing: -0.01em;
-  }
-  .pile-preview .num {
-    font-style: italic; color: var(--accent); font-weight: 500;
-  }
+/* UPI */
+.upi-box{border:1px solid var(--div);border-radius:14px;padding:16px;margin-bottom:16px;background:var(--card);}
+.upi-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;font-size:12px;}
+.upi-row+.upi-row{border-top:1px solid var(--div);}
+.upi-lbl{color:var(--ink-soft);}
+.upi-val{color:var(--ink);font-weight:500;}
+.upi-amt{font-family:'Fraunces',serif;font-style:italic;font-size:17px;color:var(--accent);}
+.upi-apps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px;}
+.upi-app{background:var(--card);border:1px solid var(--div);border-radius:12px;padding:10px 4px;font-size:9px;text-align:center;color:var(--ink-soft);cursor:pointer;transition:all .2s;}
+.upi-app.on{border-color:var(--accent);background:var(--accent-bg);color:var(--ink);}
+.upi-app .ic{width:26px;height:26px;border-radius:7px;background:var(--ink);margin:0 auto 4px;display:flex;align-items:center;justify-content:center;color:var(--card);font-family:'Fraunces',serif;font-style:italic;font-size:13px;}
 
-  .pile-stack.credit .pile-preview { color: var(--card-bg); }
-  .pile-stack.credit .pile-preview .num { color: var(--accent-soft); }
+/* PROCESS */
+.proc-scr{background:var(--ink);color:var(--card);flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 28px;text-align:center;position:relative;overflow:hidden;}
+.proc-checks{margin-bottom:28px;position:relative;z-index:2;display:flex;flex-direction:column;gap:12px;text-align:left;max-width:240px;width:100%;}
+.pc{display:flex;align-items:center;gap:12px;font-size:13px;opacity:.3;transition:opacity .4s;}
+.pc.active{opacity:1;}
+.pc.done{opacity:.7;}
+.pc .dot{width:18px;height:18px;border-radius:50%;border:1.5px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .4s;}
+.pc.active .dot{border-color:var(--accent);background:var(--accent);}
+.pc.done .dot{border-color:var(--accent-soft);background:var(--accent-soft);}
+.pc.done .dot::after{content:'✓';color:var(--ink);font-size:11px;font-weight:700;}
+.pc.active .dot::after{content:'';width:8px;height:8px;border:1.5px solid var(--card);border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
 
-  .pile-stack-card-meta {
-    font-size: 9px; text-transform: uppercase; letter-spacing: 0.18em;
-    color: var(--ink-soft); font-weight: 600;
-    display: flex; justify-content: space-between; align-items: center;
-  }
-  .pile-stack.credit .pile-stack-card-meta { color: rgba(250,247,240,0.5); }
+/* SCORE DETAIL PAGE */
+.score-detail-hero{padding:28px 24px 22px;background:var(--ink);color:var(--card);position:relative;overflow:hidden;}
+.score-detail-hero::before{content:'';position:absolute;top:-50px;right:-50px;width:160px;height:160px;border:1px solid rgba(232,168,144,.12);border-radius:50%;}
+.sdh-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.2em;color:var(--accent-soft);font-weight:600;margin-bottom:6px;position:relative;z-index:1;}
+.sdh-num{font-family:'Fraunces',serif;font-size:64px;font-weight:500;line-height:1;letter-spacing:-.02em;position:relative;z-index:1;}
+.sdh-band{font-family:'Fraunces',serif;font-style:italic;font-size:16px;color:var(--accent-soft);position:relative;z-index:1;margin-top:4px;}
+.sdh-delta{font-size:12px;color:#a8d5b8;margin-top:8px;position:relative;z-index:1;}
+.sdh-bar-wrap{margin-top:16px;position:relative;z-index:1;}
+.sdh-bar-track{height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden;}
+.sdh-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),#a8d5b8);border-radius:3px;width:68%;}
+.sdh-bar-labels{display:flex;justify-content:space-between;margin-top:4px;font-size:9px;color:rgba(250,247,240,.35);}
 
-  .pile-tap-hint {
-    font-family: 'Fraunces', serif;
-    font-style: italic;
-    color: var(--accent);
-    font-size: 12px;
-  }
-  .pile-stack.credit .pile-tap-hint { color: var(--accent-soft); }
+.factor-card{margin:10px 22px 0;background:var(--card);border:1px solid var(--div);border-radius:14px;padding:14px 16px;}
+.fc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.fc-name{font-size:13px;font-weight:500;}
+.fc-impact{font-size:10px;font-weight:600;padding:2px 6px;border-radius:5px;}
+.fc-impact.pos{background:var(--green-bg);color:var(--green);}
+.fc-impact.neg{background:var(--accent-bg);color:var(--accent);}
+.fc-impact.neu{background:rgba(26,24,20,.06);color:var(--ink-soft);}
+.fc-bar{height:4px;background:rgba(26,24,20,.07);border-radius:2px;overflow:hidden;margin-bottom:6px;}
+.fc-fill{height:100%;border-radius:2px;}
+.fc-sub{font-size:11px;color:var(--ink-soft);}
 
-  /* Card fly-in animation */
-  .pile-stack-card.flying-in {
-    animation: flyIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-  @keyframes flyIn {
-    0% { transform: translateY(-200px) rotate(8deg) scale(1.1); opacity: 0; }
-    100% { opacity: 1; }
-  }
-
-  .unlock-banner {
-    margin: 24px 22px 12px; background: var(--accent);
-    color: var(--card-bg); border-radius: 18px; padding: 18px;
-    display: flex; justify-content: space-between; align-items: center;
-    gap: 12px; cursor: pointer; transition: transform 0.2s;
-  }
-  .unlock-banner:hover { transform: translateY(-2px); }
-  .unlock-banner:active { transform: scale(0.98); }
-  .unlock-banner-text {
-    font-family: 'Fraunces', serif; font-size: 16px; line-height: 1.2;
-  }
-  .unlock-banner-text em {
-    font-style: normal; display: block; font-size: 10px;
-    color: rgba(250,247,240,0.75); margin-top: 4px;
-    font-family: 'Inter Tight', sans-serif;
-    text-transform: uppercase; letter-spacing: 0.18em;
-  }
-  .unlock-banner-arrow {
-    width: 36px; height: 36px; border-radius: 50%;
-    background: var(--card-bg); color: var(--accent);
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0; font-size: 14px;
-  }
-
-  /* CVP */
-  .screen-cvp {
-    background: var(--ink); color: var(--card-bg);
-    padding: 24px 22px; position: relative; overflow: hidden;
-  }
-  .cvp-close {
-    position: absolute; top: 60px; right: 18px;
-    width: 30px; height: 30px; background: rgba(255,255,255,0.1);
-    color: var(--card-bg); border-radius: 50%; display: flex;
-    align-items: center; justify-content: center; font-size: 14px;
-    z-index: 5; cursor: pointer; border: none;
-  }
-  .cvp-video {
-    height: 180px;
-    background: linear-gradient(135deg, #2a2620 0%, #3a3530 100%);
-    border-radius: 18px; margin-top: 16px; margin-bottom: 22px;
-    position: relative; display: flex; align-items: center;
-    justify-content: center; overflow: hidden;
-  }
-  .cvp-video::before {
-    content: ''; position: absolute; width: 220px; height: 220px;
-    border-radius: 50%;
-    background: radial-gradient(circle, var(--accent) 0%, transparent 60%);
-    opacity: 0.4; animation: pulseBg 4s ease-in-out infinite;
-  }
-  @keyframes pulseBg {
-    0%, 100% { transform: scale(1); opacity: 0.4; }
-    50% { transform: scale(1.2); opacity: 0.6; }
-  }
-  .cvp-play {
-    width: 56px; height: 56px; border-radius: 50%;
-    background: var(--card-bg); color: var(--ink);
-    display: flex; align-items: center; justify-content: center;
-    z-index: 2; box-shadow: 0 8px 24px rgba(200,68,42,0.3);
-    cursor: pointer; font-size: 16px;
-  }
-  .cvp-tag {
-    font-size: 9px; text-transform: uppercase; letter-spacing: 0.22em;
-    color: var(--accent-soft); font-weight: 600; margin-bottom: 10px;
-  }
-  .cvp-title {
-    font-family: 'Fraunces', serif; font-size: 28px; line-height: 1.05;
-    letter-spacing: -0.02em; font-weight: 400; margin-bottom: 18px;
-  }
-  .cvp-title em { font-style: italic; color: var(--accent-soft); }
-  .cvp-hooks { margin-bottom: 16px; }
-  .cvp-hook {
-    border-top: 1px solid rgba(255,255,255,0.1); padding: 12px 0;
-    font-size: 13px; line-height: 1.4;
-  }
-  .cvp-hook .hookno {
-    font-family: 'Fraunces', serif; font-style: italic;
-    color: var(--accent-soft); font-size: 11px;
-    display: block; margin-bottom: 2px;
-  }
-
-  /* UPI */
-  .unlock-header {
-    padding: 14px 22px; border-bottom: 1px solid var(--card-divide);
-    display: flex; align-items: center; gap: 12px;
-  }
-  .unlock-step {
-    font-size: 11px; color: var(--ink-soft);
-    font-family: 'Fraunces', serif; font-style: italic;
-  }
-  .unlock-body { flex: 1; padding: 28px 22px; overflow-y: auto; }
-  .unlock-step-num {
-    font-family: 'Fraunces', serif; font-style: italic;
-    color: var(--accent); font-size: 13px; margin-bottom: 8px;
-  }
-  .unlock-title {
-    font-family: 'Fraunces', serif; font-size: 28px; line-height: 1.05;
-    letter-spacing: -0.02em; margin-bottom: 10px; font-weight: 400;
-  }
-  .unlock-title em { font-style: italic; color: var(--accent); }
-  .unlock-sub {
-    font-size: 12px; color: var(--ink-soft);
-    margin-bottom: 28px; line-height: 1.5;
-  }
-  .upi-box {
-    border: 1px solid var(--card-divide); border-radius: 14px;
-    padding: 18px; margin-bottom: 18px; background: var(--card-bg);
-  }
-  .upi-row {
-    display: flex; justify-content: space-between;
-    align-items: center; padding: 8px 0; font-size: 12px;
-  }
-  .upi-row + .upi-row { border-top: 1px solid var(--card-divide); }
-  .upi-label { color: var(--ink-soft); }
-  .upi-value { color: var(--ink); font-weight: 500; }
-  .upi-amount {
-    font-family: 'Fraunces', serif; font-style: italic;
-    font-size: 18px; color: var(--accent);
-  }
-  .upi-app-select {
-    display: grid; grid-template-columns: repeat(4, 1fr);
-    gap: 8px; margin-bottom: 18px;
-  }
-  .upi-app {
-    background: var(--card-bg); border: 1px solid var(--card-divide);
-    border-radius: 12px; padding: 12px 4px; font-size: 9px;
-    text-align: center; color: var(--ink-soft); cursor: pointer;
-    transition: all 0.2s;
-  }
-  .upi-app.selected {
-    border-color: var(--accent); background: var(--accent-bg); color: var(--ink);
-  }
-  .upi-app .ic {
-    width: 28px; height: 28px; border-radius: 7px;
-    background: var(--ink); margin: 0 auto 4px;
-    display: flex; align-items: center; justify-content: center;
-    color: var(--card-bg); font-size: 14px;
-    font-family: 'Fraunces', serif; font-style: italic;
-  }
-  .unlock-footer { padding: 16px 22px 24px; border-top: 1px solid var(--card-divide); }
-
-  /* PROCESSING */
-  .screen-process {
-    background: var(--ink); color: var(--card-bg);
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    padding: 40px 28px; text-align: center; position: relative; overflow: hidden;
-  }
-  .process-checks {
-    margin-bottom: 32px; position: relative; z-index: 2;
-    display: flex; flex-direction: column; gap: 14px;
-    text-align: left; max-width: 240px; width: 100%;
-  }
-  .process-check {
-    display: flex; align-items: center; gap: 12px;
-    font-size: 13px; opacity: 0.3; transition: opacity 0.4s;
-  }
-  .process-check.active { opacity: 1; }
-  .process-check.done { opacity: 0.7; }
-  .process-check .dot {
-    width: 18px; height: 18px; border-radius: 50%;
-    border: 1.5px solid rgba(255,255,255,0.3);
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0; transition: all 0.4s;
-  }
-  .process-check.active .dot { border-color: var(--accent); background: var(--accent); }
-  .process-check.done .dot { border-color: var(--accent-soft); background: var(--accent-soft); }
-  .process-check.done .dot::after { content: '✓'; color: var(--ink); font-size: 11px; font-weight: 700; }
-  .process-check.active .dot::after {
-    content: ''; width: 8px; height: 8px;
-    border: 1.5px solid var(--card-bg); border-top-color: transparent;
-    border-radius: 50%; animation: spin 0.8s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* PFM DASHBOARD */
-  .screen-pfm { overflow-y: auto; padding-bottom: 16px; }
-  .upscore-card {
-    margin: 0 22px 14px;
-    background: linear-gradient(135deg, var(--ink) 0%, #2a251e 100%);
-    color: var(--card-bg); border-radius: 20px; padding: 20px;
-    position: relative; overflow: hidden; cursor: pointer;
-    transition: transform 0.2s;
-  }
-  .upscore-card:active { transform: scale(0.98); }
-  .upscore-card::before {
-    content: ''; position: absolute; top: -50px; right: -50px;
-    width: 160px; height: 160px;
-    border: 1px solid rgba(232,168,144,0.15); border-radius: 50%;
-  }
-  .upscore-card::after {
-    content: ''; position: absolute; top: -30px; right: -30px;
-    width: 120px; height: 120px;
-    border: 1px solid rgba(232,168,144,0.1); border-radius: 50%;
-  }
-  .upscore-label {
-    font-size: 9px; text-transform: uppercase; letter-spacing: 0.22em;
-    color: var(--accent-soft); font-weight: 600; margin-bottom: 6px;
-    position: relative; z-index: 1;
-  }
-  .upscore-row {
-    display: flex; align-items: baseline; gap: 10px;
-    position: relative; z-index: 1;
-  }
-  .upscore-num {
-    font-family: 'Fraunces', serif; font-size: 56px; font-weight: 500;
-    line-height: 1; letter-spacing: -0.02em; color: var(--card-bg);
-    font-variation-settings: "SOFT" 100;
-  }
-  .upscore-band {
-    font-family: 'Fraunces', serif; font-style: italic;
-    font-size: 14px; color: var(--accent-soft);
-  }
-  .upscore-delta {
-    margin-top: 10px; font-size: 11px; color: var(--accent-soft);
-    display: flex; align-items: center; gap: 6px; position: relative; z-index: 1;
-  }
-  .upscore-cta {
-    margin-top: 12px; font-size: 10px; color: rgba(250,247,240,0.5);
-    text-transform: uppercase; letter-spacing: 0.18em;
-    display: flex; align-items: center; gap: 4px;
-    position: relative; z-index: 1;
-  }
-  .snapshots {
-    margin: 0 22px 14px; display: grid;
-    grid-template-columns: 1fr 1fr; gap: 10px;
-  }
-  .snapshot {
-    background: var(--card-bg); border: 1px solid var(--card-divide);
-    border-radius: 14px; padding: 14px; cursor: pointer;
-    transition: all 0.2s;
-  }
-  .snapshot:hover { transform: translateY(-2px); border-color: var(--ink); }
-  .snapshot:active { transform: scale(0.98); }
-  .snapshot-label {
-    font-size: 9px; text-transform: uppercase; letter-spacing: 0.18em;
-    color: var(--ink-soft); font-weight: 600; margin-bottom: 6px;
-  }
-  .snapshot-value {
-    font-family: 'Fraunces', serif; font-size: 22px;
-    font-weight: 400; letter-spacing: -0.02em;
-  }
-  .snapshot-sub { font-size: 10px; color: var(--ink-soft); margin-top: 4px; }
-  .snapshot.credit .snapshot-value { color: var(--accent); }
-  .emi-alert {
-    margin: 0 22px 14px; background: var(--accent-bg);
-    border-left: 3px solid var(--accent); border-radius: 10px;
-    padding: 12px 14px; display: flex; align-items: center; gap: 10px;
-  }
-  .emi-alert-icon {
-    width: 28px; height: 28px; border-radius: 50%;
-    background: var(--accent); color: var(--card-bg);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 13px; flex-shrink: 0;
-  }
-  .emi-alert-text { font-size: 12px; line-height: 1.3; }
-  .emi-alert-text strong { color: var(--ink); }
-  .emi-alert-text em {
-    color: var(--accent); font-style: italic;
-    font-family: 'Fraunces', serif; font-size: 14px;
-  }
-  .daily-update {
-    margin: 0 22px 10px; background: var(--card-bg);
-    border: 1px solid var(--card-divide); border-radius: 16px;
-    padding: 14px 16px;
-  }
-  .daily-update-header {
-    display: flex; justify-content: space-between;
-    align-items: center; margin-bottom: 10px;
-  }
-  .daily-update-title {
-    font-family: 'Fraunces', serif; font-style: italic;
-    font-size: 14px; color: var(--ink);
-  }
-  .daily-update-time { font-size: 10px; color: var(--ink-soft); }
-  .daily-update-row {
-    display: flex; justify-content: space-between;
-    padding: 4px 0; font-size: 11px;
-  }
-  .daily-update-row .lbl { color: var(--ink-soft); }
-  .daily-update-row .val { color: var(--ink); font-weight: 500; }
-  .daily-update-row .val.pos { color: var(--positive); }
-  .daily-update-row .val.neg { color: var(--negative); }
-
-  .section-title {
-    padding: 0 22px; font-size: 10px; text-transform: uppercase;
-    letter-spacing: 0.2em; color: var(--ink-soft); font-weight: 600;
-    margin: 18px 0 10px;
-  }
-
-  @keyframes hintPulse {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(200,68,42,0); }
-    50% { box-shadow: 0 0 0 8px rgba(200,68,42,0.15); }
-  }
-  .pulse-hint { animation: hintPulse 2s ease-in-out infinite; }
-
-  @media (max-width: 900px) {
-    body { flex-direction: column; gap: 30px; padding: 30px 16px; }
-    .controls { width: 100%; max-width: 360px; }
-  }
+@media(max-width:900px){
+  body{flex-direction:column;align-items:center;padding:20px 16px;gap:20px;}
+  .side{width:100%;max-width:360px;position:static;}
+}
 </style>
 </head>
 <body>
 
-  <div class="controls">
-    <div class="control-tag">Step</div>
-    <div class="control-step" id="stepNo">01 of 16</div>
-    <div class="control-name" id="stepName">Discovery</div>
-
-    <div class="progress-rail" id="progressRail"></div>
-
-    <div class="nav-buttons">
-      <button class="nav-mini" onclick="goPrev()">← Back</button>
-      <button class="nav-mini" onclick="goNext()">Skip →</button>
-    </div>
-    <button class="nav-mini" onclick="restart()" style="margin-top: 4px;">Restart</button>
+<!-- SIDEBAR -->
+<div class="side">
+  <div class="s-tag">Screen</div>
+  <div class="s-step" id="ss">01</div>
+  <div class="s-name" id="sn">Home</div>
+  <div class="s-hint" id="sh">—</div>
+  <div class="rail" id="rl"></div>
+  <div class="nav-row">
+    <button class="nb" onclick="prev()">← Back</button>
+    <button class="nb" onclick="next()">Next →</button>
+    <button class="nb" onclick="goTo(0)">↺</button>
   </div>
+</div>
 
-  <div class="phone">
-    <div class="phone-screen">
-      <div class="dynamic-island"></div>
+<div class="phone"><div class="ps"><div class="di"></div>
 
-      <!-- SCREEN 0: HOME -->
-      <div class="screen active" data-screen="0">
-        <div class="status-bar">
-          <span>9:41</span>
-          <div class="icons">
-            <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="0.5"/><rect x="4" y="4" width="3" height="6" rx="0.5"/><rect x="8" y="2" width="3" height="8" rx="0.5"/><rect x="12" y="0" width="3" height="10" rx="0.5"/></svg>
-            <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x="0.5" y="0.5" width="20" height="10" rx="2" stroke="currentColor" opacity="0.4"/><rect x="22" y="3.5" width="1.5" height="4" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg>
-          </div>
-        </div>
-        <div class="screen-home" style="flex:1;">
-          <div class="home-blur-content">
-            <div class="row">
-              <div>
-                <div class="blob" style="width: 90px; height: 14px;"></div>
-                <div class="blob" style="width: 70px; height: 20px; margin-top: 6px;"></div>
-              </div>
-              <div class="blob" style="width: 38px; height: 38px; border-radius: 50%;"></div>
-            </div>
-            <div class="blob" style="height: 100px; margin-bottom: 18px;"></div>
-            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 18px;">
-              <div class="blob" style="height: 54px;"></div>
-              <div class="blob" style="height: 54px;"></div>
-              <div class="blob" style="height: 54px;"></div>
-              <div class="blob" style="height: 54px;"></div>
-            </div>
-            <div class="blob" style="height: 60px; margin-bottom: 10px;"></div>
-            <div class="blob" style="height: 60px;"></div>
-          </div>
-          <div class="home-overlay"></div>
-          <div class="bottomsheet">
-            <div class="bottomsheet-handle"></div>
-            <div class="bottomsheet-tag">New for you</div>
-            <h3 class="bottomsheet-title">Learn more about your money in <em>60 seconds</em> than you have in 6 months.</h3>
-            <button class="btn-cta pulse-hint" onclick="goNext()">Show me →</button>
-          </div>
-        </div>
-      </div>
+<!-- ════════════ S0: HOME (BLURRED + BOTTOMSHEET) ════════════ -->
+<div class="scr on" data-s="0">
+<div class="sb"><span>9:41</span><div class="ic"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
+<div style="flex:1;background:linear-gradient(180deg,#f5f0e6 0%,#ebe4d4 100%);position:relative;">
+  <div style="filter:blur(8px);opacity:.5;padding:12px 22px;pointer-events:none;">
+    <div style="display:flex;justify-content:space-between;margin-bottom:20px;"><div><div style="width:80px;height:13px;background:rgba(0,0,0,.08);border-radius:8px;margin-bottom:8px;"></div><div style="width:60px;height:18px;background:rgba(0,0,0,.08);border-radius:8px;"></div></div><div style="width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,.08);"></div></div>
+    <div style="height:90px;background:rgba(0,0,0,.08);border-radius:16px;margin-bottom:16px;"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;"><div style="height:50px;background:rgba(0,0,0,.07);border-radius:12px;"></div><div style="height:50px;background:rgba(0,0,0,.07);border-radius:12px;"></div></div>
+    <div style="height:56px;background:rgba(0,0,0,.07);border-radius:12px;margin-bottom:10px;"></div>
+    <div style="height:56px;background:rgba(0,0,0,.07);border-radius:12px;"></div>
+  </div>
+  <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(245,240,230,.2) 0%,rgba(26,24,20,.65) 100%);z-index:1;"></div>
+  <div style="position:absolute;bottom:0;left:0;right:0;background:var(--ink);color:var(--card);border-radius:28px 28px 0 0;padding:24px 24px 28px;z-index:10;animation:slideUp .7s .3s cubic-bezier(.22,1,.36,1) both;">
+    <div style="width:36px;height:4px;background:rgba(255,255,255,.2);border-radius:2px;margin:0 auto 18px;"></div>
+    <div style="font-size:9px;text-transform:uppercase;letter-spacing:.22em;color:var(--accent-soft);font-weight:600;margin-bottom:10px;">New for you</div>
+    <h3 style="font-family:'Fraunces',serif;font-size:24px;line-height:1.1;letter-spacing:-.02em;margin-bottom:18px;font-weight:400;">Learn more about your money in <em style="font-style:italic;color:var(--accent-soft);">60 seconds</em> than you have in 6 months.</h3>
+    <button class="btn-light" onclick="goTo(1)">Show me →</button>
+  </div>
+</div>
+</div>
+@keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
 
-      <!-- SCREEN 1: PROFILE -->
-      <div class="screen" data-screen="1">
-        <div class="status-bar">
-          <span>9:41</span>
-          <div class="icons">
-            <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="0.5"/><rect x="4" y="4" width="3" height="6" rx="0.5"/><rect x="8" y="2" width="3" height="8" rx="0.5"/><rect x="12" y="0" width="3" height="10" rx="0.5"/></svg>
-            <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x="0.5" y="0.5" width="20" height="10" rx="2" stroke="currentColor" opacity="0.4"/><rect x="22" y="3.5" width="1.5" height="4" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg>
-          </div>
-        </div>
-        <div class="onboard-header">
-          <div class="back-btn" onclick="goPrev()">←</div>
-          <div class="onboard-header-right">Step 1 of 6</div>
-        </div>
-        <div class="onboard-progress"><div class="onboard-progress-fill" style="width: 16%;"></div></div>
-        <div class="section-block">
-          <div class="section-block-tag">First up</div>
-          <h1 class="section-block-title">About <em>you</em></h1>
-        </div>
-        <div class="onboard-body">
-          <div class="profile-form">
-            <div class="form-field">
-              <div class="form-label">Monthly take-home</div>
-              <input type="text" class="form-input large" value="₹1,55,000" />
-              <div class="form-helper">Tap to edit if this isn't right.</div>
-            </div>
-            <div class="form-field">
-              <div class="form-label">Industry</div>
-              <input type="text" class="form-input" value="Technology" />
-            </div>
-            <div class="form-field">
-              <div class="form-label">Designation</div>
-              <input type="text" class="form-input" value="Software Developer" />
-            </div>
-          </div>
-        </div>
-        <div class="onboard-footer">
-          <button class="btn-cta-dark" onclick="goNext()">Continue →</button>
-        </div>
-      </div>
+<!-- ════════════ S1: PROFILE ════════════ -->
+<div class="scr" data-s="1">
+<div class="sb"><span>9:41</span><div class="ic"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
+<div class="ob-hdr"><button class="back" onclick="goTo(0)">←</button><div class="ob-step">Step 1 of 6</div></div>
+<div class="ob-prog"><div class="ob-fill" style="width:16%;"></div></div>
+<div class="sec-block"><div class="sec-tag">First up</div><div class="sec-title">About <em>you</em></div></div>
+<div class="ob-body">
+  <div class="form-stack">
+    <div><div class="f-label">Monthly take-home</div><input class="f-input lg" type="text" value="₹1,55,000"/><div class="f-help">Pre-filled from your app. Tap to edit.</div></div>
+    <div><div class="f-label">Industry</div><input class="f-input" type="text" value="Technology"/></div>
+    <div><div class="f-label">Designation</div><input class="f-input" type="text" value="Software Developer"/></div>
+  </div>
+</div>
+<div class="ob-foot"><button class="btn-dark" onclick="goTo(2)">Continue →</button></div>
+</div>
 
-      <!-- SCREEN 2: DINING -->
-      <div class="screen" data-screen="2">
-        <div class="status-bar">
-          <span>9:41</span>
-          <div class="icons">
-            <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="0.5"/><rect x="4" y="4" width="3" height="6" rx="0.5"/><rect x="8" y="2" width="3" height="8" rx="0.5"/><rect x="12" y="0" width="3" height="10" rx="0.5"/></svg>
-            <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x="0.5" y="0.5" width="20" height="10" rx="2" stroke="currentColor" opacity="0.4"/><rect x="22" y="3.5" width="1.5" height="4" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg>
-          </div>
-        </div>
-        <div class="onboard-header">
-          <div class="back-btn" onclick="goPrev()">←</div>
-          <div class="onboard-header-right">Step 2 of 6</div>
-        </div>
-        <div class="onboard-progress"><div class="onboard-progress-fill" style="width: 33%;"></div></div>
-        <div class="section-block">
-          <div class="section-block-tag">The fun stuff</div>
-          <h1 class="section-block-title">Eating <em>out</em></h1>
-        </div>
-        <div class="onboard-body">
-          <div class="category-icon-wrap"><div class="category-icon">🍕</div></div>
-          <p class="category-sub">Roughly how much goes to Zomato, Swiggy, restaurants in a month?</p>
-          <div class="rupee-display">
-            <div class="rupee-value">₹<span class="num" id="dining-val">12,000</span></div>
-            <div class="rupee-label">Per month</div>
-          </div>
-          <div class="rupee-slider-row">
-            <input type="range" min="0" max="40000" value="12000" step="500" class="rupee-slider" oninput="updateRupee('dining', this)">
-          </div>
-          <div class="rupee-ends"><span>₹0</span><span>₹40,000</span></div>
-          <div class="chip-row">
-            <button class="chip" onclick="pickChip('dining', 3000, this)">₹3k</button>
-            <button class="chip" onclick="pickChip('dining', 7000, this)">₹7k</button>
-            <button class="chip selected" onclick="pickChip('dining', 12000, this)">₹12k</button>
-            <button class="chip" onclick="pickChip('dining', 20000, this)">₹20k</button>
-          </div>
-        </div>
-        <div class="onboard-footer"><button class="btn-cta-dark" onclick="goNext()">Continue →</button></div>
-      </div>
+<!-- ════════════ S2: DINING ════════════ -->
+<div class="scr" data-s="2">
+<div class="sb"><span>9:41</span><div class="ic"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
+<div class="ob-hdr"><button class="back" onclick="goTo(1)">←</button><div class="ob-step">Step 2 of 6</div></div>
+<div class="ob-prog"><div class="ob-fill" style="width:33%;"></div></div>
+<div class="sec-block"><div class="sec-tag">The fun stuff</div><div class="sec-title">Eating <em>out</em></div></div>
+<div class="ob-body">
+  <div class="cat-icon-wrap"><div class="cat-icon">🍕</div></div>
+  <div class="cat-sub">Zomato, Swiggy, restaurants. Roughly how much a month?</div>
+  <div class="rupee-display"><div class="rupee-val">₹<span class="n" id="v-dining">12,000</span></div><div class="rupee-lbl">Per month</div></div>
+  <div class="slider-row"><input type="range" min="0" max="40000" value="12000" step="500" oninput="setVal('dining',this)"></div>
+  <div class="rupee-ends"><span>₹0</span><span>₹40,000</span></div>
+  <div class="chip-row">
+    <button class="chip" onclick="pickChip('dining',3000,this)">₹3k</button>
+    <button class="chip" onclick="pickChip('dining',7000,this)">₹7k</button>
+    <button class="chip on" onclick="pickChip('dining',12000,this)">₹12k</button>
+    <button class="chip" onclick="pickChip('dining',20000,this)">₹20k</button>
+  </div>
+</div>
+<div class="ob-foot"><button class="btn-dark" onclick="goTo(3)">Continue →</button></div>
+</div>
 
-      <!-- SCREEN 3: SHOPPING -->
-      <div class="screen" data-screen="3">
-        <div class="status-bar">
-          <span>9:41</span>
-          <div class="icons">
-            <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="0.5"/><rect x="4" y="4" width="3" height="6" rx="0.5"/><rect x="8" y="2" width="3" height="8" rx="0.5"/><rect x="12" y="0" width="3" height="10" rx="0.5"/></svg>
-            <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x="0.5" y="0.5" width="20" height="10" rx="2" stroke="currentColor" opacity="0.4"/><rect x="22" y="3.5" width="1.5" height="4" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg>
-          </div>
-        </div>
-        <div class="onboard-header">
-          <div class="back-btn" onclick="goPrev()">←</div>
-          <div class="onboard-header-right">Step 3 of 6</div>
-        </div>
-        <div class="onboard-progress"><div class="onboard-progress-fill" style="width: 50%;"></div></div>
-        <div class="section-block">
-          <div class="section-block-tag">The fun stuff</div>
-          <h1 class="section-block-title"><em>Shopping</em></h1>
-        </div>
-        <div class="onboard-body">
-          <div class="category-icon-wrap"><div class="category-icon">🛍️</div></div>
-          <p class="category-sub">Clothes, gadgets, beauty, the Amazon habit. Monthly average.</p>
-          <div class="rupee-display">
-            <div class="rupee-value">₹<span class="num" id="shopping-val">8,000</span></div>
-            <div class="rupee-label">Per month</div>
-          </div>
-          <div class="rupee-slider-row">
-            <input type="range" min="0" max="40000" value="8000" step="500" class="rupee-slider" oninput="updateRupee('shopping', this)">
-          </div>
-          <div class="rupee-ends"><span>₹0</span><span>₹40,000</span></div>
-          <div class="chip-row">
-            <button class="chip" onclick="pickChip('shopping', 2000, this)">₹2k</button>
-            <button class="chip" onclick="pickChip('shopping', 5000, this)">₹5k</button>
-            <button class="chip selected" onclick="pickChip('shopping', 8000, this)">₹8k</button>
-            <button class="chip" onclick="pickChip('shopping', 15000, this)">₹15k</button>
-          </div>
-        </div>
-        <div class="onboard-footer"><button class="btn-cta-dark" onclick="goNext()">Continue →</button></div>
-      </div>
+<!-- ════════════ S3: SHOPPING ════════════ -->
+<div class="scr" data-s="3">
+<div class="sb"><span>9:41</span><div class="ic"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
+<div class="ob-hdr"><button class="back" onclick="goTo(2)">←</button><div class="ob-step">Step 3 of 6</div></div>
+<div class="ob-prog"><div class="ob-fill" style="width:50%;"></div></div>
+<div class="sec-block"><div class="sec-tag">The fun stuff</div><div class="sec-title"><em>Shopping</em></div></div>
+<div class="ob-body">
+  <div class="cat-icon-wrap"><div class="cat-icon">🛍️</div></div>
+  <div class="cat-sub">Clothes, gadgets, beauty, Amazon. Monthly average.</div>
+  <div class="rupee-display"><div class="rupee-val">₹<span class="n" id="v-shopping">8,000</span></div><div class="rupee-lbl">Per month</div></div>
+  <div class="slider-row"><input type="range" min="0" max="40000" value="8000" step="500" oninput="setVal('shopping',this)"></div>
+  <div class="rupee-ends"><span>₹0</span><span>₹40,000</span></div>
+  <div class="chip-row">
+    <button class="chip" onclick="pickChip('shopping',2000,this)">₹2k</button>
+    <button class="chip" onclick="pickChip('shopping',5000,this)">₹5k</button>
+    <button class="chip on" onclick="pickChip('shopping',8000,this)">₹8k</button>
+    <button class="chip" onclick="pickChip('shopping',15000,this)">₹15k</button>
+  </div>
+</div>
+<div class="ob-foot"><button class="btn-dark" onclick="goTo(4)">Continue →</button></div>
+</div>
 
-      <!-- SCREEN 4: RENT -->
-      <div class="screen" data-screen="4">
-        <div class="status-bar">
-          <span>9:41</span>
-          <div class="icons">
-            <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="0.5"/><rect x="4" y="4" width="3" height="6" rx="0.5"/><rect x="8" y="2" width="3" height="8" rx="0.5"/><rect x="12" y="0" width="3" height="10" rx="0.5"/></svg>
-            <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x="0.5" y="0.5" width="20" height="10" rx="2" stroke="currentColor" opacity="0.4"/><rect x="22" y="3.5" width="1.5" height="4" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg>
-          </div>
-        </div>
-        <div class="onboard-header">
-          <div class="back-btn" onclick="goPrev()">←</div>
-          <div class="onboard-header-right">Step 4 of 6</div>
-        </div>
-        <div class="onboard-progress"><div class="onboard-progress-fill" style="width: 66%;"></div></div>
-        <div class="section-block">
-          <div class="section-block-tag">The non-negotiables</div>
-          <h1 class="section-block-title"><em>Rent</em> & home</h1>
-        </div>
-        <div class="onboard-body">
-          <div class="category-icon-wrap"><div class="category-icon">🏠</div></div>
-          <p class="category-sub">Rent, maintenance, society charges. Roof over your head.</p>
-          <div class="rupee-display">
-            <div class="rupee-value">₹<span class="num" id="rent-val">23,000</span></div>
-            <div class="rupee-label">Per month</div>
-          </div>
-          <div class="rupee-slider-row">
-            <input type="range" min="0" max="60000" value="23000" step="1000" class="rupee-slider" oninput="updateRupee('rent', this)">
-          </div>
-          <div class="rupee-ends"><span>₹0</span><span>₹60,000</span></div>
-          <div class="chip-row">
-            <button class="chip" onclick="pickChip('rent', 10000, this)">₹10k</button>
-            <button class="chip" onclick="pickChip('rent', 18000, this)">₹18k</button>
-            <button class="chip selected" onclick="pickChip('rent', 23000, this)">₹23k</button>
-            <button class="chip" onclick="pickChip('rent', 35000, this)">₹35k</button>
-          </div>
-        </div>
-        <div class="onboard-footer"><button class="btn-cta-dark" onclick="goNext()">Continue →</button></div>
-      </div>
+<!-- ════════════ S4: RENT ════════════ -->
+<div class="scr" data-s="4">
+<div class="sb"><span>9:41</span><div class="ic"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
+<div class="ob-hdr"><button class="back" onclick="goTo(3)">←</button><div class="ob-step">Step 4 of 6</div></div>
+<div class="ob-prog"><div class="ob-fill" style="width:66%;"></div></div>
+<div class="sec-block"><div class="sec-tag">The non-negotiables</div><div class="sec-title"><em>Rent</em> & home</div></div>
+<div class="ob-body">
+  <div class="cat-icon-wrap"><div class="cat-icon">🏠</div></div>
+  <div class="cat-sub">Rent, maintenance, society charges. Monthly.</div>
+  <div class="rupee-display"><div class="rupee-val">₹<span class="n" id="v-rent">23,000</span></div><div class="rupee-lbl">Per month</div></div>
+  <div class="slider-row"><input type="range" min="0" max="60000" value="23000" step="1000" oninput="setVal('rent',this)"></div>
+  <div class="rupee-ends"><span>₹0</span><span>₹60,000</span></div>
+  <div class="chip-row">
+    <button class="chip" onclick="pickChip('rent',10000,this)">₹10k</button>
+    <button class="chip" onclick="pickChip('rent',18000,this)">₹18k</button>
+    <button class="chip on" onclick="pickChip('rent',23000,this)">₹23k</button>
+    <button class="chip" onclick="pickChip('rent',35000,this)">₹35k</button>
+  </div>
+</div>
+<div class="ob-foot"><button class="btn-dark" onclick="goTo(5)">Continue →</button></div>
+</div>
 
-      <!-- SCREEN 5: INVESTMENTS -->
-      <div class="screen" data-screen="5">
-        <div class="status-bar">
-          <span>9:41</span>
-          <div class="icons">
-            <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="0.5"/><rect x="4" y="4" width="3" height="6" rx="0.5"/><rect x="8" y="2" width="3" height="8" rx="0.5"/><rect x="12" y="0" width="3" height="10" rx="0.5"/></svg>
-            <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x="0.5" y="0.5" width="20" height="10" rx="2" stroke="currentColor" opacity="0.4"/><rect x="22" y="3.5" width="1.5" height="4" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg>
-          </div>
-        </div>
-        <div class="onboard-header">
-          <div class="back-btn" onclick="goPrev()">←</div>
-          <div class="onboard-header-right">Step 5 of 6</div>
-        </div>
-        <div class="onboard-progress"><div class="onboard-progress-fill" style="width: 83%;"></div></div>
-        <div class="section-block">
-          <div class="section-block-tag">Growing money</div>
-          <h1 class="section-block-title"><em>Investments</em></h1>
-        </div>
-        <div class="onboard-body">
-          <div class="category-icon-wrap"><div class="category-icon">🌱</div></div>
-          <p class="category-sub">SIPs, FDs, PPF, stocks. Anything growing with time.</p>
-          <div class="rupee-display">
-            <div class="rupee-value">₹<span class="num" id="invest-val">12,000</span></div>
-            <div class="rupee-label">Per month</div>
-          </div>
-          <div class="rupee-slider-row">
-            <input type="range" min="0" max="50000" value="12000" step="1000" class="rupee-slider" oninput="updateRupee('invest', this)">
-          </div>
-          <div class="rupee-ends"><span>₹0</span><span>₹50,000</span></div>
-          <div class="chip-row">
-            <button class="chip" onclick="pickChip('invest', 0, this)">Nothing yet</button>
-            <button class="chip" onclick="pickChip('invest', 5000, this)">₹5k</button>
-            <button class="chip selected" onclick="pickChip('invest', 12000, this)">₹12k</button>
-            <button class="chip" onclick="pickChip('invest', 25000, this)">₹25k</button>
-          </div>
-        </div>
-        <div class="onboard-footer"><button class="btn-cta-dark" onclick="goNext()">Continue →</button></div>
-      </div>
+<!-- ════════════ S5: INVESTMENTS ════════════ -->
+<div class="scr" data-s="5">
+<div class="sb"><span>9:41</span><div class="ic"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
+<div class="ob-hdr"><button class="back" onclick="goTo(4)">←</button><div class="ob-step">Step 5 of 6</div></div>
+<div class="ob-prog"><div class="ob-fill" style="width:83%;"></div></div>
+<div class="sec-block"><div class="sec-tag">Growing money</div><div class="sec-title"><em>Investments</em></div></div>
+<div class="ob-body">
+  <div class="cat-icon-wrap"><div class="cat-icon">🌱</div></div>
+  <div class="cat-sub">SIPs, FDs, PPF, stocks. Anything growing with time.</div>
+  <div class="rupee-display"><div class="rupee-val">₹<span class="n" id="v-invest">12,000</span></div><div class="rupee-lbl">Per month</div></div>
+  <div class="slider-row"><input type="range" min="0" max="50000" value="12000" step="1000" oninput="setVal('invest',this)"></div>
+  <div class="rupee-ends"><span>₹0</span><span>₹50,000</span></div>
+  <div class="chip-row">
+    <button class="chip" onclick="pickChip('invest',0,this)">None yet</button>
+    <button class="chip" onclick="pickChip('invest',5000,this)">₹5k</button>
+    <button class="chip on" onclick="pickChip('invest',12000,this)">₹12k</button>
+    <button class="chip" onclick="pickChip('invest',25000,this)">₹25k</button>
+  </div>
+</div>
+<div class="ob-foot"><button class="btn-dark" onclick="goTo(6)">Continue →</button></div>
+</div>
 
-      <!-- SCREEN 6: EMIs -->
-      <div class="screen" data-screen="6">
-        <div class="status-bar">
-          <span>9:41</span>
-          <div class="icons">
-            <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="0.5"/><rect x="4" y="4" width="3" height="6" rx="0.5"/><rect x="8" y="2" width="3" height="8" rx="0.5"/><rect x="12" y="0" width="3" height="10" rx="0.5"/></svg>
-            <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x="0.5" y="0.5" width="20" height="10" rx="2" stroke="currentColor" opacity="0.4"/><rect x="22" y="3.5" width="1.5" height="4" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg>
-          </div>
-        </div>
-        <div class="onboard-header">
-          <div class="back-btn" onclick="goPrev()">←</div>
-          <div class="onboard-header-right">Step 6 of 6</div>
-        </div>
-        <div class="onboard-progress"><div class="onboard-progress-fill" style="width: 100%;"></div></div>
-        <div class="section-block">
-          <div class="section-block-tag">What you owe</div>
-          <h1 class="section-block-title"><em>EMIs</em> & loans</h1>
-        </div>
-        <div class="onboard-body">
-          <div class="category-icon-wrap"><div class="category-icon">📉</div></div>
-          <p class="category-sub">Home, car, personal, education. All loan repayments combined.</p>
-          <div class="rupee-display">
-            <div class="rupee-value">₹<span class="num" id="emi-val">23,000</span></div>
-            <div class="rupee-label">Per month</div>
-          </div>
-          <div class="rupee-slider-row">
-            <input type="range" min="0" max="60000" value="23000" step="1000" class="rupee-slider" oninput="updateRupee('emi', this)">
-          </div>
-          <div class="rupee-ends"><span>₹0</span><span>₹60,000</span></div>
-          <div class="chip-row">
-            <button class="chip" onclick="pickChip('emi', 0, this)">None</button>
-            <button class="chip" onclick="pickChip('emi', 10000, this)">₹10k</button>
-            <button class="chip selected" onclick="pickChip('emi', 23000, this)">₹23k</button>
-            <button class="chip" onclick="pickChip('emi', 40000, this)">₹40k</button>
-          </div>
-        </div>
-        <div class="onboard-footer"><button class="btn-cta-dark" onclick="goNext()">See my insights →</button></div>
-      </div>
+<!-- ════════════ S6: EMIs ════════════ -->
+<div class="scr" data-s="6">
+<div class="sb"><span>9:41</span><div class="ic"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
+<div class="ob-hdr"><button class="back" onclick="goTo(5)">←</button><div class="ob-step">Step 6 of 6</div></div>
+<div class="ob-prog"><div class="ob-fill" style="width:100%;"></div></div>
+<div class="sec-block"><div class="sec-tag">What you owe</div><div class="sec-title"><em>EMIs</em> & loans</div></div>
+<div class="ob-body">
+  <div class="cat-icon-wrap"><div class="cat-icon">📉</div></div>
+  <div class="cat-sub">Home, car, personal, education loans. All combined.</div>
+  <div class="rupee-display"><div class="rupee-val">₹<span class="n" id="v-emi">23,000</span></div><div class="rupee-lbl">Per month</div></div>
+  <div class="slider-row"><input type="range" min="0" max="60000" value="23000" step="1000" oninput="setVal('emi',this)"></div>
+  <div class="rupee-ends"><span>₹0</span><span>₹60,000</span></div>
+  <div class="chip-row">
+    <button class="chip" onclick="pickChip('emi',0,this)">None</button>
+    <button class="chip" onclick="pickChip('emi',10000,this)">₹10k</button>
+    <button class="chip on" onclick="pickChip('emi',23000,this)">₹23k</button>
+    <button class="chip" onclick="pickChip('emi',40000,this)">₹40k</button>
+  </div>
+</div>
+<div class="ob-foot"><button class="btn-dark" onclick="goTo(7)">See my insights →</button></div>
+</div>
 
-      <!-- SCREEN 7: LOADER -->
-      <div class="screen" data-screen="7">
-        <div class="status-bar dark">
-          <span>9:41</span>
-          <div class="icons">
-            <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="0.5"/><rect x="4" y="4" width="3" height="6" rx="0.5"/><rect x="8" y="2" width="3" height="8" rx="0.5"/><rect x="12" y="0" width="3" height="10" rx="0.5"/></svg>
-            <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x="0.5" y="0.5" width="20" height="10" rx="2" stroke="currentColor" opacity="0.4"/><rect x="22" y="3.5" width="1.5" height="4" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg>
-          </div>
-        </div>
-        <div class="screen-loader" style="flex: 1;">
-          <div class="ring r1"></div>
-          <div class="ring r2"></div>
-          <div class="ring r3"></div>
-          <div class="loader-dot"></div>
-          <div class="loader-text" id="loaderText">Comparing you with people in <em>Bangalore</em>...</div>
-          <div class="loader-sub">A million data points</div>
-          <div class="loader-bar"><div class="loader-bar-fill"></div></div>
-        </div>
-      </div>
+<!-- ════════════ S7: LOADER ════════════ -->
+<div class="scr" data-s="7">
+<div class="sb inv"><span>9:41</span><div class="ic"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
+<div class="loader-scr">
+  <div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div>
+  <div class="loader-dot"></div>
+  <div class="loader-txt" id="ldr-txt">Comparing you with <em>software developers</em> in Bangalore...</div>
+  <div class="loader-sub">A million data points</div>
+  <div class="loader-bar"><div class="loader-bar-fill" id="ldr-bar" style="width:0%;transition:width 4s ease-out;"></div></div>
+</div>
+</div>
 
-      <!-- SCREEN 8: INITIAL REVEAL STACK (money) -->
-      <div class="screen" data-screen="8">
-        <div class="status-bar">
-          <span>9:41</span>
-          <div class="icons">
-            <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="0.5"/><rect x="4" y="4" width="3" height="6" rx="0.5"/><rect x="8" y="2" width="3" height="8" rx="0.5"/><rect x="12" y="0" width="3" height="10" rx="0.5"/></svg>
-            <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x="0.5" y="0.5" width="20" height="10" rx="2" stroke="currentColor" opacity="0.4"/><rect x="22" y="3.5" width="1.5" height="4" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg>
-          </div>
-        </div>
-        <div class="stack-screen">
-          <div class="stack-top-bar">
-            <span class="stack-top-label">Your insights</span>
-          </div>
-          <div class="stack-counter"><strong id="revealCounter">1</strong> of 4 · swipe right</div>
-
-          <div class="stack-area" id="revealStack" data-context="reveal">
-            <div class="stack-card" data-card="3" data-type="money">
-              <h2 class="stack-card-headline">
-                To stop working today, you'd need
-                <span class="stack-card-big">₹1.35 Cr</span>
-                set aside.
-              </h2>
-              <p class="stack-card-body">To stop in 10 years instead, save ₹50,000 a month from now. You're at ₹12,000.</p>
-            </div>
-            <div class="stack-card peer" data-card="2" data-type="peer">
-              <span class="peer-mark">✨</span>
-              <h2 class="stack-card-headline">
-                Someone exactly like you saves
-                <span class="stack-card-big">₹14k more</span>
-                every month.
-              </h2>
-              <p class="stack-card-body">Same age, same salary, same city. One habit different. Over 10 years, that's a small home.</p>
-              <div class="peer-footer">
-                <div class="peer-footer-icon">i</div>
-                <span>Based on comparing your profile against millions of similar users.</span>
-              </div>
-            </div>
-            <div class="stack-card" data-card="1" data-type="money">
-              <h2 class="stack-card-headline">
-                Every year, you spend a
-                <span class="stack-card-big">Europe trip</span>
-                on things you won't remember.
-              </h2>
-              <p class="stack-card-body">₹4.1L on lifestyle this year. A 14-day Europe trip for two costs the same. You aren't taking it.</p>
-            </div>
-            <div class="stack-card" data-card="0" data-type="money">
-              <h2 class="stack-card-headline">
-                This month, you worked
-                <span class="stack-card-big">3 days</span>
-                to keep Zomato in business.
-              </h2>
-              <p class="stack-card-body">₹21,000 went to food delivery. At ₹7,000 a day, that's three full days of work, gone.</p>
-              <div class="swipe-hint">Swipe right →</div>
-            </div>
-          </div>
-
-          <div class="stack-continue-wrap" id="revealContinue">
-            <button class="btn-cta-dark" onclick="goNext()">Continue →</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- SCREEN 9: LITE DASHBOARD -->
-      <div class="screen" data-screen="9">
-        <div class="status-bar">
-          <span>9:41</span>
-          <div class="icons">
-            <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="0.5"/><rect x="4" y="4" width="3" height="6" rx="0.5"/><rect x="8" y="2" width="3" height="8" rx="0.5"/><rect x="12" y="0" width="3" height="10" rx="0.5"/></svg>
-            <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x="0.5" y="0.5" width="20" height="10" rx="2" stroke="currentColor" opacity="0.4"/><rect x="22" y="3.5" width="1.5" height="4" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg>
-          </div>
-        </div>
-        <div class="screen-lite" style="flex: 1;">
-          <div class="lite-header">
-            <div class="lite-title">Your <em>Upscore</em></div>
-            <div class="lite-avatar">A</div>
-          </div>
-
-          <div class="locked-score" onclick="goToCVP()">
-            <div class="ls-label">Your score</div>
-            <div class="ls-row">
-              <div class="ls-score">— — —</div>
-              <div class="ls-lock-icon">🔒</div>
-            </div>
-            <p class="ls-msg">Complete your profile to see your full Upscore.</p>
-            <span class="ls-cta">Complete profile →</span>
-          </div>
-
-          <div class="pile-section">
-            <div class="pile-section-label">
-              <span>Money insights</span>
-              <span class="pile-section-count">4 cards · tap to view</span>
-            </div>
-            <div class="pile-stack money" onclick="openMoneyStack()">
-              <div class="pile-stack-card flying-in" style="animation-delay: 0.2s;">
-                <div class="pile-preview">To stop in 10 years, save <span class="num">₹50k</span> a month.</div>
-                <div class="pile-stack-card-meta"><span>4 of 4</span></div>
-              </div>
-              <div class="pile-stack-card flying-in" style="animation-delay: 0.1s;">
-                <div class="pile-preview">A <span class="num">Europe trip</span> a year, gone.</div>
-                <div class="pile-stack-card-meta"><span>3 of 4</span></div>
-              </div>
-              <div class="pile-stack-card flying-in" style="animation-delay: 0s;">
-                <div class="pile-preview">You worked <span class="num">3 days</span> to keep Zomato in business.</div>
-                <div class="pile-stack-card-meta">
-                  <span>Top card</span>
-                  <span class="pile-tap-hint">Tap to view all →</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="pile-section">
-            <div class="pile-section-label">
-              <span>Credit insights</span>
-              <span class="pile-section-count">3 cards · 1 locked</span>
-            </div>
-            <div class="pile-stack credit" onclick="openCreditStack()">
-              <div class="pile-stack-card flying-in" style="animation-delay: 0.5s;">
-                <div class="pile-preview">🔒 One more locked insight</div>
-                <div class="pile-stack-card-meta"><span style="color: var(--accent-soft);">Unlock to see</span></div>
-              </div>
-              <div class="pile-stack-card flying-in" style="animation-delay: 0.4s;">
-                <div class="pile-preview">A home loan costs <span class="num">₹3.2L more</span> than people like you.</div>
-                <div class="pile-stack-card-meta"><span>2 of 3</span></div>
-              </div>
-              <div class="pile-stack-card flying-in" style="animation-delay: 0.3s;">
-                <div class="pile-preview">Credit card interest = <span class="num">5 weeks</span> of salary.</div>
-                <div class="pile-stack-card-meta">
-                  <span>Top card</span>
-                  <span class="pile-tap-hint">Tap to view all →</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="unlock-banner pulse-hint" onclick="goToCVP()">
-            <div class="unlock-banner-text">
-              See your real numbers
-              <em>Live score · Monthly insights</em>
-            </div>
-            <div class="unlock-banner-arrow">→</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- SCREEN 10: MONEY STACK VIEWER -->
-      <div class="screen" data-screen="10">
-        <div class="status-bar">
-          <span>9:41</span>
-          <div class="icons">
-            <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="0.5"/><rect x="4" y="4" width="3" height="6" rx="0.5"/><rect x="8" y="2" width="3" height="8" rx="0.5"/><rect x="12" y="0" width="3" height="10" rx="0.5"/></svg>
-            <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x="0.5" y="0.5" width="20" height="10" rx="2" stroke="currentColor" opacity="0.4"/><rect x="22" y="3.5" width="1.5" height="4" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg>
-          </div>
-        </div>
-        <div class="stack-screen">
-          <div class="stack-top-bar">
-            <span class="stack-top-label">Money insights</span>
-            <button class="stack-close" onclick="goToDashboard()">✕</button>
-          </div>
-          <div class="stack-counter"><strong id="moneyStackCounter">1</strong> of 4 · swipe right</div>
-
-          <div class="stack-area" id="moneyStack" data-context="money">
-            <div class="stack-card" data-card="3" data-type="money">
-              <h2 class="stack-card-headline">
-                To stop working today, you'd need
-                <span class="stack-card-big">₹1.35 Cr</span>
-                set aside.
-              </h2>
-              <p class="stack-card-body">To stop in 10 years instead, save ₹50,000 a month from now. You're at ₹12,000.</p>
-            </div>
-            <div class="stack-card peer" data-card="2" data-type="peer">
-              <span class="peer-mark">✨</span>
-              <h2 class="stack-card-headline">
-                Someone exactly like you saves
-                <span class="stack-card-big">₹14k more</span>
-                every month.
-              </h2>
-              <p class="stack-card-body">Same age, same salary, same city. One habit different. Over 10 years, that's a small home.</p>
-              <div class="peer-footer">
-                <div class="peer-footer-icon">i</div>
-                <span>Based on comparing your profile against millions of similar users.</span>
-              </div>
-            </div>
-            <div class="stack-card" data-card="1" data-type="money">
-              <h2 class="stack-card-headline">
-                Every year, you spend a
-                <span class="stack-card-big">Europe trip</span>
-                on things you won't remember.
-              </h2>
-              <p class="stack-card-body">₹4.1L on lifestyle this year. A 14-day Europe trip for two costs the same. You aren't taking it.</p>
-            </div>
-            <div class="stack-card" data-card="0" data-type="money">
-              <h2 class="stack-card-headline">
-                This month, you worked
-                <span class="stack-card-big">3 days</span>
-                to keep Zomato in business.
-              </h2>
-              <p class="stack-card-body">₹21,000 went to food delivery. At ₹7,000 a day, that's three full days of work, gone.</p>
-              <div class="swipe-hint">Swipe right →</div>
-            </div>
-          </div>
-
-          <div class="stack-continue-wrap" id="moneyContinue">
-            <button class="btn-cta-dark" onclick="goToDashboard()">Back to dashboard →</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- SCREEN 11: CREDIT STACK VIEWER -->
-      <div class="screen" data-screen="11">
-        <div class="status-bar">
-          <span>9:41</span>
-          <div class="icons">
-            <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="0.5"/><rect x="4" y="4" width="3" height="6" rx="0.5"/><rect x="8" y="2" width="3" height="8" rx="0.5"/><rect x="12" y="0" width="3" height="10" rx="0.5"/></svg>
-            <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x="0.5" y="0.5" width="20" height="10" rx="2" stroke="currentColor" opacity="0.4"/><rect x="22" y="3.5" width="1.5" height="4" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg>
-          </div>
-        </div>
-        <div class="stack-screen">
-          <div class="stack-top-bar">
-            <span class="stack-top-label">Credit insights</span>
-            <button class="stack-close" onclick="goToDashboard()">✕</button>
-          </div>
-          <div class="stack-counter"><strong id="creditStackCounter">1</strong> of 3 · swipe right</div>
-
-          <div class="stack-area" id="creditStack" data-context="credit">
-            <div class="stack-card locked" data-card="2" data-type="locked" onclick="lockedCardTap(event, this)">
-              <h2 class="stack-card-headline">
-                Hidden insight blurred so you cannot see what is here yet.
-              </h2>
-              <p class="stack-card-body">Some more body text that is blurred.</p>
-              <div class="locked-overlay">
-                <div class="locked-lock">🔒</div>
-                <div class="locked-title">One more, <em>unlocked</em>.</div>
-                <div class="locked-sub">Your full credit story, monthly, with reasons.</div>
-                <div class="locked-cta">Unlock for ₹99/month →</div>
-              </div>
-            </div>
-            <div class="stack-card credit" data-card="1" data-type="credit">
-              <h2 class="stack-card-headline">
-                At your credit score, a home loan costs you
-                <span class="stack-card-big">₹3.2L more</span>
-                than people like you.
-              </h2>
-              <p class="stack-card-body">Pushing your score 40 points higher gets you the rate that peers in better health pay.</p>
-            </div>
-            <div class="stack-card credit" data-card="0" data-type="credit">
-              <h2 class="stack-card-headline">
-                Your credit card interest this year =
-                <span class="stack-card-big">5 weeks</span>
-                of your salary, gone.
-              </h2>
-              <p class="stack-card-body">Roughly ₹18,000 paid to the bank for the privilege of borrowing from yourself.</p>
-              <div class="swipe-hint">Swipe right →</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- SCREEN 12: CVP -->
-      <div class="screen" data-screen="12">
-        <div class="status-bar dark">
-          <span>9:41</span>
-          <div class="icons">
-            <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="0.5"/><rect x="4" y="4" width="3" height="6" rx="0.5"/><rect x="8" y="2" width="3" height="8" rx="0.5"/><rect x="12" y="0" width="3" height="10" rx="0.5"/></svg>
-            <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x="0.5" y="0.5" width="20" height="10" rx="2" stroke="currentColor" opacity="0.4"/><rect x="22" y="3.5" width="1.5" height="4" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg>
-          </div>
-        </div>
-        <div class="screen-cvp" style="flex: 1; display: flex; flex-direction: column;">
-          <button class="cvp-close" onclick="goToDashboard()">✕</button>
-          <div class="cvp-video"><div class="cvp-play">▶</div></div>
-          <div class="cvp-tag">What Upscore unlocks</div>
-          <h2 class="cvp-title">Stop guessing. <em>Start seeing.</em></h2>
-          <div class="cvp-hooks">
-            <div class="cvp-hook"><span class="hookno">One</span>Find the ₹5,000+ you're leaking every month without knowing.</div>
-            <div class="cvp-hook"><span class="hookno">Two</span>Your real cashflow. Every account. One view.</div>
-            <div class="cvp-hook"><span class="hookno">Three</span>Your score, monthly. With reasons.</div>
-          </div>
-          <button class="btn-cta-accent pulse-hint" onclick="goNext()">Unlock for ₹99/month</button>
-        </div>
-      </div>
-
-      <!-- SCREEN 13: UPI -->
-      <div class="screen" data-screen="13">
-        <div class="status-bar">
-          <span>9:41</span>
-          <div class="icons">
-            <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="0.5"/><rect x="4" y="4" width="3" height="6" rx="0.5"/><rect x="8" y="2" width="3" height="8" rx="0.5"/><rect x="12" y="0" width="3" height="10" rx="0.5"/></svg>
-            <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x="0.5" y="0.5" width="20" height="10" rx="2" stroke="currentColor" opacity="0.4"/><rect x="22" y="3.5" width="1.5" height="4" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg>
-          </div>
-        </div>
-        <div class="unlock-header">
-          <div class="back-btn" onclick="goPrev()">←</div>
-          <div style="flex: 1; font-size: 13px;">Set up subscription</div>
-          <div class="unlock-step">Step 1 of 3</div>
-        </div>
-        <div class="unlock-body">
-          <div class="unlock-step-num">Subscription</div>
-          <h2 class="unlock-title">Set your <em>auto-pay.</em></h2>
-          <p class="unlock-sub">A monthly UPI mandate. Cancel anytime from your bank app.</p>
-          <div class="upi-box">
-            <div class="upi-row"><span class="upi-label">Plan</span><span class="upi-value">Upscore Monthly</span></div>
-            <div class="upi-row"><span class="upi-label">Amount</span><span class="upi-amount">₹99 / month</span></div>
-            <div class="upi-row"><span class="upi-label">First charge</span><span class="upi-value">Today</span></div>
-            <div class="upi-row"><span class="upi-label">Renews</span><span class="upi-value">1st of every month</span></div>
-          </div>
-          <div style="font-size: 11px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.18em; font-weight: 600; margin-bottom: 10px;">Choose UPI app</div>
-          <div class="upi-app-select">
-            <div class="upi-app selected" onclick="selectUpi(this)"><div class="ic">G</div>GPay</div>
-            <div class="upi-app" onclick="selectUpi(this)"><div class="ic">P</div>PhonePe</div>
-            <div class="upi-app" onclick="selectUpi(this)"><div class="ic">P</div>Paytm</div>
-            <div class="upi-app" onclick="selectUpi(this)"><div class="ic">B</div>BHIM</div>
-          </div>
-        </div>
-        <div class="unlock-footer"><button class="btn-cta-dark" onclick="goNext()">Continue with GPay →</button></div>
-      </div>
-
-      <!-- SCREEN 14: PROCESSING -->
-      <div class="screen" data-screen="14">
-        <div class="status-bar dark">
-          <span>9:41</span>
-          <div class="icons">
-            <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="0.5"/><rect x="4" y="4" width="3" height="6" rx="0.5"/><rect x="8" y="2" width="3" height="8" rx="0.5"/><rect x="12" y="0" width="3" height="10" rx="0.5"/></svg>
-            <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x="0.5" y="0.5" width="20" height="10" rx="2" stroke="currentColor" opacity="0.4"/><rect x="22" y="3.5" width="1.5" height="4" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg>
-          </div>
-        </div>
-        <div class="screen-process" style="flex: 1;">
-          <div class="ring r1"></div>
-          <div class="ring r2"></div>
-          <div class="loader-text" style="margin-bottom: 32px;">Building your <em>full picture</em>.</div>
-          <div class="process-checks" id="processChecks">
-            <div class="process-check done"><div class="dot"></div><div>UPI mandate set up</div></div>
-            <div class="process-check done"><div class="dot"></div><div>Salary bank linked</div></div>
-            <div class="process-check active"><div class="dot"></div><div>Reading your transactions</div></div>
-            <div class="process-check"><div class="dot"></div><div>Generating your score</div></div>
-          </div>
-          <div class="loader-sub">Just a few seconds</div>
-        </div>
-      </div>
-
-      <!-- SCREEN 15: PFM DASHBOARD -->
-      <div class="screen" data-screen="15">
-        <div class="status-bar">
-          <span>9:41</span>
-          <div class="icons">
-            <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="0.5"/><rect x="4" y="4" width="3" height="6" rx="0.5"/><rect x="8" y="2" width="3" height="8" rx="0.5"/><rect x="12" y="0" width="3" height="10" rx="0.5"/></svg>
-            <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x="0.5" y="0.5" width="20" height="10" rx="2" stroke="currentColor" opacity="0.4"/><rect x="22" y="3.5" width="1.5" height="4" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg>
-          </div>
-        </div>
-        <div class="screen-pfm" style="flex: 1;">
-          <div class="lite-header">
-            <div class="lite-title">Your <em>Upscore</em></div>
-            <div class="lite-avatar">A</div>
-          </div>
-          <div class="upscore-card">
-            <div class="upscore-label">Your Upscore</div>
-            <div class="upscore-row">
-              <div class="upscore-num" id="upscoreNum">0</div>
-              <div class="upscore-band">Healthy</div>
-            </div>
-            <div class="upscore-delta">↑ 12 points since last refresh</div>
-            <div class="upscore-cta">Tap to see what moved →</div>
-          </div>
-          <div class="snapshots">
-            <div class="snapshot">
-              <div class="snapshot-label">Money</div>
-              <div class="snapshot-value">₹2.4L</div>
-              <div class="snapshot-sub">across 3 accounts</div>
-            </div>
-            <div class="snapshot credit">
-              <div class="snapshot-label">Credit</div>
-              <div class="snapshot-value">₹38k</div>
-              <div class="snapshot-sub">across 2 cards</div>
-            </div>
-          </div>
-          <div class="emi-alert">
-            <div class="emi-alert-icon">!</div>
-            <div class="emi-alert-text">HDFC card bill <em>₹12,400</em> due in <strong>4 days</strong></div>
-          </div>
-          <div class="section-title">Today's update</div>
-          <div class="daily-update">
-            <div class="daily-update-header">
-              <div class="daily-update-title">Yesterday's movement</div>
-              <div class="daily-update-time">11 May</div>
-            </div>
-            <div class="daily-update-row"><span class="lbl">Inflow</span><span class="val pos">+ ₹4,200</span></div>
-            <div class="daily-update-row"><span class="lbl">Outflow</span><span class="val neg">− ₹2,840</span></div>
-            <div class="daily-update-row" style="border-top: 1px solid var(--card-divide); margin-top: 6px; padding-top: 8px;">
-              <span class="lbl" style="font-weight: 600; color: var(--ink);">Net</span>
-              <span class="val pos">+ ₹1,360</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
+<!-- ════════════ S8: REVEAL STACK ════════════ -->
+<div class="scr" data-s="8">
+<div class="sb"><span>9:41</span><div class="ic"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
+<div class="reveal-scr">
+  <div class="reveal-top"><span class="reveal-lbl">Your insights</span></div>
+  <div class="reveal-ctr"><b id="stk-ctr">1</b> of 4 · swipe right</div>
+  <div class="stack-area" id="stk">
+    <!-- card 3 (bottom) -->
+    <div class="scard" data-c="3">
+      <div class="scard-hook">To stop working today you'd need<span class="scard-big">₹1.35 Cr</span>set aside.</div>
+      <div class="scard-body">To stop in 10 years, save ₹50,000/month. You're at ₹12,000.</div>
+    </div>
+    <!-- card 2 -->
+    <div class="scard peer" data-c="2">
+      <span class="peer-mark">✨</span>
+      <div class="scard-hook">Someone exactly like you saves<span class="scard-big">₹14k more</span>every month.</div>
+      <div class="scard-body">Same age, salary, city. One habit different. Over 10 years, that's a home down payment.</div>
+      <div class="peer-foot"><div class="peer-dot"></div>Based on comparing your profile against millions of similar users.</div>
+    </div>
+    <!-- card 1 -->
+    <div class="scard" data-c="1">
+      <div class="scard-hook">Every year, you spend a<span class="scard-big">Europe trip</span>on things you won't remember.</div>
+      <div class="scard-body">₹4.1L on lifestyle this year. A 14-day trip for two costs the same.</div>
+    </div>
+    <!-- card 0 (top) -->
+    <div class="scard" data-c="0">
+      <div class="scard-hook">This month, you worked<span class="scard-big">3 days</span>to keep Zomato in business.</div>
+      <div class="scard-body">₹21,000 on food delivery. At ₹7,000/day, that's three full working days gone.</div>
+      <div class="swipe-hint">Swipe right →</div>
     </div>
   </div>
+  <div class="reveal-continue" id="stk-cont">
+    <button class="btn-dark" onclick="goTo(9)">Continue →</button>
+  </div>
+</div>
+</div>
+
+<!-- ════════════ S9: LITE DASHBOARD ════════════ -->
+<div class="scr" data-s="9">
+<div class="sb"><span>9:41</span><div class="ic"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
+<div class="lite-body">
+  <div class="lite-hdr">
+    <div class="lite-title">Your <em>Upscore</em></div>
+    <div class="av">A</div>
+  </div>
+
+  <!-- SCORE CARD ~30% -->
+  <div class="score-card" onclick="goTo(14)">
+    <div class="sc-top">
+      <div>
+        <div class="sc-lbl">Your Upscore</div>
+        <div class="sc-num">724 <span class="sc-band">Healthy</span></div>
+        <div class="sc-delta">↑ 12 points this month</div>
+      </div>
+    </div>
+    <div class="sc-explain">Your score reflects payment history, credit usage, and savings behaviour. Higher score = cheaper loans, better offers.</div>
+    <div class="sc-cta">Know about your score →</div>
+  </div>
+
+  <!-- UPCOMING -->
+  <div class="sec-lbl">Upcoming</div>
+  <div class="upcoming">
+    <div class="up-title">This week</div>
+    <div class="up-row">
+      <div class="up-dot" style="background:var(--accent);"></div>
+      <div class="up-info"><div class="up-name">HDFC card bill</div><div class="up-date">Due 26 May · 4 days</div></div>
+      <div><div class="up-amt">₹12,400</div><div class="up-badge urgent">Urgent</div></div>
+    </div>
+    <div class="up-row">
+      <div class="up-dot" style="background:var(--ink-soft);"></div>
+      <div class="up-info"><div class="up-name">SBI Home Loan EMI</div><div class="up-date">Auto-debit 1 Jun</div></div>
+      <div><div class="up-amt">₹18,500</div><div class="up-badge ok">Scheduled</div></div>
+    </div>
+  </div>
+
+  <!-- SUMMARY INSIGHT CARDS -->
+  <div class="sec-lbl">Money</div>
+  <div class="sum-card money" onclick="goTo(10)">
+    <div class="sc2-tag">Money summary →</div>
+    <div class="sc2-hook">You worked <span class="n">3 days</span> for Zomato. Your lifestyle is running <span class="n">22% over</span> last month.</div>
+    <div class="sc2-sub">Tap to see your money dashboard</div>
+  </div>
+
+  <div class="sec-lbl">Credit</div>
+  <div class="sum-card credit" onclick="goTo(13)">
+    <div class="sc2-tag">Credit summary →</div>
+    <div class="sc2-hook">₹38k outstanding. Credit interest this year = <span class="n">5 weeks</span> of salary.</div>
+    <div class="sc2-sub">Tap to see your credit dashboard</div>
+  </div>
+
+  <!-- UNLOCK -->
+  <div style="margin:20px 22px 0;background:var(--accent);color:var(--card);border-radius:18px;padding:18px;display:flex;justify-content:space-between;align-items:center;gap:12px;cursor:pointer;transition:transform .2s;" onclick="goTo(15)" onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''">
+    <div>
+      <div style="font-family:'Fraunces',serif;font-size:17px;line-height:1.2;">Unlock the full picture</div>
+      <div style="font-size:10px;color:rgba(250,247,240,.7);margin-top:4px;text-transform:uppercase;letter-spacing:.16em;">Live score · Real transactions · Monthly</div>
+    </div>
+    <div style="width:36px;height:36px;border-radius:50%;background:var(--card);color:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;">→</div>
+  </div>
+</div>
+</div>
+
+<!-- ════════════ S10: MONEY DASHBOARD ════════════ -->
+<div class="scr" data-s="10">
+<div class="sb"><span>9:41</span><div class="ic"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
+<div class="body">
+  <div class="sec-hdr">
+    <button class="back" onclick="goTo(9)">←</button>
+    <div class="sec-ttl"><em>Money</em></div>
+    <div style="width:30px;"></div>
+  </div>
+
+  <!-- HERO NUMBERS -->
+  <div class="money-hero">
+    <div class="mh-lbl">Balance · May 2026</div>
+    <div class="mh-num">₹2,45,050</div>
+    <div class="mh-sub">across 3 accounts</div>
+    <div class="mh-ctx">
+      <div class="mh-c"><div class="l">Incoming</div><div class="v">₹1,55,000</div></div>
+      <div class="mh-c"><div class="l">Outgoing</div><div class="v">₹1,16,560</div></div>
+      <div class="mh-c"><div class="l">Net</div><div class="v" style="color:var(--green);">+ ₹38,440</div></div>
+    </div>
+  </div>
+
+  <!-- SPEND VS FORECAST GRAPH -->
+  <div class="graph-card">
+    <div class="graph-title">
+      <span>Spend vs Forecast</span>
+      <div class="graph-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--accent);"></div>Actual</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--ink-mute);border:1.5px dashed var(--ink-mute);width:10px;height:10px;background:transparent;border-radius:50%;"></div>Forecast</div>
+      </div>
+    </div>
+    <div class="graph-area">
+      <svg viewBox="0 0 280 80" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">
+        <!-- grid lines -->
+        <line x1="0" y1="60" x2="280" y2="60" stroke="rgba(26,24,20,.06)" stroke-width="1"/>
+        <line x1="0" y1="30" x2="280" y2="30" stroke="rgba(26,24,20,.06)" stroke-width="1"/>
+        <!-- actual spend line -->
+        <polyline points="0,70 47,52 93,38 140,28 186,18" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- forecast line (dashed) -->
+        <polyline points="186,18 233,12 280,6" fill="none" stroke="var(--ink-mute)" stroke-width="2" stroke-dasharray="4,3" stroke-linecap="round"/>
+        <!-- actual dot (current) -->
+        <circle cx="186" cy="18" r="5" fill="var(--accent)" stroke="var(--card)" stroke-width="2"/>
+        <!-- forecast dot (end of month) -->
+        <circle cx="280" cy="6" r="5" fill="var(--card)" stroke="var(--ink-mute)" stroke-width="2" stroke-dasharray="3,2"/>
+        <!-- labels -->
+        <text x="178" y="10" font-size="8" fill="var(--accent)" font-family="Inter Tight" text-anchor="middle">₹1.16L now</text>
+        <text x="280" y="4" font-size="8" fill="var(--ink-mute)" font-family="Inter Tight" text-anchor="end">₹1.38L forecast</text>
+      </svg>
+    </div>
+    <div class="graph-months">
+      <span class="gm">1 May</span><span class="gm">8</span><span class="gm">15</span><span class="gm">22 ←now</span><span class="gm">31</span>
+    </div>
+  </div>
+
+  <!-- INSIGHT CARDS — each is entry point to a feature -->
+  <div class="sec-lbl" style="margin-top:20px;">Insights</div>
+
+  <div class="ins-card" onclick="goTo(11)">
+    <div class="ins-ic red">🍕</div>
+    <div class="ins-body">
+      <div class="ins-hook">Lifestyle is <span class="n">38% of salary</span> — 2× what peers spend.</div>
+      <div class="ins-sub">Category wise spends · Tap to explore</div>
+    </div>
+    <div class="ins-arr">→</div>
+  </div>
+
+  <div class="ins-card" onclick="goTo(12)">
+    <div class="ins-ic dim">📋</div>
+    <div class="ins-body">
+      <div class="ins-hook"><span class="n">₹22,680/year</span> in subscriptions you've forgotten about.</div>
+      <div class="ins-sub">Recurring charges · Tap to review</div>
+    </div>
+    <div class="ins-arr">→</div>
+  </div>
+
+  <div class="ins-card">
+    <div class="ins-ic dim">🛵</div>
+    <div class="ins-body">
+      <div class="ins-hook">You paid <span class="n">₹3,200</span> for speed, not for things.</div>
+      <div class="ins-sub">Hidden charges · Delivery fees & surge pricing</div>
+    </div>
+    <div class="ins-arr">→</div>
+  </div>
+
+  <div class="ins-card">
+    <div class="ins-ic dim">📈</div>
+    <div class="ins-body">
+      <div class="ins-hook">At this pace you'll overspend by <span class="n">₹21,440</span> by month end.</div>
+      <div class="ins-sub">Spend forecast · Tap to see projection</div>
+    </div>
+    <div class="ins-arr">→</div>
+  </div>
+
+</div>
+</div>
+
+<!-- ════════════ S11: INSIGHT DETAIL — CATEGORY SPEND ════════════ -->
+<div class="scr" data-s="11">
+<div class="sb"><span>9:41</span><div class="ic"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
+<div class="body">
+  <div class="det-hdr"><button class="back" onclick="goTo(10)">←</button><div class="det-ctx">Money insight · Category spend</div></div>
+  <div class="det-hero">
+    <div class="det-hook">Your lifestyle is eating<span class="big">38%</span>of your salary every month.</div>
+  </div>
+  <div class="det-body">
+    <div class="det-fact">₹34,100 went to lifestyle in May — dining, shopping, going out. <strong>Peers in your bracket average 22%.</strong> That 16-point gap is ₹24,800 a month you could be saving.</div>
+    <div class="data-blk">
+      <div class="d-row"><span class="dk">Dining & delivery</span><span class="dv hi">₹21,000</span></div>
+      <div class="d-row"><span class="dk">Shopping</span><span class="dv">₹8,200</span></div>
+      <div class="d-row"><span class="dk">Going out</span><span class="dv">₹4,900</span></div>
+      <div class="d-row"><span class="dk">Total lifestyle</span><span class="dv hi">₹34,100</span></div>
+    </div>
+    <div class="peer-blk">
+      <div class="pb-lbl"><div class="pb-dot"></div>Peer comparison</div>
+      <div class="pb-txt">Software developers your age in Bangalore average <span class="n">₹17,200</span> on lifestyle. You spend <span class="n">₹16,900 more.</span> That's ₹2L extra a year.</div>
+      <div class="pb-foot">Based on comparing your profile against millions of similar users.</div>
+    </div>
+  </div>
+  <div class="feat-band">
+    <div class="feat-band-lbl">Feature · Category spend tracker</div>
+    <div class="feat-band-title">See exactly where every rupee went. Set limits per <em>category.</em></div>
+    <button class="btn-dark" onclick="goTo(15)">Open spend tracker →</button>
+  </div>
+  <div style="padding:14px 24px 0;">
+    <div class="act-row">
+      <button class="act-sec">Remind me Friday</button>
+      <button class="act-sec">Not now</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════════════ S12: INSIGHT DETAIL — RECURRING CHARGES ════════════ -->
+<div class="scr" data-s="12">
+<div class="sb"><span>9:41</span><div class="ic"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
+<div class="body">
+  <div class="det-hdr"><button class="back" onclick="goTo(10)">←</button><div class="det-ctx">Money insight · Recurring charges</div></div>
+  <div class="det-hero">
+    <div class="det-hook">You're paying for<span class="big">11 subs.</span>3 you haven't touched in 60 days.</div>
+  </div>
+  <div class="det-body">
+    <div class="det-fact">₹4,280/month in recurring charges. <strong>3 services you haven't used in 60 days</strong> cost ₹1,890/month — ₹22,680 a year going nowhere.</div>
+    <div class="data-blk">
+      <div class="d-row"><span class="dk" style="color:var(--accent);font-weight:600;">⚠ Notion</span><span class="dv hi">₹440/mo · unused 74 days</span></div>
+      <div class="d-row"><span class="dk" style="color:var(--accent);font-weight:600;">⚠ Adobe CC</span><span class="dv hi">₹540/mo · unused 68 days</span></div>
+      <div class="d-row"><span class="dk" style="color:var(--accent);font-weight:600;">⚠ Duolingo</span><span class="dv hi">₹260/mo · unused 91 days</span></div>
+      <div class="d-row"><span class="dk">Netflix</span><span class="dv ok">₹649/mo · active</span></div>
+      <div class="d-row"><span class="dk">Spotify</span><span class="dv ok">₹119/mo · active</span></div>
+      <div class="d-row" style="border-top:2px solid var(--div);margin-top:4px;"><span class="dk">All subscriptions</span><span class="dv hi">₹4,280/mo · ₹51,360/yr</span></div>
+    </div>
+  </div>
+  <div class="feat-band">
+    <div class="feat-band-lbl">Feature · Subscription manager</div>
+    <div class="feat-band-title">Cancel the 3 unused ones. Get <em>₹1,890/month</em> back.</div>
+    <button class="btn-dark">Cancel unused subscriptions →</button>
+  </div>
+  <div style="padding:14px 24px 0;">
+    <div class="act-row">
+      <button class="act-sec">Remind me Friday</button>
+      <button class="act-sec">Not now</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════════════ S13: CREDIT DASHBOARD ════════════ -->
+<div class="scr" data-s="13">
+<div class="sb"><span>9:41</span><div class="ic"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
+<div class="body">
+  <div class="sec-hdr">
+    <button class="back" onclick="goTo(9)">←</button>
+    <div class="sec-ttl"><em>Credit</em></div>
+    <div style="width:30px;"></div>
+  </div>
+  <div style="margin:18px 22px 0;text-align:center;padding-bottom:16px;border-bottom:1px solid var(--div);">
+    <div class="mh-lbl">Total outstanding</div>
+    <div style="font-family:'Fraunces',serif;font-size:48px;font-weight:400;letter-spacing:-.03em;line-height:1;color:var(--accent);">₹38,000</div>
+    <div class="mh-sub">across 2 credit cards</div>
+    <div class="mh-ctx">
+      <div class="mh-c"><div class="l">Score</div><div class="v" style="color:var(--green);">742</div></div>
+      <div class="mh-c"><div class="l">Utilisation</div><div class="v" style="color:var(--gold);">38%</div></div>
+      <div class="mh-c"><div class="l">Cards</div><div class="v">2 active</div></div>
+    </div>
+  </div>
+
+  <div class="sec-lbl">Insights</div>
+
+  <div class="ins-card dark">
+    <div class="ins-ic inv">💸</div>
+    <div class="ins-body">
+      <div class="ins-hook">Credit card interest this year = <span class="n">5 weeks</span> of your salary.</div>
+      <div class="ins-sub">₹18,000 paid to banks · Tap to see more</div>
+    </div>
+    <div class="ins-arr">→</div>
+  </div>
+
+  <div class="ins-card dark">
+    <div class="ins-ic inv">🏠</div>
+    <div class="ins-body">
+      <div class="ins-hook">At your score, a home loan costs <span class="n">₹3.2L more</span> than people like you.</div>
+      <div class="ins-sub">Score 742 vs peers at 780+ · Tap to see more</div>
+    </div>
+    <div class="ins-arr">→</div>
+  </div>
+
+  <div class="ins-card dark">
+    <div class="ins-ic inv">📊</div>
+    <div class="ins-body">
+      <div class="ins-hook">ICICI at <span class="n">64% utilisation.</span> Drop below 30% for +22 score points.</div>
+      <div class="ins-sub">Credit utilisation · Tap to see how</div>
+    </div>
+    <div class="ins-arr">→</div>
+  </div>
+</div>
+</div>
+
+<!-- ════════════ S14: SCORE DETAIL PAGE ════════════ -->
+<div class="scr" data-s="14">
+<div class="sb inv"><span>9:41</span><div class="ic"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
+<div class="body">
+  <div style="padding:12px 22px 0;display:flex;align-items:center;gap:10px;">
+    <button class="back inv" onclick="goTo(9)" style="background:rgba(255,255,255,.1);color:var(--card);">←</button>
+  </div>
+  <div class="score-detail-hero">
+    <div class="sdh-lbl">Your Upscore</div>
+    <div class="sdh-num">724</div>
+    <div class="sdh-band">Healthy — top 34% of users</div>
+    <div class="sdh-delta">↑ 12 points since last month · May 2026</div>
+    <div class="sdh-bar-wrap">
+      <div class="sdh-bar-track"><div class="sdh-bar-fill"></div></div>
+      <div class="sdh-bar-labels"><span>300</span><span>500</span><span>700</span><span>900</span></div>
+    </div>
+  </div>
+  <div class="body" style="position:static;overflow:visible;padding:0;">
+    <div class="sec-lbl">What's making up your score</div>
+    <div class="factor-card">
+      <div class="fc-top"><span class="fc-name">Payment history</span><span class="fc-impact pos">Strong</span></div>
+      <div class="fc-bar"><div class="fc-fill" style="background:var(--green);width:88%;"></div></div>
+      <div class="fc-sub">No missed payments in 24 months. Biggest positive factor.</div>
+    </div>
+    <div class="factor-card">
+      <div class="fc-top"><span class="fc-name">Credit utilisation</span><span class="fc-impact neg">High</span></div>
+      <div class="fc-bar"><div class="fc-fill" style="background:var(--accent);width:64%;"></div></div>
+      <div class="fc-sub">ICICI at 64%. Ideal is below 30%. Bringing it down adds ~22 points.</div>
+    </div>
+    <div class="factor-card">
+      <div class="fc-top"><span class="fc-name">Credit age</span><span class="fc-impact pos">Good</span></div>
+      <div class="fc-bar"><div class="fc-fill" style="background:var(--green);width:72%;"></div></div>
+      <div class="fc-sub">Average account age 4.2 years. Keep oldest card active.</div>
+    </div>
+    <div class="factor-card">
+      <div class="fc-top"><span class="fc-name">Credit mix</span><span class="fc-impact neu">Neutral</span></div>
+      <div class="fc-bar"><div class="fc-fill" style="background:var(--ink-mute);width:50%;"></div></div>
+      <div class="fc-sub">2 cards, 1 home loan. Adding a small personal loan could help.</div>
+    </div>
+    <div style="padding:18px 22px 0;">
+      <button class="btn-dark">See how to improve your score →</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════════════ S15: CVP ════════════ -->
+<div class="scr" data-s="15">
+<div class="sb inv"><span>9:41</span><div class="ic"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
+<div class="cvp-scr">
+  <button class="back inv" onclick="goTo(9)" style="align-self:flex-start;">←</button>
+  <div class="cvp-video"><div class="cvp-play">▶</div></div>
+  <div class="cvp-tag">What Upscore unlocks</div>
+  <h2 class="cvp-title">Stop guessing. <em>Start seeing.</em></h2>
+  <div class="cvp-hooks">
+    <div class="cvp-hook"><span class="hn">One</span>Find the ₹5,000+ you're leaking every month.</div>
+    <div class="cvp-hook"><span class="hn">Two</span>Your real cashflow. Every account. One view.</div>
+    <div class="cvp-hook"><span class="hn">Three</span>Your score, monthly. With reasons.</div>
+  </div>
+  <button class="btn-accent" onclick="goTo(16)">Unlock for ₹99/month</button>
+</div>
+</div>
+
+<!-- ════════════ S16: UPI ════════════ -->
+<div class="scr" data-s="16">
+<div class="sb"><span>9:41</span><div class="ic"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
+<div style="padding:14px 22px;border-bottom:1px solid var(--div);display:flex;align-items:center;gap:12px;">
+  <button class="back" onclick="goTo(15)">←</button>
+  <div style="flex:1;font-size:13px;">Set up subscription</div>
+  <div style="font-family:'Fraunces',serif;font-style:italic;font-size:12px;color:var(--ink-soft);">Step 1 of 3</div>
+</div>
+<div class="body" style="padding:26px 22px;">
+  <div style="font-family:'Fraunces',serif;font-style:italic;color:var(--accent);font-size:13px;margin-bottom:8px;">Subscription</div>
+  <div style="font-family:'Fraunces',serif;font-size:28px;letter-spacing:-.02em;margin-bottom:8px;">Set your <em style="font-style:italic;color:var(--accent);">auto-pay.</em></div>
+  <div style="font-size:12px;color:var(--ink-soft);margin-bottom:24px;line-height:1.5;">Monthly UPI mandate. Cancel anytime from your bank app.</div>
+  <div class="upi-box">
+    <div class="upi-row"><span class="upi-lbl">Plan</span><span class="upi-val">Upscore Monthly</span></div>
+    <div class="upi-row"><span class="upi-lbl">Amount</span><span class="upi-amt">₹99 / month</span></div>
+    <div class="upi-row"><span class="upi-lbl">First charge</span><span class="upi-val">Today</span></div>
+    <div class="upi-row"><span class="upi-lbl">Renews</span><span class="upi-val">1st of every month</span></div>
+  </div>
+  <div style="font-size:11px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.18em;font-weight:600;margin-bottom:10px;">Choose UPI app</div>
+  <div class="upi-apps">
+    <div class="upi-app on" onclick="selUpi(this)"><div class="ic">G</div>GPay</div>
+    <div class="upi-app" onclick="selUpi(this)"><div class="ic">P</div>PhonePe</div>
+    <div class="upi-app" onclick="selUpi(this)"><div class="ic">P</div>Paytm</div>
+    <div class="upi-app" onclick="selUpi(this)"><div class="ic">B</div>BHIM</div>
+  </div>
+  <button class="btn-dark" onclick="goTo(17)">Continue with GPay →</button>
+</div>
+</div>
+
+<!-- ════════════ S17: PROCESSING ════════════ -->
+<div class="scr" data-s="17">
+<div class="sb inv"><span>9:41</span><div class="ic"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
+<div class="proc-scr">
+  <div class="ring r1"></div><div class="ring r2"></div>
+  <div class="loader-txt" style="margin-bottom:28px;">Building your <em>full picture</em>.</div>
+  <div class="proc-checks" id="proc">
+    <div class="pc done"><div class="dot"></div><div>UPI mandate confirmed</div></div>
+    <div class="pc done"><div class="dot"></div><div>Salary bank linked</div></div>
+    <div class="pc active"><div class="dot"></div><div>Reading your transactions</div></div>
+    <div class="pc"><div class="dot"></div><div>Generating your score</div></div>
+  </div>
+  <div class="loader-sub">Just a few seconds</div>
+</div>
+</div>
+
+</div></div><!-- phone -->
 
 <script>
-  const screens = document.querySelectorAll('.screen');
-  const stepNames = [
-    'Discovery', 'About you', 'Eating out', 'Shopping', 'Rent',
-    'Investments', 'EMIs', 'Building insights', 'The reveal',
-    'Lite dashboard', 'Money stack', 'Credit stack',
-    'Upscore CVP', 'UPI mandate', 'AA processing', 'PFM dashboard'
-  ];
+const screens = document.querySelectorAll('.scr');
+const meta = [
+  {name:'Home',hint:'Blurred app + bottomsheet. <b>"Learn more in 60 seconds"</b> — tap Show me to start.'},
+  {name:'Profile',hint:'Salary pre-filled. Industry + designation. No "pre-filled" chip.'},
+  {name:'Eating out',hint:'One category per page. Big section title. Rupee slider + chips.'},
+  {name:'Shopping',hint:'Same pattern. Fun stuff continues.'},
+  {name:'Rent & home',hint:'Non-negotiables section.'},
+  {name:'Investments',hint:'Growing money.'},
+  {name:'EMIs & loans',hint:'What you owe. Last step before insights.'},
+  {name:'Loader',hint:'Dark screen, cycling comparisons, progress bar. Auto-advances after 4s.'},
+  {name:'Reveal stack',hint:'4 cards. <b>Swipe right</b> with mouse drag. After all 4 swiped → auto-navigates to Lite dashboard.'},
+  {name:'Lite dashboard',hint:'<b>Score occupies ~30%.</b> Short explanation + "Know about your score →". Upcoming payments section. Summary insight cards for Money and Credit — each one tap leads to the section dashboard. Single unlock banner.'},
+  {name:'Money dashboard',hint:'<b>Hero: balance + incoming + outgoing.</b> Graph below: actual spend line vs dashed forecast line — two dots. Then 4 insight cards leading to features: category spend, recurring charges, hidden charges, spend forecast.'},
+  {name:'Insight: Category spend',hint:'Full detail page. Hook → fact → data table → peer comparison. Bottom: <b>feature band</b> — "Open spend tracker →". Also schedule / not now.'},
+  {name:'Insight: Recurring charges',hint:'Unused subscriptions named and flagged. Bottom feature band: <b>"Cancel unused subscriptions →"</b>'},
+  {name:'Credit dashboard',hint:'<b>Hero: total outstanding ₹38k.</b> Context: score 742, utilisation 38%. Three credit insight cards (dark treatment).'},
+  {name:'Score detail',hint:'<b>"Know about your score →" from dashboard lands here.</b> Big score, percentile, progress bar. Factors: payment history, utilisation, credit age, mix. Each with a bar and explanation.'},
+  {name:'CVP',hint:'Unlock screen. Video, 3 hooks, ₹99/month CTA.'},
+  {name:'UPI mandate',hint:'Plan details + UPI app selector.'},
+  {name:'AA processing',hint:'Processing animation with check states.'},
+];
 
-  let currentScreen = 0;
-  const totalScreens = screens.length;
-  const stepNoEl = document.getElementById('stepNo');
-  const stepNameEl = document.getElementById('stepName');
-  const progressRail = document.getElementById('progressRail');
+let cur = 0;
+const rl = document.getElementById('rl');
+meta.forEach((_, i) => {
+  const d = document.createElement('div');
+  d.className = 'rd';
+  d.onclick = () => goTo(i);
+  rl.appendChild(d);
+});
 
-  for (let i = 0; i < totalScreens; i++) {
-    const d = document.createElement('div');
-    d.className = 'progress-rail-dot';
-    d.dataset.idx = i;
-    d.onclick = () => goTo(i);
-    progressRail.appendChild(d);
-  }
-
-  function updateUI() {
-    stepNoEl.textContent = `${String(currentScreen + 1).padStart(2, '0')} of ${totalScreens}`;
-    stepNameEl.textContent = stepNames[currentScreen];
-    document.querySelectorAll('.progress-rail-dot').forEach((d, i) => {
-      d.classList.remove('current', 'passed');
-      if (i === currentScreen) d.classList.add('current');
-      else if (i < currentScreen) d.classList.add('passed');
-    });
-  }
-
-  function goTo(idx) {
-    if (idx < 0 || idx >= totalScreens) return;
-    const oldScreen = screens[currentScreen];
-    const newScreen = screens[idx];
-    oldScreen.classList.remove('active');
-    oldScreen.classList.add('exit-left');
-    setTimeout(() => oldScreen.classList.remove('exit-left'), 500);
-    newScreen.classList.add('active');
-    currentScreen = idx;
-    updateUI();
-
-    if (idx === 7) startLoader();
-    if (idx === 8) resetStack('revealStack', 4, 'revealCounter', 'revealContinue');
-    if (idx === 9) animatePileLanding();
-    if (idx === 10) resetStack('moneyStack', 4, 'moneyStackCounter', 'moneyContinue');
-    if (idx === 11) resetStack('creditStack', 3, 'creditStackCounter', null);
-    if (idx === 14) startProcessing();
-    if (idx === 15) animateScore();
-  }
-
-  function goNext() { goTo(currentScreen + 1); }
-  function goPrev() { goTo(currentScreen - 1); }
-  function restart() { goTo(0); }
-
-  // Custom navigations
-  function goToDashboard() { goTo(9); }
-  function openMoneyStack() { goTo(10); }
-  function openCreditStack() { goTo(11); }
-  function goToCVP() { goTo(12); }
-
-  function lockedCardTap(e, card) {
-    e.stopPropagation();
-    goToCVP();
-  }
-
-  // Rupee sliders
-  function updateRupee(cat, input) {
-    const val = parseInt(input.value);
-    document.getElementById(`${cat}-val`).textContent = val.toLocaleString('en-IN');
-    const parent = input.closest('.onboard-body');
-    if (parent) parent.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
-  }
-  function pickChip(cat, val, el) {
-    document.getElementById(`${cat}-val`).textContent = val.toLocaleString('en-IN');
-    const parent = el.closest('.onboard-body');
-    if (parent) {
-      const slider = parent.querySelector('.rupee-slider');
-      if (slider) slider.value = val;
-    }
-    el.parentElement.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
-    el.classList.add('selected');
-  }
-
-  // Loader
-  const loaderMessages = [
-    'Comparing you with people in <em>Bangalore</em>...',
-    'Comparing you with people your <em>age</em>...',
-    'Comparing you with <em>software developers</em>...',
-    'Comparing you with people earning <em>like you</em>...',
-    'Crunching a <em>million data points</em>...'
-  ];
-  let loaderTimer = null;
-  function startLoader() {
-    if (loaderTimer) clearInterval(loaderTimer);
-    let i = 0;
-    const txt = document.getElementById('loaderText');
-    txt.style.opacity = '0';
-    setTimeout(() => { txt.innerHTML = loaderMessages[0]; txt.style.opacity = '1'; }, 100);
-    loaderTimer = setInterval(() => {
-      i = (i + 1) % loaderMessages.length;
-      txt.style.opacity = '0'; txt.style.transform = 'translateY(8px)';
-      setTimeout(() => {
-        txt.innerHTML = loaderMessages[i];
-        txt.style.opacity = '1'; txt.style.transform = 'translateY(0)';
-      }, 250);
-    }, 1100);
-    setTimeout(() => {
-      if (currentScreen === 7) { clearInterval(loaderTimer); goNext(); }
-    }, 4500);
-  }
-
-  // STACK LOGIC (generic for any stack)
-  let activeStack = null;
-  let stackTotalCards = 0;
-  let stackTopIndex = 0;
-  let counterElId = '';
-  let continueElId = null;
-
-  let dragStartX = 0, dragCurrentX = 0, isDragging = false, draggedCard = null;
-
-  function resetStack(stackId, total, counterId, continueId) {
-    activeStack = document.getElementById(stackId);
-    stackTotalCards = total;
-    counterElId = counterId;
-    continueElId = continueId;
-    stackTopIndex = 0;
-
-    const cards = activeStack.querySelectorAll('.stack-card');
-    cards.forEach((c) => {
-      c.classList.remove('swiped-out');
-      c.style.transform = '';
-      c.style.opacity = '';
-    });
-    setTimeout(() => {
-      cards.forEach((c) => {
-        const idx = parseInt(c.dataset.card);
-        const depth = idx;
-        const yOffset = depth * 8;
-        const scale = 1 - depth * 0.02;
-        const rot = depth === 0 ? 0 : (depth % 2 === 0 ? 1 : -1) * depth;
-        c.style.transform = `translateY(${yOffset}px) scale(${scale}) rotate(${rot}deg)`;
-        c.style.zIndex = 10 - depth;
-      });
-    }, 50);
-
-    document.getElementById(counterElId).textContent = '1';
-    if (continueElId) {
-      const cw = document.getElementById(continueElId);
-      if (cw) cw.classList.remove('show');
-    }
-    attachStackListeners();
-  }
-
-  function getTopCardEl() {
-    if (!activeStack) return null;
-    const cards = activeStack.querySelectorAll('.stack-card:not(.swiped-out)');
-    let top = null;
-    let highestZ = -1;
-    cards.forEach(c => {
-      const z = parseInt(c.style.zIndex) || 0;
-      if (z > highestZ) { highestZ = z; top = c; }
-    });
-    return top;
-  }
-
-  function attachStackListeners() {
-    document.querySelectorAll('.stack-card').forEach(card => {
-      card.onpointerdown = onCardDown;
-    });
-  }
-
-  function onCardDown(e) {
-    if (this.classList.contains('swiped-out')) return;
-    // Find which stack this card belongs to
-    activeStack = this.closest('.stack-area');
-    const top = getTopCardEl();
-    if (this !== top) return;
-    // If it's a locked card, don't allow drag
-    if (this.classList.contains('locked')) return;
-    draggedCard = this;
-    isDragging = true;
-    dragStartX = e.clientX;
-    dragCurrentX = e.clientX;
-    this.classList.add('dragging');
-    this.setPointerCapture(e.pointerId);
-    document.addEventListener('pointermove', onCardMove);
-    document.addEventListener('pointerup', onCardUp);
-  }
-
-  function onCardMove(e) {
-    if (!isDragging || !draggedCard) return;
-    dragCurrentX = e.clientX;
-    const dx = dragCurrentX - dragStartX;
-    const rot = dx / 15;
-    draggedCard.style.transform = `translateX(${dx}px) rotate(${rot}deg)`;
-    draggedCard.style.opacity = Math.max(0.3, 1 - Math.abs(dx) / 300);
-  }
-
-  function onCardUp(e) {
-    if (!isDragging || !draggedCard) return;
-    const dx = dragCurrentX - dragStartX;
-    isDragging = false;
-    document.removeEventListener('pointermove', onCardMove);
-    document.removeEventListener('pointerup', onCardUp);
-
-    if (Math.abs(dx) > 80) {
-      draggedCard.classList.add('swiped-out');
-      const dir = dx > 0 ? 1 : -1;
-      draggedCard.style.transform = `translateX(${dir * 450}px) rotate(${dir * 18}deg)`;
-      draggedCard.style.opacity = '0';
-      const swipedStackId = activeStack ? activeStack.id : null;
-      const swipedCounterElId = counterElId;
-      const swipedContinueElId = continueElId;
-      const swipedTotal = stackTotalCards;
-      setTimeout(() => {
-        const stack = document.getElementById(swipedStackId);
-        if (!stack) return;
-        const remaining = [...stack.querySelectorAll('.stack-card:not(.swiped-out)')];
-        remaining.sort((a,b) => (parseInt(b.style.zIndex)||0) - (parseInt(a.style.zIndex)||0));
-        remaining.forEach((c, i) => {
-          c.style.transform = `translateY(${i * 8}px) scale(${1 - i*0.02}) rotate(${i === 0 ? 0 : (i % 2 === 0 ? 1 : -1) * i}deg)`;
-          c.style.zIndex = 10 - i;
-          c.style.opacity = '1';
-        });
-        stackTopIndex++;
-        const counterEl = document.getElementById(swipedCounterElId);
-        if (counterEl) {
-          const left = swipedTotal - stackTopIndex;
-          if (left > 0) {
-            counterEl.textContent = stackTopIndex + 1;
-          } else {
-            counterEl.textContent = swipedTotal;
-            if (swipedStackId === 'revealStack') {
-              counterEl.parentElement.style.opacity = '0';
-              setTimeout(() => { goTo(9); }, 500);
-            } else {
-              if (swipedContinueElId) {
-                const cw = document.getElementById(swipedContinueElId);
-                if (cw) cw.classList.add('show');
-              }
-            }
-          }
-        }
-      }, 300);
-    } else {
-      draggedCard.style.transform = '';
-      draggedCard.style.opacity = '';
-    }
-    draggedCard.classList.remove('dragging');
-    draggedCard = null;
-  }
-
-  // Dashboard pile fly-in
-  function animatePileLanding() {
-    const allPileCards = screens[9].querySelectorAll('.pile-stack-card');
-    allPileCards.forEach((c, i) => {
-      c.style.animation = 'none';
-      c.style.opacity = '0';
-      void c.offsetWidth;
-      const delay = i * 120;
-      setTimeout(() => {
-        c.style.opacity = '';
-        c.classList.remove('flying-in');
-        void c.offsetWidth;
-        c.classList.add('flying-in');
-      }, delay);
-    });
-  }
-
-  function selectUpi(el) {
-    document.querySelectorAll('.upi-app').forEach(a => a.classList.remove('selected'));
-    el.classList.add('selected');
-  }
-
-  function startProcessing() {
-    const checks = document.querySelectorAll('#processChecks .process-check');
-    checks.forEach((c, i) => {
-      c.classList.remove('done', 'active');
-      if (i < 2) c.classList.add('done');
-      if (i === 2) c.classList.add('active');
-    });
-    setTimeout(() => {
-      checks[2].classList.remove('active');
-      checks[2].classList.add('done');
-      checks[3].classList.add('active');
-    }, 1800);
-    setTimeout(() => {
-      checks[3].classList.remove('active');
-      checks[3].classList.add('done');
-    }, 3400);
-    setTimeout(() => {
-      if (currentScreen === 14) goNext();
-    }, 4200);
-  }
-
-  function animateScore() {
-    const el = document.getElementById('upscoreNum');
-    const target = 724;
-    const duration = 1200;
-    const start = performance.now();
-    function frame(now) {
-      const p = Math.min(1, (now - start) / duration);
-      const eased = 1 - Math.pow(1 - p, 3);
-      el.textContent = Math.round(eased * target);
-      if (p < 1) requestAnimationFrame(frame);
-    }
-    requestAnimationFrame(frame);
-  }
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowRight') goNext();
-    if (e.key === 'ArrowLeft') goPrev();
+function updateSide() {
+  document.getElementById('ss').textContent = `${String(cur+1).padStart(2,'0')} of ${meta.length}`;
+  document.getElementById('sn').textContent = meta[cur].name;
+  document.getElementById('sh').innerHTML = meta[cur].hint;
+  document.querySelectorAll('.rd').forEach((d, i) => {
+    d.classList.remove('c','p');
+    if (i === cur) d.classList.add('c');
+    else if (i < cur) d.classList.add('p');
   });
+}
 
-  updateUI();
-  attachStackListeners();
+function goTo(idx) {
+  if (idx < 0 || idx >= screens.length) return;
+  screens[cur].classList.remove('on');
+  screens[cur].classList.add('out');
+  setTimeout(() => screens[cur].classList.remove('out'), 400);
+  screens[idx].classList.add('on');
+  const b = screens[idx].querySelector('.body');
+  if (b) b.scrollTop = 0;
+  cur = idx;
+  updateSide();
+  if (idx === 7) startLoader();
+  if (idx === 8) resetStack();
+  if (idx === 17) startProc();
+}
+
+function next() { goTo(cur + 1); }
+function prev() { goTo(cur - 1); }
+
+// LOADER
+const loaderMsgs = [
+  'Comparing you with <em>software developers</em> in Bangalore...',
+  'Comparing you with people your <em>age</em>...',
+  'Comparing you with people earning <em>like you</em>...',
+  'Crunching a <em>million data points</em>...'
+];
+let ldrTimer = null;
+function startLoader() {
+  if (ldrTimer) clearInterval(ldrTimer);
+  let i = 0;
+  const txt = document.getElementById('ldr-txt');
+  const bar = document.getElementById('ldr-bar');
+  bar.style.transition = 'none'; bar.style.width = '0%';
+  setTimeout(() => { bar.style.transition = 'width 4s ease-out'; bar.style.width = '100%'; }, 50);
+  txt.innerHTML = loaderMsgs[0];
+  ldrTimer = setInterval(() => {
+    i = (i + 1) % loaderMsgs.length;
+    txt.style.opacity = '0'; txt.style.transform = 'translateY(6px)';
+    setTimeout(() => { txt.innerHTML = loaderMsgs[i]; txt.style.opacity = '1'; txt.style.transform = 'translateY(0)'; }, 300);
+  }, 1200);
+  setTimeout(() => { if (cur === 7) { clearInterval(ldrTimer); goTo(8); } }, 4800);
+}
+
+// STACK
+let stkTop = 0, dragX = 0, curX = 0, dragging = false, dragCard = null;
+function resetStack() {
+  const cards = document.querySelectorAll('#stk .scard');
+  cards.forEach(c => { c.classList.remove('gone','dragging'); c.style.transform = ''; c.style.opacity = ''; });
+  setTimeout(() => {
+    cards.forEach(c => {
+      const d = parseInt(c.dataset.c);
+      c.style.transform = `translateY(${d*8}px) scale(${1-d*.02}) rotate(${d===0?0:(d%2===0?1:-1)*d}deg)`;
+      c.style.zIndex = 10 - d;
+    });
+  }, 50);
+  stkTop = 0;
+  document.getElementById('stk-ctr').textContent = '1';
+  document.getElementById('stk-cont').classList.remove('show');
+  attachStack();
+}
+
+function getTop() {
+  const cards = [...document.querySelectorAll('#stk .scard:not(.gone)')];
+  return cards.sort((a,b) => parseInt(b.style.zIndex||0) - parseInt(a.style.zIndex||0))[0];
+}
+
+function attachStack() {
+  document.querySelectorAll('#stk .scard').forEach(c => { c.onpointerdown = onDown; });
+}
+
+function onDown(e) {
+  if (this.classList.contains('gone')) return;
+  if (this !== getTop()) return;
+  dragCard = this; dragging = true;
+  dragX = e.clientX; curX = e.clientX;
+  this.classList.add('dragging');
+  this.setPointerCapture(e.pointerId);
+  document.addEventListener('pointermove', onMove);
+  document.addEventListener('pointerup', onUp);
+}
+function onMove(e) {
+  if (!dragging || !dragCard) return;
+  curX = e.clientX;
+  const dx = curX - dragX;
+  dragCard.style.transform = `translateX(${dx}px) rotate(${dx/15}deg)`;
+  dragCard.style.opacity = Math.max(.3, 1 - Math.abs(dx)/300);
+}
+function onUp() {
+  if (!dragging || !dragCard) return;
+  const dx = curX - dragX;
+  dragging = false;
+  document.removeEventListener('pointermove', onMove);
+  document.removeEventListener('pointerup', onUp);
+  if (Math.abs(dx) > 80) {
+    const dir = dx > 0 ? 1 : -1;
+    dragCard.classList.add('gone');
+    dragCard.style.transform = `translateX(${dir*450}px) rotate(${dir*18}deg)`;
+    dragCard.style.opacity = '0';
+    const swipedStackId = 'stk';
+    setTimeout(() => {
+      const rem = [...document.querySelectorAll('#stk .scard:not(.gone)')].sort((a,b) => parseInt(b.style.zIndex||0)-parseInt(a.style.zIndex||0));
+      rem.forEach((c,i) => {
+        c.style.transform = `translateY(${i*8}px) scale(${1-i*.02}) rotate(${i===0?0:(i%2===0?1:-1)*i}deg)`;
+        c.style.zIndex = 10-i; c.style.opacity = '1';
+      });
+      stkTop++;
+      if (4 - stkTop > 0) {
+        document.getElementById('stk-ctr').textContent = stkTop + 1;
+      } else {
+        document.getElementById('stk-ctr').parentElement.style.opacity = '0';
+        setTimeout(() => { if (cur === 8) goTo(9); }, 500);
+      }
+    }, 300);
+  } else {
+    dragCard.style.transform = ''; dragCard.style.opacity = '';
+  }
+  dragCard.classList.remove('dragging');
+  dragCard = null;
+}
+
+// PROCESSING
+function startProc() {
+  const checks = document.querySelectorAll('#proc .pc');
+  checks.forEach((c,i) => { c.classList.remove('done','active'); if(i<2)c.classList.add('done'); if(i===2)c.classList.add('active'); });
+  setTimeout(() => { checks[2].classList.remove('active'); checks[2].classList.add('done'); checks[3].classList.add('active'); }, 1800);
+  setTimeout(() => { checks[3].classList.remove('active'); checks[3].classList.add('done'); }, 3400);
+  setTimeout(() => { if (cur===17) goTo(10); }, 4200);
+}
+
+function selUpi(el) {
+  document.querySelectorAll('.upi-app').forEach(a => a.classList.remove('on'));
+  el.classList.add('on');
+}
+
+function setVal(cat, input) {
+  const v = parseInt(input.value);
+  document.getElementById(`v-${cat}`).textContent = v.toLocaleString('en-IN');
+  const parent = input.closest('.ob-body');
+  if (parent) parent.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+}
+
+function pickChip(cat, val, el) {
+  document.getElementById(`v-${cat}`).textContent = val.toLocaleString('en-IN');
+  const parent = el.closest('.ob-body');
+  if (parent) {
+    const sl = parent.querySelector('input[type=range]');
+    if (sl) sl.value = val;
+    parent.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+  }
+  el.classList.add('on');
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') next();
+  if (e.key === 'ArrowLeft') prev();
+});
+
+updateSide();
+attachStack();
 </script>
 </body>
 </html>
