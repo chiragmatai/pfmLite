@@ -1495,24 +1495,23 @@
             <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x="0.5" y="0.5" width="20" height="10" rx="2" stroke="currentColor" opacity="0.4"/><rect x="22" y="3.5" width="1.5" height="4" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg>
           </div>
         </div>
-        <div class="screen-lite" style="flex:1;overflow-y:auto;padding-bottom:24px;">
+        <div class="screen-lite" style="flex:1;overflow-y:auto;padding-bottom:0;">
 
-          <!-- MONEY INSIGHTS SECTION -->
-          <div style="margin:0 0 0;background:linear-gradient(135deg,#f5ede4 0%,#ede4d8 100%);padding:24px 22px 28px;position:relative;overflow:hidden;">
-            <!-- illustration dots -->
-            <div style="position:absolute;top:-20px;right:-20px;width:120px;height:120px;border-radius:50%;background:rgba(200,68,42,.08);"></div>
-            <div style="position:absolute;top:10px;right:20px;width:60px;height:60px;border-radius:50%;background:rgba(200,68,42,.06);"></div>
-            <div style="position:absolute;bottom:-10px;right:40px;width:40px;height:40px;border-radius:50%;background:rgba(200,68,42,.1);"></div>
-            <!-- coin illustration -->
-            <div style="position:absolute;right:22px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;gap:4px;opacity:.7;">
-              <div style="width:36px;height:36px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 4px 12px rgba(200,68,42,.3);">₹</div>
-              <div style="width:28px;height:28px;border-radius:50%;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;font-size:12px;margin-top:-8px;">₹</div>
-              <div style="width:22px;height:22px;border-radius:50%;background:var(--accent-bg);display:flex;align-items:center;justify-content:center;font-size:10px;margin-top:-6px;color:var(--accent);">₹</div>
+          <!-- MONEY SECTION — warm illustrated -->
+          <div style="background:linear-gradient(160deg,#f7efe6 0%,#ede3d5 100%);padding:22px 22px 110px;position:relative;overflow:hidden;min-height:300px;">
+            <!-- Background circles -->
+            <div style="position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;background:rgba(200,68,42,.07);pointer-events:none;"></div>
+            <div style="position:absolute;top:20px;right:0px;width:100px;height:100px;border-radius:50%;background:rgba(200,68,42,.05);pointer-events:none;"></div>
+            <!-- Coin stack illustration -->
+            <div style="position:absolute;right:24px;top:32px;display:flex;flex-direction:column;align-items:center;gap:-4px;pointer-events:none;">
+              <div style="width:44px;height:44px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:18px;font-style:italic;color:var(--card-bg);box-shadow:0 6px 16px rgba(200,68,42,.35);">₹</div>
+              <div style="width:36px;height:36px;border-radius:50%;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:14px;font-style:italic;color:var(--card-bg);margin-top:-10px;box-shadow:0 4px 12px rgba(200,68,42,.2);">₹</div>
+              <div style="width:28px;height:28px;border-radius:50%;background:var(--accent-bg);border:1px solid var(--accent-soft);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:11px;color:var(--accent);margin-top:-8px;">₹</div>
             </div>
-            <div style="font-size:9px;text-transform:uppercase;letter-spacing:.22em;color:var(--ink-soft);font-weight:600;margin-bottom:10px;">Money</div>
-            <div style="font-family:'Fraunces',serif;font-size:13px;font-style:italic;color:var(--ink-soft);margin-bottom:12px;">Your spending insights</div>
-            <!-- pile stack money -->
-            <div class="pile-stack money" onclick="openMoneyStack()" style="cursor:pointer;">
+            <div style="font-size:9px;text-transform:uppercase;letter-spacing:.22em;color:var(--ink-soft);font-weight:600;margin-bottom:6px;">Money</div>
+            <div style="font-family:'Fraunces',serif;font-size:15px;font-style:italic;color:var(--ink-soft);margin-bottom:16px;">Your spending insights</div>
+            <!-- Pile stack -->
+            <div class="pile-stack money" onclick="openMoneyStack()" style="cursor:pointer;position:relative;z-index:1;">
               <div class="pile-stack-card flying-in" style="animation-delay:0.2s;">
                 <div class="pile-preview">To stop in 10 years, save <span class="num">₹50k</span> a month. You're at ₹12k.</div>
               </div>
@@ -1525,25 +1524,26 @@
             </div>
           </div>
 
-          <!-- CREDIT INSIGHTS SECTION -->
-          <div style="margin:0;background:linear-gradient(135deg,#1a1814 0%,#2a2218 100%);padding:24px 22px 28px;position:relative;overflow:hidden;">
-            <!-- illustration -->
-            <div style="position:absolute;top:-20px;right:-20px;width:120px;height:120px;border-radius:50%;background:rgba(200,68,42,.12);"></div>
-            <div style="position:absolute;top:10px;right:20px;width:60px;height:60px;border-radius:50%;background:rgba(200,68,42,.08);"></div>
-            <div style="position:absolute;right:22px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;gap:4px;opacity:.6;">
-              <div style="width:38px;height:24px;border-radius:6px;background:rgba(232,168,144,.2);border:1px solid rgba(232,168,144,.3);display:flex;align-items:center;justify-content:center;">
-                <div style="width:24px;height:3px;background:rgba(232,168,144,.5);border-radius:2px;"></div>
+          <!-- CREDIT SECTION — dark illustrated -->
+          <div style="background:linear-gradient(160deg,#1a1814 0%,#251f18 100%);padding:22px 22px 110px;position:relative;overflow:hidden;min-height:280px;">
+            <!-- Background circles -->
+            <div style="position:absolute;top:-30px;right:-30px;width:140px;height:140px;border-radius:50%;background:rgba(200,68,42,.1);pointer-events:none;"></div>
+            <!-- Card illustration -->
+            <div style="position:absolute;right:22px;top:28px;pointer-events:none;">
+              <div style="width:52px;height:34px;border-radius:8px;background:linear-gradient(135deg,rgba(232,168,144,.25) 0%,rgba(232,168,144,.1) 100%);border:1px solid rgba(232,168,144,.25);position:relative;margin-bottom:6px;">
+                <div style="position:absolute;bottom:8px;left:8px;right:8px;height:2px;background:rgba(232,168,144,.4);border-radius:1px;"></div>
+                <div style="position:absolute;top:8px;right:8px;width:12px;height:12px;border-radius:50%;background:rgba(200,68,42,.5);"></div>
               </div>
-              <div style="width:38px;height:24px;border-radius:6px;background:rgba(232,168,144,.15);border:1px solid rgba(232,168,144,.2);margin-top:4px;display:flex;align-items:flex-end;padding:4px 5px;">
-                <div style="width:100%;height:2px;background:rgba(232,168,144,.4);border-radius:1px;"></div>
+              <div style="width:52px;height:34px;border-radius:8px;background:linear-gradient(135deg,rgba(232,168,144,.15) 0%,rgba(232,168,144,.05) 100%);border:1px solid rgba(232,168,144,.15);margin-left:8px;">
+                <div style="margin:10px 8px 0;height:2px;background:rgba(232,168,144,.3);border-radius:1px;"></div>
               </div>
             </div>
-            <div style="font-size:9px;text-transform:uppercase;letter-spacing:.22em;color:var(--accent-soft);font-weight:600;margin-bottom:10px;">Credit</div>
-            <div style="font-family:'Fraunces',serif;font-size:13px;font-style:italic;color:rgba(250,247,240,.5);margin-bottom:12px;">Your credit insights</div>
-            <!-- pile stack credit -->
-            <div class="pile-stack credit" onclick="openCreditStack()" style="cursor:pointer;">
+            <div style="font-size:9px;text-transform:uppercase;letter-spacing:.22em;color:var(--accent-soft);font-weight:600;margin-bottom:6px;">Credit</div>
+            <div style="font-family:'Fraunces',serif;font-size:15px;font-style:italic;color:rgba(250,247,240,.45);margin-bottom:16px;">Your credit insights</div>
+            <!-- Pile stack credit -->
+            <div class="pile-stack credit" onclick="openCreditStack()" style="cursor:pointer;position:relative;z-index:1;">
               <div class="pile-stack-card flying-in" style="animation-delay:0.5s;">
-                <div class="pile-preview">🔒 One more insight waiting for you</div>
+                <div class="pile-preview">🔒 One more insight, waiting for you</div>
               </div>
               <div class="pile-stack-card flying-in" style="animation-delay:0.4s;">
                 <div class="pile-preview">A home loan costs <span class="num">₹3.2L more</span> than people like you.</div>
@@ -1554,15 +1554,14 @@
             </div>
           </div>
 
-          <!-- SINGLE UNLOCK BANNER at bottom -->
-          <div style="margin:16px 22px 0;background:var(--accent);border-radius:20px;padding:20px;cursor:pointer;transition:transform .2s;position:relative;overflow:hidden;" onclick="goToCVP()" onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''">
-            <div style="position:absolute;top:-24px;right:-24px;width:100px;height:100px;border:1px solid rgba(255,255,255,.15);border-radius:50%;"></div>
-            <div style="position:absolute;top:-40px;right:-40px;width:140px;height:140px;border:1px solid rgba(255,255,255,.08);border-radius:50%;"></div>
+          <!-- SINGLE UNLOCK BANNER -->
+          <div onclick="goToCVP()" style="margin:16px 22px 24px;background:var(--accent);border-radius:20px;padding:20px 22px;cursor:pointer;transition:transform .2s;position:relative;overflow:hidden;" onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''">
+            <div style="position:absolute;top:-28px;right:-28px;width:110px;height:110px;border:1px solid rgba(255,255,255,.15);border-radius:50%;pointer-events:none;"></div>
             <div style="font-size:9px;text-transform:uppercase;letter-spacing:.22em;color:rgba(250,247,240,.7);font-weight:600;margin-bottom:8px;position:relative;z-index:1;">Your Upscore is locked</div>
             <div style="font-family:'Fraunces',serif;font-size:20px;line-height:1.1;letter-spacing:-.02em;color:var(--card-bg);margin-bottom:14px;position:relative;z-index:1;">Unlock your score and get deeper insights.</div>
             <div style="display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1;">
-              <div style="font-size:11px;color:rgba(250,247,240,.7);">Live score · Real transactions</div>
-              <div style="background:var(--card-bg);color:var(--accent);border-radius:10px;padding:9px 14px;font-size:12px;font-weight:700;">₹99/month →</div>
+              <div style="font-size:11px;color:rgba(250,247,240,.7);">Live score · Real transactions · Monthly</div>
+              <div style="background:var(--card-bg);color:var(--accent);border-radius:10px;padding:9px 14px;font-size:12px;font-weight:700;white-space:nowrap;">₹99/month →</div>
             </div>
           </div>
 
@@ -1773,17 +1772,17 @@
           </div>
         </div>
         <div class="screen-pfm" style="flex: 1;">
-          <!-- UPSCORE — edge to edge, no card, seamless -->
-          <div style="background:var(--ink);color:var(--card-bg);padding:18px 22px 20px;position:relative;overflow:hidden;cursor:pointer;" onclick="goTo(20)">
-            <div style="position:absolute;top:-40px;right:-40px;width:150px;height:150px;border:1px solid rgba(232,168,144,.1);border-radius:50%;"></div>
-            <div style="position:absolute;top:-20px;right:-20px;width:100px;height:100px;border:1px solid rgba(232,168,144,.07);border-radius:50%;"></div>
+          <!-- UPSCORE — edge to edge, no side padding, seamless -->
+          <div onclick="goTo(20)" style="background:var(--ink);color:var(--card-bg);padding:20px 22px 22px;position:relative;overflow:hidden;cursor:pointer;transition:transform .15s;" onmouseenter="this.style.transform='scale(1)'" onmouseleave="this.style.transform=''">
+            <div style="position:absolute;top:-50px;right:-50px;width:180px;height:180px;border:1px solid rgba(232,168,144,.1);border-radius:50%;pointer-events:none;"></div>
+            <div style="position:absolute;top:-28px;right:-28px;width:120px;height:120px;border:1px solid rgba(232,168,144,.07);border-radius:50%;pointer-events:none;"></div>
             <div style="font-size:9px;text-transform:uppercase;letter-spacing:.22em;color:var(--accent-soft);font-weight:600;margin-bottom:8px;position:relative;z-index:1;">Upscore</div>
-            <div style="display:flex;align-items:baseline;gap:10px;position:relative;z-index:1;">
+            <div style="display:flex;align-items:baseline;gap:12px;position:relative;z-index:1;">
               <div style="font-family:'Fraunces',serif;font-size:64px;font-weight:500;line-height:1;letter-spacing:-.02em;" id="upscoreNum">0</div>
               <div style="font-family:'Fraunces',serif;font-style:italic;font-size:16px;color:var(--accent-soft);">Healthy</div>
             </div>
-            <div style="font-size:11px;color:var(--accent-soft);margin-top:6px;position:relative;z-index:1;">↑ 12 points since last refresh</div>
-            <div style="margin-top:12px;display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);border-radius:8px;padding:7px 12px;font-size:11px;font-weight:600;position:relative;z-index:1;">Know about Upscore →</div>
+            <div style="font-size:11px;color:rgba(250,247,240,.5);margin-top:6px;position:relative;z-index:1;">↑ 12 points since last refresh · May 2026</div>
+            <div style="margin-top:14px;display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);border-radius:8px;padding:7px 12px;font-size:11px;font-weight:600;position:relative;z-index:1;">Know about Upscore →</div>
           </div>
           <div class="snapshots">
             <div class="snapshot" onclick="goTo(16)" style="cursor:pointer;">
@@ -1797,6 +1796,17 @@
               <div class="snapshot-sub">outstanding · 2 cards</div>
             </div>
           </div>
+          <!-- ACTIVE SCORE BOOSTER -->
+          <div onclick="goTo(21)" style="margin:12px 22px 0;background:linear-gradient(135deg,#f5ebd2 0%,#f0e4c8 100%);border:1px solid var(--gold-soft);border-radius:14px;padding:14px 16px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:12px;" onmouseenter="this.style.transform='translateY(-1px)'" onmouseleave="this.style.transform=''">
+            <div style="width:36px;height:36px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">⚡</div>
+            <div style="flex:1;">
+              <div style="font-size:9px;text-transform:uppercase;letter-spacing:.18em;color:var(--gold);font-weight:600;margin-bottom:3px;">Active booster</div>
+              <div style="font-family:'Fraunces',serif;font-size:14px;line-height:1.2;">Reducing recurring waste</div>
+              <div style="font-size:10px;color:var(--ink-soft);margin-top:2px;">₹890 saved so far · 3 weeks in → +4 pts projected</div>
+            </div>
+            <div style="font-size:12px;color:var(--gold);">→</div>
+          </div>
+
           <div class="emi-alert">
             <div class="emi-alert-icon">!</div>
             <div class="emi-alert-text">HDFC card bill <em>₹12,400</em> due in <strong>4 days</strong></div>
@@ -1814,274 +1824,223 @@
               <span class="val pos">+ ₹1,360</span>
             </div>
           </div>
+
+          <!-- CROSS-CUTTING INSIGHT PILLS -->
+          <div class="section-title">Insights</div>
+          <div onclick="goTo(18)" style="margin:0 22px 8px;background:var(--card-bg);border:1px solid var(--card-divide);border-radius:14px;padding:13px 15px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all .2s;" onmouseenter="this.style.transform='translateY(-1px)'" onmouseleave="this.style.transform=''">
+            <div style="width:34px;height:34px;border-radius:50%;background:var(--accent-bg);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">🍕</div>
+            <div style="flex:1;"><div style="font-family:'Fraunces',serif;font-size:14px;line-height:1.25;letter-spacing:-.01em;">You worked <em style="font-style:italic;color:var(--accent);font-weight:500;">3 days</em> for Zomato this month.</div><div style="font-size:10px;color:var(--ink-soft);margin-top:2px;">Money insight · Tap for full picture</div></div>
+            <div style="font-size:12px;color:var(--ink-mute);">→</div>
+          </div>
+          <div style="margin:0 22px 8px;background:var(--gold-bg);border:1px solid var(--gold-soft);border-radius:14px;padding:13px 15px;cursor:pointer;display:flex;align-items:center;gap:12px;">
+            <div style="width:34px;height:34px;border-radius:50%;background:rgba(198,156,77,.2);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">✨</div>
+            <div style="flex:1;"><div style="font-family:'Fraunces',serif;font-size:14px;line-height:1.25;letter-spacing:-.01em;">Someone like you saves <em style="font-style:italic;color:var(--gold);font-weight:500;">₹14k more</em> every month.</div><div style="font-size:10px;color:var(--ink-soft);margin-top:2px;">Peer insight · Tap for full picture</div></div>
+            <div style="font-size:12px;color:var(--ink-mute);">→</div>
+          </div>
+
         </div>
       </div>
 
-      <!-- SCREEN 16: MONEY DASHBOARD (post-AA) -->
+      <!-- SCREEN 16: MONEY DASHBOARD -->
       <div class="screen" data-screen="16">
-        <div class="status-bar"><span>9:41</span><div class="icons"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
+                <div class="status-bar"><span>9:41</span><div class="icons"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
         <div class="screen-pfm" style="flex:1;">
-
           <div style="padding:12px 22px 0;display:flex;align-items:center;gap:10px;">
             <div class="back-btn" onclick="goTo(15)">←</div>
             <div style="font-family:'Fraunces',serif;font-size:20px;font-weight:400;letter-spacing:-.02em;flex:1;text-align:center;font-style:italic;color:var(--accent);">Money</div>
             <div style="width:30px;"></div>
           </div>
 
-          <!-- Balance hero -->
+          <!-- BALANCE HERO -->
           <div style="margin:18px 22px 0;text-align:center;padding-bottom:16px;border-bottom:1px solid var(--card-divide);">
             <div style="font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:var(--ink-soft);font-weight:600;margin-bottom:6px;">Balance · May 2026</div>
             <div style="font-family:'Fraunces',serif;font-size:52px;font-weight:400;letter-spacing:-.03em;line-height:1;color:#2d6a4f;">₹2,45,050</div>
-            <div style="font-size:11px;color:var(--ink-soft);margin-top:4px;">across 3 accounts · ↑ ₹38,440 this month</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;margin-top:14px;gap:0;">
+            <div style="font-size:11px;color:var(--ink-soft);margin-top:4px;">across 3 accounts · ↑ ₹38,440 net this month</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;margin-top:14px;">
               <div style="text-align:center;padding:0 12px;border-right:1px solid var(--card-divide);">
-                <div style="font-size:9px;text-transform:uppercase;letter-spacing:.16em;color:var(--ink-mute);font-weight:600;margin-bottom:3px;">Total outflow</div>
+                <div style="font-size:9px;text-transform:uppercase;letter-spacing:.15em;color:var(--ink-mute);font-weight:600;margin-bottom:3px;">Outflow</div>
                 <div style="font-family:'Fraunces',serif;font-style:italic;font-size:20px;color:var(--accent);">₹1,16,560</div>
                 <div style="font-size:10px;color:var(--ink-soft);margin-top:2px;">↑ ₹8,200 vs April</div>
               </div>
               <div style="text-align:center;padding:0 12px;">
-                <div style="font-size:9px;text-transform:uppercase;letter-spacing:.16em;color:var(--ink-mute);font-weight:600;margin-bottom:3px;">Total inflow</div>
+                <div style="font-size:9px;text-transform:uppercase;letter-spacing:.15em;color:var(--ink-mute);font-weight:600;margin-bottom:3px;">Inflow</div>
                 <div style="font-family:'Fraunces',serif;font-style:italic;font-size:20px;color:#2d6a4f;">₹1,55,000</div>
                 <div style="font-size:10px;color:var(--ink-soft);margin-top:2px;">Salary · 1 May</div>
               </div>
             </div>
           </div>
 
-          <!-- Spend vs Forecast graph -->
+          <!-- SPEND vs FORECAST GRAPH -->
           <div style="margin:12px 22px 0;background:var(--card-bg);border:1px solid var(--card-divide);border-radius:16px;padding:14px 16px;">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
               <div style="font-size:10px;text-transform:uppercase;letter-spacing:.18em;color:var(--ink-soft);font-weight:600;">Spend · May</div>
-              <div style="display:flex;gap:10px;">
+              <div style="display:flex;gap:12px;">
                 <div style="display:flex;align-items:center;gap:4px;font-size:9px;color:var(--ink-soft);font-weight:600;text-transform:uppercase;letter-spacing:.1em;"><div style="width:7px;height:7px;border-radius:50%;background:var(--accent);"></div>Current</div>
                 <div style="display:flex;align-items:center;gap:4px;font-size:9px;color:var(--ink-soft);font-weight:600;text-transform:uppercase;letter-spacing:.1em;"><div style="width:7px;height:7px;border-radius:50%;border:1.5px dashed var(--ink-mute);"></div>Forecast</div>
               </div>
             </div>
             <svg viewBox="0 0 280 80" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:80px;">
-              <line x1="0" y1="55" x2="280" y2="55" stroke="rgba(26,24,20,.06)" stroke-width="1"/>
-              <line x1="0" y1="28" x2="280" y2="28" stroke="rgba(26,24,20,.06)" stroke-width="1"/>
-              <polyline points="0,75 46,60 93,48 140,36 186,22" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <line x1="0" y1="56" x2="280" y2="56" stroke="rgba(26,24,20,.05)" stroke-width="1"/>
+              <line x1="0" y1="30" x2="280" y2="30" stroke="rgba(26,24,20,.05)" stroke-width="1"/>
+              <polyline points="0,74 46,60 93,48 140,36 186,22" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
               <polyline points="186,22 233,14 280,8" fill="none" stroke="var(--ink-mute)" stroke-width="2" stroke-dasharray="5,3" stroke-linecap="round"/>
               <circle cx="186" cy="22" r="6" fill="var(--accent)" stroke="var(--card-bg)" stroke-width="2.5"/>
               <circle cx="280" cy="8" r="5" fill="var(--card-bg)" stroke="var(--ink-mute)" stroke-width="2"/>
-              <rect x="100" y="3" width="68" height="14" rx="3" fill="var(--accent-bg)"/>
-              <text x="134" y="13" font-size="8" fill="var(--accent)" font-family="Inter Tight" text-anchor="middle" font-weight="600">₹1.16L · now</text>
+              <rect x="96" y="4" width="72" height="14" rx="3" fill="var(--accent-bg)"/>
+              <text x="132" y="14" font-size="8" fill="var(--accent)" font-family="Inter Tight" text-anchor="middle" font-weight="600">₹1.16L now</text>
               <text x="278" y="6" font-size="8" fill="var(--ink-mute)" font-family="Inter Tight" text-anchor="end">₹1.38L forecast</text>
             </svg>
-            <div style="display:flex;justify-content:space-between;margin-top:4px;">
-              <span style="font-size:9px;color:var(--ink-mute);">1 May</span>
-              <span style="font-size:9px;color:var(--ink-mute);">8</span>
-              <span style="font-size:9px;color:var(--ink-mute);">15</span>
-              <span style="font-size:9px;color:var(--ink-mute);">22 ←</span>
-              <span style="font-size:9px;color:var(--ink-mute);">31</span>
+            <div style="display:flex;justify-content:space-between;margin-top:4px;font-size:9px;color:var(--ink-mute);">
+              <span>1 May</span><span>8</span><span>15</span><span>22 ←now</span><span>31</span>
             </div>
           </div>
 
-          <!-- Insight cards → features -->
+          <!-- INSIGHT CARDS — entry points to features -->
           <div class="section-title" style="margin-top:18px;">Insights</div>
 
           <div onclick="goTo(18)" style="margin:0 22px 8px;background:var(--card-bg);border:1px solid var(--card-divide);border-radius:14px;padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all .2s;" onmouseenter="this.style.transform='translateY(-1px)'" onmouseleave="this.style.transform=''">
             <div style="width:36px;height:36px;border-radius:10px;background:var(--accent-bg);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🍕</div>
-            <div style="flex:1;">
-              <div style="font-family:'Fraunces',serif;font-size:14px;line-height:1.25;letter-spacing:-.01em;">Lifestyle is <em style="font-style:italic;color:var(--accent);font-weight:500;">38% of salary</em> — 2× what peers spend.</div>
-              <div style="font-size:10px;color:var(--ink-soft);margin-top:2px;">Category wise spends →</div>
-            </div>
+            <div style="flex:1;"><div style="font-family:'Fraunces',serif;font-size:14px;line-height:1.25;letter-spacing:-.01em;">Lifestyle is <em style="font-style:italic;color:var(--accent);font-weight:500;">38% of salary</em> — 2× what peers spend.</div><div style="font-size:10px;color:var(--ink-soft);margin-top:2px;">Category wise spends →</div></div>
             <div style="font-size:12px;color:var(--ink-mute);">→</div>
           </div>
 
           <div onclick="goTo(19)" style="margin:0 22px 8px;background:var(--card-bg);border:1px solid var(--card-divide);border-radius:14px;padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all .2s;" onmouseenter="this.style.transform='translateY(-1px)'" onmouseleave="this.style.transform=''">
             <div style="width:36px;height:36px;border-radius:10px;background:rgba(26,24,20,.06);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">📋</div>
-            <div style="flex:1;">
-              <div style="font-family:'Fraunces',serif;font-size:14px;line-height:1.25;letter-spacing:-.01em;"><em style="font-style:italic;color:var(--accent);font-weight:500;">₹22,680/year</em> in subscriptions you've forgotten.</div>
-              <div style="font-size:10px;color:var(--ink-soft);margin-top:2px;">Recurring charges →</div>
-            </div>
+            <div style="flex:1;"><div style="font-family:'Fraunces',serif;font-size:14px;line-height:1.25;letter-spacing:-.01em;"><em style="font-style:italic;color:var(--accent);font-weight:500;">₹22,680/year</em> leaking through forgotten subscriptions.</div><div style="font-size:10px;color:var(--ink-soft);margin-top:2px;">Recurring charges →</div></div>
+            <div style="font-size:12px;color:var(--ink-mute);">→</div>
+          </div>
+
+          <div  style="margin:0 22px 8px;background:var(--card-bg);border:1px solid var(--card-divide);border-radius:14px;padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;">
+            <div style="width:36px;height:36px;border-radius:10px;background:rgba(26,24,20,.06);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">📈</div>
+            <div style="flex:1;"><div style="font-family:'Fraunces',serif;font-size:14px;line-height:1.25;letter-spacing:-.01em;">On track to overspend by <em style="font-style:italic;color:var(--accent);font-weight:500;">₹21,440</em> by month end.</div><div style="font-size:10px;color:var(--ink-soft);margin-top:2px;">Spend forecast →</div></div>
             <div style="font-size:12px;color:var(--ink-mute);">→</div>
           </div>
 
           <div style="margin:0 22px 8px;background:var(--card-bg);border:1px solid var(--card-divide);border-radius:14px;padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;">
             <div style="width:36px;height:36px;border-radius:10px;background:rgba(26,24,20,.06);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🛵</div>
-            <div style="flex:1;">
-              <div style="font-family:'Fraunces',serif;font-size:14px;line-height:1.25;letter-spacing:-.01em;">You paid <em style="font-style:italic;color:var(--accent);font-weight:500;">₹3,200</em> for speed, not for things.</div>
-              <div style="font-size:10px;color:var(--ink-soft);margin-top:2px;">Hidden charges →</div>
-            </div>
-            <div style="font-size:12px;color:var(--ink-mute);">→</div>
-          </div>
-
-          <div style="margin:0 22px 8px;background:var(--card-bg);border:1px solid var(--card-divide);border-radius:14px;padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;">
-            <div style="width:36px;height:36px;border-radius:10px;background:rgba(26,24,20,.06);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">📈</div>
-            <div style="flex:1;">
-              <div style="font-family:'Fraunces',serif;font-size:14px;line-height:1.25;letter-spacing:-.01em;">On track to overspend by <em style="font-style:italic;color:var(--accent);font-weight:500;">₹21,440</em> by month end.</div>
-              <div style="font-size:10px;color:var(--ink-soft);margin-top:2px;">Spend forecast →</div>
-            </div>
+            <div style="flex:1;"><div style="font-family:'Fraunces',serif;font-size:14px;line-height:1.25;letter-spacing:-.01em;">You paid <em style="font-style:italic;color:var(--accent);font-weight:500;">₹3,200</em> for speed, not for things.</div><div style="font-size:10px;color:var(--ink-soft);margin-top:2px;">Hidden charges →</div></div>
             <div style="font-size:12px;color:var(--ink-mute);">→</div>
           </div>
 
         </div>
       </div>
 
-      <!-- SCREEN 17: CREDIT DASHBOARD (post-AA) -->
+      <!-- SCREEN 17: CREDIT DASHBOARD -->
       <div class="screen" data-screen="17">
-        <div class="status-bar"><span>9:41</span><div class="icons"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
+                <div class="status-bar"><span>9:41</span><div class="icons"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
         <div class="screen-pfm" style="flex:1;">
-
           <div style="padding:12px 22px 0;display:flex;align-items:center;gap:10px;">
             <div class="back-btn" onclick="goTo(15)">←</div>
             <div style="font-family:'Fraunces',serif;font-size:20px;font-weight:400;letter-spacing:-.02em;flex:1;text-align:center;font-style:italic;color:var(--accent);">Credit</div>
             <div style="width:30px;"></div>
           </div>
-
-          <!-- Outstanding hero -->
+          <!-- OUTSTANDING HERO -->
           <div style="margin:18px 22px 0;text-align:center;padding-bottom:16px;border-bottom:1px solid var(--card-divide);">
             <div style="font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:var(--ink-soft);font-weight:600;margin-bottom:6px;">Total outstanding</div>
             <div style="font-family:'Fraunces',serif;font-size:52px;font-weight:400;letter-spacing:-.03em;line-height:1;color:var(--accent);">₹38,000</div>
             <div style="font-size:11px;color:var(--ink-soft);margin-top:4px;">across 2 credit cards</div>
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;margin-top:14px;">
               <div style="text-align:center;padding:0 8px;border-right:1px solid var(--card-divide);">
-                <div style="font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:var(--ink-mute);font-weight:600;margin-bottom:3px;">Score</div>
+                <div style="font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:var(--ink-mute);font-weight:600;margin-bottom:2px;">Score</div>
                 <div style="font-family:'Fraunces',serif;font-style:italic;font-size:18px;color:#2d6a4f;">742</div>
               </div>
               <div style="text-align:center;padding:0 8px;border-right:1px solid var(--card-divide);">
-                <div style="font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:var(--ink-mute);font-weight:600;margin-bottom:3px;">Utilisation</div>
-                <div style="font-family:'Fraunces',serif;font-style:italic;font-size:18px;color:var(--gold);">38%</div>
+                <div style="font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:var(--ink-mute);font-weight:600;margin-bottom:2px;">Utilisation</div>
+                <div style="font-family:'Fraunces',serif;font-style:italic;font-size:18px;color:#c69c4d;">38%</div>
               </div>
               <div style="text-align:center;padding:0 8px;">
-                <div style="font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:var(--ink-mute);font-weight:600;margin-bottom:3px;">Cards</div>
+                <div style="font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:var(--ink-mute);font-weight:600;margin-bottom:2px;">Cards</div>
                 <div style="font-family:'Fraunces',serif;font-style:italic;font-size:18px;">2</div>
               </div>
             </div>
           </div>
-
-          <!-- Credit insight cards -->
-          <div class="section-title" style="margin-top:18px;">Insights</div>
-
+          <!-- UPDATES -->
+          <div class="section-title">Updates</div>
+          <div style="margin:0 22px 8px;background:var(--card-bg);border:1px solid var(--card-divide);border-radius:14px;padding:13px 15px;display:flex;align-items:center;gap:12px;">
+            <div style="width:32px;height:32px;border-radius:50%;background:#f5ebd2;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">★</div>
+            <div style="flex:1;"><div style="font-size:13px;font-weight:500;margin-bottom:2px;">Credit score moved</div><div style="font-size:11px;color:var(--ink-soft);">728 → <strong>742</strong> · ↑ 14 points · May refresh</div></div>
+          </div>
+          <div style="margin:0 22px 8px;background:var(--accent-bg);border-left:3px solid var(--accent);border-radius:10px;padding:11px 14px;display:flex;align-items:center;gap:10px;">
+            <div style="width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--card-bg);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;">!</div>
+            <div style="font-size:12px;line-height:1.35;">HDFC bill <em style="font-style:italic;font-family:'Fraunces',serif;font-size:14px;color:var(--accent);">₹12,400</em> due in <strong>4 days</strong></div>
+          </div>
+          <!-- CREDIT INSIGHTS -->
+          <div class="section-title" style="margin-top:14px;">Insights</div>
           <div style="margin:0 22px 8px;background:var(--ink);border-radius:14px;padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;">
             <div style="width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">💸</div>
-            <div style="flex:1;">
-              <div style="font-family:'Fraunces',serif;font-size:14px;line-height:1.25;letter-spacing:-.01em;color:var(--card-bg);">Credit interest this year = <em style="font-style:italic;color:var(--accent-soft);font-weight:500;">5 weeks</em> of salary.</div>
-              <div style="font-size:10px;color:rgba(250,247,240,.4);margin-top:2px;">₹18,000 paid to banks →</div>
-            </div>
+            <div style="flex:1;"><div style="font-family:'Fraunces',serif;font-size:14px;line-height:1.25;letter-spacing:-.01em;color:var(--card-bg);">Interest this year = <em style="font-style:italic;color:var(--accent-soft);font-weight:500;">5 weeks</em> of salary.</div><div style="font-size:10px;color:rgba(250,247,240,.4);margin-top:2px;">₹18,000 paid to banks →</div></div>
             <div style="font-size:12px;color:rgba(255,255,255,.25);">→</div>
           </div>
-
           <div style="margin:0 22px 8px;background:var(--ink);border-radius:14px;padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;">
             <div style="width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🏠</div>
-            <div style="flex:1;">
-              <div style="font-family:'Fraunces',serif;font-size:14px;line-height:1.25;letter-spacing:-.01em;color:var(--card-bg);">Home loan costs <em style="font-style:italic;color:var(--accent-soft);font-weight:500;">₹3.2L more</em> than people like you.</div>
-              <div style="font-size:10px;color:rgba(250,247,240,.4);margin-top:2px;">Score 742 vs peers at 780+ →</div>
-            </div>
+            <div style="flex:1;"><div style="font-family:'Fraunces',serif;font-size:14px;line-height:1.25;letter-spacing:-.01em;color:var(--card-bg);">Home loan costs <em style="font-style:italic;color:var(--accent-soft);font-weight:500;">₹3.2L more</em> than people like you.</div><div style="font-size:10px;color:rgba(250,247,240,.4);margin-top:2px;">Score 742 vs peers 780+ →</div></div>
             <div style="font-size:12px;color:rgba(255,255,255,.25);">→</div>
           </div>
-
           <div style="margin:0 22px 8px;background:var(--ink);border-radius:14px;padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;">
             <div style="width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">📊</div>
-            <div style="flex:1;">
-              <div style="font-family:'Fraunces',serif;font-size:14px;line-height:1.25;letter-spacing:-.01em;color:var(--card-bg);">ICICI at <em style="font-style:italic;color:var(--accent-soft);font-weight:500;">64% utilisation.</em> Drop below 30% for +22 pts.</div>
-              <div style="font-size:10px;color:rgba(250,247,240,.4);margin-top:2px;">Credit utilisation →</div>
-            </div>
+            <div style="flex:1;"><div style="font-family:'Fraunces',serif;font-size:14px;line-height:1.25;letter-spacing:-.01em;color:var(--card-bg);">ICICI at <em style="font-style:italic;color:var(--accent-soft);font-weight:500;">64% utilisation.</em> Drop below 30% for +22 pts.</div><div style="font-size:10px;color:rgba(250,247,240,.4);margin-top:2px;">Credit utilisation →</div></div>
             <div style="font-size:12px;color:rgba(255,255,255,.25);">→</div>
           </div>
-
         </div>
       </div>
 
       <!-- SCREEN 18: INSIGHT DETAIL — CATEGORY SPEND -->
       <div class="screen" data-screen="18">
-        <div class="status-bar"><span>9:41</span><div class="icons"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
+                <div class="status-bar"><span>9:41</span><div class="icons"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
         <div class="screen-pfm" style="flex:1;">
-          <!-- Header bar -->
           <div style="padding:14px 22px 0;display:flex;align-items:center;gap:10px;">
             <div class="back-btn" onclick="goTo(16)">←</div>
-            <div style="font-size:12px;font-weight:600;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.12em;">Category wise spends</div>
+            <div style="font-size:11px;color:var(--ink-soft);font-weight:600;text-transform:uppercase;letter-spacing:.12em;">Category wise spends</div>
           </div>
-
-          <!-- Dark hero section with total -->
+          <!-- DARK HERO -->
           <div style="margin:14px 22px 0;background:var(--ink);border-radius:20px;padding:20px;position:relative;overflow:hidden;">
-            <div style="position:absolute;top:-30px;right:-30px;width:110px;height:110px;border:1px solid rgba(255,255,255,.07);border-radius:50%;"></div>
+            <div style="position:absolute;top:-28px;right:-28px;width:100px;height:100px;border:1px solid rgba(255,255,255,.07);border-radius:50%;pointer-events:none;"></div>
             <div style="font-size:9px;text-transform:uppercase;letter-spacing:.2em;color:rgba(250,247,240,.4);font-weight:600;margin-bottom:4px;position:relative;z-index:1;">Total spend · May</div>
             <div style="font-family:'Fraunces',serif;font-size:42px;font-style:italic;font-weight:500;line-height:1;letter-spacing:-.02em;color:var(--card-bg);position:relative;z-index:1;">₹1,16,560</div>
             <div style="font-size:11px;color:rgba(250,247,240,.45);margin-top:4px;position:relative;z-index:1;">↑ ₹8,200 more than April</div>
           </div>
-
-          <!-- Category list — like the reference image -->
-          <div style="margin:14px 22px 0;background:var(--card-bg);border:1px solid var(--card-divide);border-radius:16px;overflow:hidden;">
-
+          <!-- CATEGORY LIST -->
+          <div style="margin:12px 22px 0;background:var(--card-bg);border:1px solid var(--card-divide);border-radius:16px;overflow:hidden;">
+            <!-- Essentials -->
             <div style="padding:14px 16px;border-bottom:1px solid var(--card-divide);">
               <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                <div style="display:flex;align-items:center;gap:10px;">
-                  <div style="width:32px;height:32px;border-radius:10px;background:rgba(26,24,20,.06);display:flex;align-items:center;justify-content:center;font-size:16px;">🏠</div>
-                  <div>
-                    <div style="font-size:13px;font-weight:500;">Essentials</div>
-                    <div style="font-size:10px;color:var(--ink-soft);margin-top:1px;">Rent, bills, groceries</div>
-                  </div>
-                </div>
-                <div style="text-align:right;">
-                  <div style="font-family:'Fraunces',serif;font-style:italic;font-size:16px;">₹46,500</div>
-                  <div style="font-size:10px;color:var(--ink-soft);margin-top:1px;">40% of spend</div>
-                </div>
+                <div style="display:flex;align-items:center;gap:10px;"><div style="width:32px;height:32px;border-radius:10px;background:rgba(26,24,20,.06);display:flex;align-items:center;justify-content:center;font-size:15px;">🏠</div><div><div style="font-size:13px;font-weight:500;">Essentials</div><div style="font-size:10px;color:var(--ink-soft);">Rent, bills, groceries</div></div></div>
+                <div style="text-align:right;"><div style="font-family:'Fraunces',serif;font-style:italic;font-size:16px;">₹46,500</div><div style="font-size:10px;color:var(--ink-soft);">40%</div></div>
               </div>
               <div style="height:4px;background:rgba(26,24,20,.07);border-radius:2px;overflow:hidden;"><div style="width:80%;height:100%;background:var(--ink);border-radius:2px;"></div></div>
             </div>
-
+            <!-- Lifestyle — flagged -->
             <div style="padding:14px 16px;border-bottom:1px solid var(--card-divide);background:var(--accent-bg);">
               <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                <div style="display:flex;align-items:center;gap:10px;">
-                  <div style="width:32px;height:32px;border-radius:10px;background:var(--accent-bg);border:1px solid var(--accent-soft);display:flex;align-items:center;justify-content:center;font-size:16px;">🍕</div>
-                  <div>
-                    <div style="font-size:13px;font-weight:500;">Lifestyle</div>
-                    <div style="font-size:10px;color:var(--ink-soft);margin-top:1px;">Dining, shopping, going out</div>
-                  </div>
-                </div>
-                <div style="text-align:right;">
-                  <div style="font-family:'Fraunces',serif;font-style:italic;font-size:16px;color:var(--accent);">₹34,100</div>
-                  <div style="font-size:10px;color:var(--accent);font-weight:600;margin-top:1px;">↑ 22% vs April</div>
-                </div>
+                <div style="display:flex;align-items:center;gap:10px;"><div style="width:32px;height:32px;border-radius:10px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;font-size:15px;">🍕</div><div><div style="font-size:13px;font-weight:500;">Lifestyle</div><div style="font-size:10px;color:var(--ink-soft);">Dining, shopping, going out</div></div></div>
+                <div style="text-align:right;"><div style="font-family:'Fraunces',serif;font-style:italic;font-size:16px;color:var(--accent);">₹34,100</div><div style="font-size:10px;color:var(--accent);font-weight:600;">↑ 22% vs April</div></div>
               </div>
               <div style="height:4px;background:rgba(200,68,42,.15);border-radius:2px;overflow:hidden;"><div style="width:59%;height:100%;background:var(--accent);border-radius:2px;"></div></div>
             </div>
-
+            <!-- EMIs -->
             <div style="padding:14px 16px;border-bottom:1px solid var(--card-divide);">
               <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                <div style="display:flex;align-items:center;gap:10px;">
-                  <div style="width:32px;height:32px;border-radius:10px;background:rgba(26,24,20,.06);display:flex;align-items:center;justify-content:center;font-size:16px;">📉</div>
-                  <div>
-                    <div style="font-size:13px;font-weight:500;">EMIs</div>
-                    <div style="font-size:10px;color:var(--ink-soft);margin-top:1px;">Home loan, car loan</div>
-                  </div>
-                </div>
-                <div style="text-align:right;">
-                  <div style="font-family:'Fraunces',serif;font-style:italic;font-size:16px;">₹23,250</div>
-                  <div style="font-size:10px;color:var(--ink-soft);margin-top:1px;">Fixed</div>
-                </div>
+                <div style="display:flex;align-items:center;gap:10px;"><div style="width:32px;height:32px;border-radius:10px;background:rgba(26,24,20,.06);display:flex;align-items:center;justify-content:center;font-size:15px;">📉</div><div><div style="font-size:13px;font-weight:500;">EMIs</div><div style="font-size:10px;color:var(--ink-soft);">Home loan, car loan</div></div></div>
+                <div style="text-align:right;"><div style="font-family:'Fraunces',serif;font-style:italic;font-size:16px;">₹23,250</div><div style="font-size:10px;color:var(--ink-soft);">Fixed</div></div>
               </div>
               <div style="height:4px;background:rgba(26,24,20,.07);border-radius:2px;overflow:hidden;"><div style="width:40%;height:100%;background:var(--accent-soft);border-radius:2px;"></div></div>
             </div>
-
+            <!-- Investments -->
             <div style="padding:14px 16px;">
               <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                <div style="display:flex;align-items:center;gap:10px;">
-                  <div style="width:32px;height:32px;border-radius:10px;background:rgba(45,106,79,.1);display:flex;align-items:center;justify-content:center;font-size:16px;">🌱</div>
-                  <div>
-                    <div style="font-size:13px;font-weight:500;">Investments</div>
-                    <div style="font-size:10px;color:var(--ink-soft);margin-top:1px;">SIP, PPF, FD</div>
-                  </div>
-                </div>
-                <div style="text-align:right;">
-                  <div style="font-family:'Fraunces',serif;font-style:italic;font-size:16px;color:#2d6a4f;">₹12,400</div>
-                  <div style="font-size:10px;color:#2d6a4f;font-weight:600;margin-top:1px;">Below peers</div>
-                </div>
+                <div style="display:flex;align-items:center;gap:10px;"><div style="width:32px;height:32px;border-radius:10px;background:rgba(45,106,79,.1);display:flex;align-items:center;justify-content:center;font-size:15px;">🌱</div><div><div style="font-size:13px;font-weight:500;">Investments</div><div style="font-size:10px;color:var(--ink-soft);">SIP, PPF, FD</div></div></div>
+                <div style="text-align:right;"><div style="font-family:'Fraunces',serif;font-style:italic;font-size:16px;color:#2d6a4f;">₹12,400</div><div style="font-size:10px;color:#2d6a4f;font-weight:600;">Below peers</div></div>
               </div>
               <div style="height:4px;background:rgba(26,24,20,.07);border-radius:2px;overflow:hidden;"><div style="width:21%;height:100%;background:#2d6a4f;border-radius:2px;"></div></div>
             </div>
-
           </div>
-
-          <!-- Peer insight -->
-          <div style="margin:12px 22px 0;background:var(--gold-bg);border:1px solid var(--gold-soft);border-radius:14px;padding:14px 16px;">
-            <div style="font-size:9px;text-transform:uppercase;letter-spacing:.2em;color:var(--gold);font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;border-radius:50%;background:var(--gold);"></div>Peer comparison</div>
-            <div style="font-family:'Fraunces',serif;font-size:15px;line-height:1.35;">Software developers your age average <em style="font-style:italic;color:var(--gold);font-weight:500;">₹17,200</em> on lifestyle. You spend <em style="font-style:italic;color:var(--gold);font-weight:500;">₹16,900 more</em> — ₹2L extra a year.</div>
+          <!-- PEER BLOCK -->
+          <div style="margin:12px 22px 0;background:#f5ebd2;border:1px solid #e8d4a8;border-radius:14px;padding:14px 16px;">
+            <div style="font-size:9px;text-transform:uppercase;letter-spacing:.2em;color:#c69c4d;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;border-radius:50%;background:#c69c4d;"></div>Peer comparison</div>
+            <div style="font-family:'Fraunces',serif;font-size:15px;line-height:1.35;">Software developers your age average <em style="font-style:italic;color:#c69c4d;font-weight:500;">₹17,200</em> on lifestyle. You spend <em style="font-style:italic;color:#c69c4d;font-weight:500;">₹16,900 more</em> — ₹2L extra a year.</div>
             <div style="font-size:10px;color:var(--ink-soft);margin-top:8px;padding-top:8px;border-top:1px solid rgba(198,156,77,.25);">Based on comparing your profile against millions of similar users.</div>
           </div>
-
-          <!-- Feature CTA -->
+          <!-- FEATURE CTA -->
           <div style="margin:12px 22px 0;background:var(--accent-bg);border-radius:14px;padding:16px 18px;border:1px solid var(--accent-soft);">
             <div style="font-size:9px;text-transform:uppercase;letter-spacing:.2em;color:var(--accent);font-weight:600;margin-bottom:6px;">Feature → Category spend tracker</div>
             <div style="font-family:'Fraunces',serif;font-size:17px;line-height:1.2;margin-bottom:12px;">Set limits per category. <em style="font-style:italic;color:var(--accent);">Track monthly.</em></div>
@@ -2096,20 +2055,16 @@
 
       <!-- SCREEN 19: INSIGHT DETAIL — RECURRING CHARGES -->
       <div class="screen" data-screen="19">
-        <div class="status-bar"><span>9:41</span><div class="icons"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
+                <div class="status-bar"><span>9:41</span><div class="icons"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
         <div class="screen-pfm" style="flex:1;">
           <div style="padding:14px 22px 0;display:flex;align-items:center;gap:10px;">
             <div class="back-btn" onclick="goTo(16)">←</div>
-            <div style="font-size:11px;color:var(--ink-soft);">Recurring charges · Money insight</div>
+            <div style="font-size:11px;color:var(--ink-soft);font-weight:600;text-transform:uppercase;letter-spacing:.12em;">Recurring charges</div>
           </div>
-          <!-- Hook -->
+          <!-- HERO -->
           <div style="padding:24px 24px 20px;border-bottom:1px solid var(--card-divide);">
-            <div style="font-family:'Fraunces',serif;font-size:26px;line-height:1.05;letter-spacing:-.025em;font-weight:400;font-variation-settings:'SOFT' 30;">
-              11 subscriptions. 3 you haven't touched in
-              <span style="display:block;font-size:50px;line-height:.9;color:var(--accent);font-style:italic;font-weight:500;margin:5px 0 7px;font-variation-settings:'SOFT' 100,'WONK' 1;">60 days.</span>
-            </div>
+            <div style="font-family:'Fraunces',serif;font-size:26px;line-height:1.05;letter-spacing:-.025em;font-weight:400;">11 subscriptions. 3 you haven't touched in<span style="display:block;font-size:50px;line-height:.9;color:var(--accent);font-style:italic;font-weight:500;margin:5px 0 7px;">60 days.</span></div>
           </div>
-          <!-- Fact + data -->
           <div style="padding:18px 24px 0;">
             <p style="font-size:13px;line-height:1.65;color:var(--ink-soft);margin-bottom:16px;">₹4,280/month in recurring charges. <strong style="color:var(--ink);">3 services unused for 60+ days</strong> cost ₹1,890/month — ₹22,680 a year going nowhere.</p>
             <div style="background:rgba(26,24,20,.03);border-radius:12px;padding:14px 16px;margin-bottom:16px;border:1px solid var(--card-divide);">
@@ -2117,10 +2072,9 @@
               <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--card-divide);font-size:12px;"><span style="color:var(--accent);font-weight:600;">⚠ Adobe CC</span><span style="font-family:'Fraunces',serif;font-style:italic;color:var(--accent);">₹540 · unused 68 days</span></div>
               <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--card-divide);font-size:12px;"><span style="color:var(--accent);font-weight:600;">⚠ Duolingo</span><span style="font-family:'Fraunces',serif;font-style:italic;color:var(--accent);">₹260 · unused 91 days</span></div>
               <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--card-divide);font-size:12px;"><span style="color:var(--ink-soft);">Netflix</span><span style="font-family:'Fraunces',serif;font-style:italic;color:#2d6a4f;">₹649 · active</span></div>
-              <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:12px;font-weight:600;"><span style="color:var(--ink);">All 11 subscriptions</span><span style="font-family:'Fraunces',serif;font-style:italic;color:var(--accent);">₹4,280/mo</span></div>
+              <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:12px;font-weight:600;"><span>All 11 subscriptions</span><span style="font-family:'Fraunces',serif;font-style:italic;color:var(--accent);">₹4,280/mo</span></div>
             </div>
           </div>
-          <!-- Feature band -->
           <div style="margin:0 24px;background:var(--accent-bg);border-radius:14px;padding:16px 18px;border:1px solid var(--accent-soft);">
             <div style="font-size:9px;text-transform:uppercase;letter-spacing:.2em;color:var(--accent);font-weight:600;margin-bottom:6px;">Feature → Subscription manager</div>
             <div style="font-family:'Fraunces',serif;font-size:17px;line-height:1.2;margin-bottom:12px;">Cancel the 3 unused. Get <em style="font-style:italic;color:var(--accent);">₹1,890/month back.</em></div>
@@ -2133,87 +2087,108 @@
         </div>
       </div>
 
-      <!-- SCREEN 20: UPSCORE DETAIL -->
+      <!-- SCREEN 20: UPSCORE DETAIL PAGE -->
       <div class="screen" data-screen="20">
-        <div class="status-bar inv" style="color:var(--card-bg);"><span>9:41</span><div class="icons"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
+        <div class="status-bar" style="color:var(--card-bg);"><span>9:41</span><div class="icons"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
         <div class="screen-pfm" style="flex:1;">
-
           <!-- Dark hero -->
           <div style="background:var(--ink);color:var(--card-bg);padding:14px 22px 24px;position:relative;overflow:hidden;">
-            <div style="position:absolute;top:-40px;right:-40px;width:150px;height:150px;border:1px solid rgba(232,168,144,.1);border-radius:50%;"></div>
+            <div style="position:absolute;top:-40px;right:-40px;width:150px;height:150px;border:1px solid rgba(232,168,144,.1);border-radius:50%;pointer-events:none;"></div>
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
               <div class="back-btn" style="background:rgba(255,255,255,.1);color:var(--card-bg);" onclick="goTo(15)">←</div>
-              <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.14em;color:rgba(250,247,240,.5);">What is Upscore</div>
+              <div style="font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:rgba(250,247,240,.45);font-weight:600;">About Upscore</div>
             </div>
             <div style="font-size:9px;text-transform:uppercase;letter-spacing:.22em;color:var(--accent-soft);font-weight:600;margin-bottom:6px;position:relative;z-index:1;">Your score</div>
             <div style="font-family:'Fraunces',serif;font-size:72px;font-weight:500;line-height:1;letter-spacing:-.02em;position:relative;z-index:1;">724</div>
             <div style="display:flex;align-items:center;gap:8px;margin-top:6px;position:relative;z-index:1;">
               <div style="font-family:'Fraunces',serif;font-style:italic;font-size:16px;color:var(--accent-soft);">Healthy</div>
-              <div style="font-size:11px;color:rgba(250,247,240,.5);">· Top 34% of users</div>
+              <div style="font-size:11px;color:rgba(250,247,240,.4);">· Top 34% of users</div>
             </div>
-            <!-- Score bar -->
             <div style="margin-top:16px;position:relative;z-index:1;">
-              <div style="height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden;">
-                <div style="width:68%;height:100%;background:linear-gradient(90deg,var(--accent),#a8d5b8);border-radius:3px;"></div>
-              </div>
-              <div style="display:flex;justify-content:space-between;margin-top:4px;font-size:9px;color:rgba(250,247,240,.3);">
-                <span>300</span><span>500</span><span>700</span><span>900</span>
-              </div>
+              <div style="height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden;"><div style="width:68%;height:100%;background:linear-gradient(90deg,var(--accent),#a8d5b8);border-radius:3px;"></div></div>
+              <div style="display:flex;justify-content:space-between;margin-top:4px;font-size:9px;color:rgba(250,247,240,.3);"><span>300</span><span>500</span><span>700</span><span>900</span></div>
             </div>
           </div>
-
-          <!-- How it's calculated -->
-          <div style="padding:20px 22px 0;">
+          <!-- How calculated -->
+          <div style="padding:18px 22px 0;">
             <div style="font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:var(--ink-soft);font-weight:600;margin-bottom:12px;">How it's calculated</div>
-
             <!-- Money score -->
             <div style="background:var(--card-bg);border:1px solid var(--card-divide);border-radius:14px;padding:14px 16px;margin-bottom:10px;">
               <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                <div style="display:flex;align-items:center;gap:10px;">
-                  <div style="width:32px;height:32px;border-radius:10px;background:rgba(26,24,20,.06);display:flex;align-items:center;justify-content:center;font-size:16px;">💰</div>
-                  <div>
-                    <div style="font-size:13px;font-weight:500;">Money score</div>
-                    <div style="font-size:10px;color:var(--ink-soft);">Savings rate, spend habits</div>
-                  </div>
-                </div>
+                <div style="display:flex;align-items:center;gap:10px;"><div style="width:32px;height:32px;border-radius:10px;background:rgba(26,24,20,.06);display:flex;align-items:center;justify-content:center;font-size:16px;">💰</div><div><div style="font-size:13px;font-weight:500;">Money score</div><div style="font-size:10px;color:var(--ink-soft);">Savings rate, spend habits</div></div></div>
                 <div style="font-family:'Fraunces',serif;font-style:italic;font-size:20px;color:#2d6a4f;">340</div>
               </div>
               <div style="height:4px;background:rgba(26,24,20,.07);border-radius:2px;overflow:hidden;"><div style="width:68%;height:100%;background:#2d6a4f;border-radius:2px;"></div></div>
-              <div style="font-size:10px;color:var(--ink-soft);margin-top:6px;">Your savings rate is below peers. Improves as spending habits improve.</div>
+              <div style="font-size:10px;color:var(--ink-soft);margin-top:6px;">Below peers. Savings rate improving. Improves as spending habits change.</div>
             </div>
-
             <!-- Credit score -->
-            <div style="background:var(--card-bg);border:1px solid var(--card-divide);border-radius:14px;padding:14px 16px;margin-bottom:10px;">
+            <div style="background:var(--card-bg);border:1px solid var(--card-divide);border-radius:14px;padding:14px 16px;margin-bottom:16px;">
               <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                <div style="display:flex;align-items:center;gap:10px;">
-                  <div style="width:32px;height:32px;border-radius:10px;background:var(--accent-bg);display:flex;align-items:center;justify-content:center;font-size:16px;">💳</div>
-                  <div>
-                    <div style="font-size:13px;font-weight:500;">Credit score</div>
-                    <div style="font-size:10px;color:var(--ink-soft);">Payment history, utilisation</div>
-                  </div>
-                </div>
-                <div style="font-family:'Fraunces',serif;font-style:italic;font-size:20px;color:var(--gold);">384</div>
+                <div style="display:flex;align-items:center;gap:10px;"><div style="width:32px;height:32px;border-radius:10px;background:var(--accent-bg);display:flex;align-items:center;justify-content:center;font-size:16px;">💳</div><div><div style="font-size:13px;font-weight:500;">Credit score</div><div style="font-size:10px;color:var(--ink-soft);">Payment history, utilisation</div></div></div>
+                <div style="font-family:'Fraunces',serif;font-style:italic;font-size:20px;color:#c69c4d;">384</div>
               </div>
-              <div style="height:4px;background:rgba(26,24,20,.07);border-radius:2px;overflow:hidden;"><div style="width:77%;height:100%;background:var(--gold);border-radius:2px;"></div></div>
+              <div style="height:4px;background:rgba(26,24,20,.07);border-radius:2px;overflow:hidden;"><div style="width:77%;height:100%;background:#c69c4d;border-radius:2px;"></div></div>
               <div style="font-size:10px;color:var(--ink-soft);margin-top:6px;">No missed payments. ICICI utilisation at 64% is dragging this down.</div>
             </div>
-
             <!-- What it means -->
-            <div style="font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:var(--ink-soft);font-weight:600;margin-bottom:12px;margin-top:4px;">What it means for you</div>
+            <div style="font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:var(--ink-soft);font-weight:600;margin-bottom:12px;">What it means for you</div>
             <div style="background:var(--card-bg);border:1px solid var(--card-divide);border-radius:14px;overflow:hidden;margin-bottom:20px;">
-              <div style="padding:12px 16px;border-bottom:1px solid var(--card-divide);display:flex;justify-content:space-between;align-items:center;">
-                <div style="font-size:12px;color:var(--ink-soft);">Home loan rate</div>
-                <div style="font-family:'Fraunces',serif;font-style:italic;font-size:14px;">8.9% p.a.</div>
-              </div>
-              <div style="padding:12px 16px;border-bottom:1px solid var(--card-divide);display:flex;justify-content:space-between;align-items:center;">
-                <div style="font-size:12px;color:var(--ink-soft);">If score hits 780</div>
-                <div style="font-family:'Fraunces',serif;font-style:italic;font-size:14px;color:#2d6a4f;">8.4% p.a. · save ₹3.2L</div>
-              </div>
-              <div style="padding:12px 16px;display:flex;justify-content:space-between;align-items:center;">
-                <div style="font-size:12px;color:var(--ink-soft);">Credit card offers</div>
-                <div style="font-family:'Fraunces',serif;font-style:italic;font-size:14px;">More options unlock above 750</div>
+              <div style="padding:12px 16px;border-bottom:1px solid var(--card-divide);display:flex;justify-content:space-between;"><span style="font-size:12px;color:var(--ink-soft);">Home loan rate today</span><span style="font-family:'Fraunces',serif;font-style:italic;font-size:14px;">8.9% p.a.</span></div>
+              <div style="padding:12px 16px;border-bottom:1px solid var(--card-divide);display:flex;justify-content:space-between;"><span style="font-size:12px;color:var(--ink-soft);">If score hits 780+</span><span style="font-family:'Fraunces',serif;font-style:italic;font-size:14px;color:#2d6a4f;">8.4% · save ₹3.2L</span></div>
+              <div style="padding:12px 16px;display:flex;justify-content:space-between;"><span style="font-size:12px;color:var(--ink-soft);">Credit card offers</span><span style="font-family:'Fraunces',serif;font-style:italic;font-size:14px;">More unlock above 750</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCREEN 21: SCORE BOOSTER DETAIL -->
+      <div class="screen" data-screen="21">
+                <div class="status-bar"><span>9:41</span><div class="icons"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
+        <div class="screen-pfm" style="flex:1;">
+          <div style="padding:14px 22px 0;display:flex;align-items:center;gap:10px;">
+            <div class="back-btn" onclick="goTo(15)">←</div>
+            <div style="font-size:11px;color:var(--ink-soft);font-weight:600;text-transform:uppercase;letter-spacing:.12em;">Score Booster</div>
+          </div>
+          <!-- Booster hero -->
+          <div style="margin:14px 22px 0;background:linear-gradient(135deg,#f5ebd2 0%,#f0e4c8 100%);border:1px solid #e8d4a8;border-radius:20px;padding:20px;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+              <div style="width:44px;height:44px;border-radius:50%;background:#c69c4d;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">⚡</div>
+              <div>
+                <div style="font-size:9px;text-transform:uppercase;letter-spacing:.2em;color:#c69c4d;font-weight:600;margin-bottom:3px;">Active · Week 3 of 12</div>
+                <div style="font-family:'Fraunces',serif;font-size:18px;font-weight:400;line-height:1.1;">Reducing recurring waste</div>
               </div>
             </div>
+            <!-- Progress bar -->
+            <div style="height:6px;background:rgba(198,156,77,.2);border-radius:3px;overflow:hidden;margin-bottom:6px;"><div style="width:25%;height:100%;background:#c69c4d;border-radius:3px;"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--ink-soft);">
+              <span>Started 1 May</span><span>Goal: 31 Jul</span>
+            </div>
+          </div>
+          <!-- Impact stats -->
+          <div style="margin:12px 22px 0;display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div style="background:var(--card-bg);border:1px solid var(--card-divide);border-radius:14px;padding:14px;text-align:center;">
+              <div style="font-size:9px;text-transform:uppercase;letter-spacing:.16em;color:var(--ink-mute);font-weight:600;margin-bottom:4px;">Saved so far</div>
+              <div style="font-family:'Fraunces',serif;font-size:24px;font-style:italic;color:#2d6a4f;">₹890</div>
+              <div style="font-size:10px;color:var(--ink-soft);margin-top:2px;">3 weeks · on track</div>
+            </div>
+            <div style="background:var(--card-bg);border:1px solid var(--card-divide);border-radius:14px;padding:14px;text-align:center;">
+              <div style="font-size:9px;text-transform:uppercase;letter-spacing:.16em;color:var(--ink-mute);font-weight:600;margin-bottom:4px;">Score impact</div>
+              <div style="font-family:'Fraunces',serif;font-size:24px;font-style:italic;color:#c69c4d;">+4 pts</div>
+              <div style="font-size:10px;color:var(--ink-soft);margin-top:2px;">projected · 9 weeks left</div>
+            </div>
+          </div>
+          <!-- What you did -->
+          <div class="section-title" style="margin-top:16px;">What you've done</div>
+          <div style="margin:0 22px;background:var(--card-bg);border:1px solid var(--card-divide);border-radius:14px;overflow:hidden;">
+            <div style="padding:12px 16px;border-bottom:1px solid var(--card-divide);display:flex;justify-content:space-between;align-items:center;"><span style="font-size:13px;">Cancelled Notion</span><span style="font-family:'Fraunces',serif;font-style:italic;font-size:13px;color:#2d6a4f;">+ ₹440/mo</span></div>
+            <div style="padding:12px 16px;border-bottom:1px solid var(--card-divide);display:flex;justify-content:space-between;align-items:center;"><span style="font-size:13px;">Cancelled Duolingo</span><span style="font-family:'Fraunces',serif;font-style:italic;font-size:13px;color:#2d6a4f;">+ ₹260/mo</span></div>
+            <div style="padding:12px 16px;display:flex;justify-content:space-between;align-items:center;opacity:.4;"><span style="font-size:13px;">Cancel Adobe CC</span><span style="font-size:11px;color:var(--accent);font-weight:600;">Pending →</span></div>
+          </div>
+          <!-- Next step -->
+          <div style="margin:12px 22px 0;background:var(--accent-bg);border-radius:14px;padding:16px 18px;border:1px solid var(--accent-soft);">
+            <div style="font-size:9px;text-transform:uppercase;letter-spacing:.2em;color:var(--accent);font-weight:600;margin-bottom:6px;">Next step</div>
+            <div style="font-family:'Fraunces',serif;font-size:16px;line-height:1.2;margin-bottom:12px;">Cancel Adobe CC. Recover <em style="font-style:italic;color:var(--accent);">₹540/month more.</em></div>
+            <button class="btn-cta-dark">Cancel Adobe CC →</button>
           </div>
         </div>
       </div>
@@ -2230,7 +2205,7 @@
     'Upscore CVP', 'UPI mandate', 'AA processing', 'PFM dashboard',
     'Money dashboard', 'Credit dashboard',
     'Insight: Category spend', 'Insight: Recurring charges',
-    'Upscore detail'
+    'Upscore detail', 'Score booster'
   ];
 
   let currentScreen = 0;
