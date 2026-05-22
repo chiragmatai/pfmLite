@@ -608,22 +608,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
     <div class="sc-cta">Know about your score →</div>
   </div>
 
-  <!-- UPCOMING -->
-  <div class="sec-lbl">Upcoming</div>
-  <div class="upcoming">
-    <div class="up-title">This week</div>
-    <div class="up-row">
-      <div class="up-dot" style="background:var(--accent);"></div>
-      <div class="up-info"><div class="up-name">HDFC card bill</div><div class="up-date">Due 26 May · 4 days</div></div>
-      <div><div class="up-amt">₹12,400</div><div class="up-badge urgent">Urgent</div></div>
-    </div>
-    <div class="up-row">
-      <div class="up-dot" style="background:var(--ink-soft);"></div>
-      <div class="up-info"><div class="up-name">SBI Home Loan EMI</div><div class="up-date">Auto-debit 1 Jun</div></div>
-      <div><div class="up-amt">₹18,500</div><div class="up-badge ok">Scheduled</div></div>
-    </div>
-  </div>
-
   <!-- SUMMARY INSIGHT CARDS -->
   <div class="sec-lbl">Money</div>
   <div class="sum-card money" onclick="goTo(10)">
@@ -650,7 +634,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 </div>
 </div>
 
-<!-- ════════════ S10: MONEY DASHBOARD ════════════ -->
+<!-- ════════════ S10: MONEY DASHBOARD (LITE) ════════════ -->
 <div class="scr" data-s="10">
 <div class="sb"><span>9:41</span><div class="ic"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
 <div class="body">
@@ -660,51 +644,51 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
     <div style="width:30px;"></div>
   </div>
 
-  <!-- HERO NUMBERS -->
+  <!-- HERO — slider-derived estimates, not real bank data -->
   <div class="money-hero">
-    <div class="mh-lbl">Balance · May 2026</div>
-    <div class="mh-num">₹2,45,050</div>
-    <div class="mh-sub">across 3 accounts</div>
+    <div class="mh-lbl">Estimated · based on your inputs</div>
+    <div class="mh-num" style="font-size:40px;">₹1,55,000</div>
+    <div class="mh-sub">Monthly take-home salary</div>
     <div class="mh-ctx">
-      <div class="mh-c"><div class="l">Incoming</div><div class="v">₹1,55,000</div></div>
-      <div class="mh-c"><div class="l">Outgoing</div><div class="v">₹1,16,560</div></div>
-      <div class="mh-c"><div class="l">Net</div><div class="v" style="color:var(--green);">+ ₹38,440</div></div>
+      <div class="mh-c"><div class="l">Committed</div><div class="v">₹1,19,000</div></div>
+      <div class="mh-c"><div class="l">Lifestyle</div><div class="v" style="color:var(--accent);">₹43,000</div></div>
+      <div class="mh-c"><div class="l">Estimated free</div><div class="v" style="color:var(--green);">₹36,000</div></div>
     </div>
   </div>
 
-  <!-- SPEND VS FORECAST GRAPH -->
+  <!-- SPEND vs FORECAST — estimated from sliders -->
   <div class="graph-card">
     <div class="graph-title">
-      <span>Spend vs Forecast</span>
+      <span>Estimated spend · monthly</span>
       <div class="graph-legend">
-        <div class="legend-item"><div class="legend-dot" style="background:var(--accent);"></div>Actual</div>
-        <div class="legend-item"><div class="legend-dot" style="background:var(--ink-mute);border:1.5px dashed var(--ink-mute);width:10px;height:10px;background:transparent;border-radius:50%;"></div>Forecast</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--accent);"></div>Your spend</div>
+        <div class="legend-item"><div class="legend-dot" style="border:1.5px dashed var(--ink-mute);width:10px;height:10px;background:transparent;border-radius:50%;"></div>Peer avg</div>
       </div>
     </div>
     <div class="graph-area">
       <svg viewBox="0 0 280 80" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">
-        <!-- grid lines -->
         <line x1="0" y1="60" x2="280" y2="60" stroke="rgba(26,24,20,.06)" stroke-width="1"/>
         <line x1="0" y1="30" x2="280" y2="30" stroke="rgba(26,24,20,.06)" stroke-width="1"/>
-        <!-- actual spend line -->
-        <polyline points="0,70 47,52 93,38 140,28 186,18" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        <!-- forecast line (dashed) -->
-        <polyline points="186,18 233,12 280,6" fill="none" stroke="var(--ink-mute)" stroke-width="2" stroke-dasharray="4,3" stroke-linecap="round"/>
-        <!-- actual dot (current) -->
-        <circle cx="186" cy="18" r="5" fill="var(--accent)" stroke="var(--card)" stroke-width="2"/>
-        <!-- forecast dot (end of month) -->
-        <circle cx="280" cy="6" r="5" fill="var(--card)" stroke="var(--ink-mute)" stroke-width="2" stroke-dasharray="3,2"/>
+        <!-- your spend bar approximation -->
+        <rect x="20" y="15" width="30" height="45" rx="3" fill="var(--accent)" opacity=".8"/>
+        <rect x="80" y="28" width="30" height="32" rx="3" fill="var(--accent)" opacity=".8"/>
+        <rect x="140" y="10" width="30" height="50" rx="3" fill="var(--accent)" opacity=".8"/>
+        <rect x="200" y="22" width="30" height="38" rx="3" fill="var(--accent)" opacity=".8"/>
+        <!-- peer avg line -->
+        <line x1="10" y1="38" x2="270" y2="38" stroke="var(--ink-mute)" stroke-width="1.5" stroke-dasharray="4,3"/>
         <!-- labels -->
-        <text x="178" y="10" font-size="8" fill="var(--accent)" font-family="Inter Tight" text-anchor="middle">₹1.16L now</text>
-        <text x="280" y="4" font-size="8" fill="var(--ink-mute)" font-family="Inter Tight" text-anchor="end">₹1.38L forecast</text>
+        <text x="35" y="10" font-size="7" fill="var(--accent)" font-family="Inter Tight" text-anchor="middle">You</text>
+        <text x="230" y="35" font-size="7" fill="var(--ink-mute)" font-family="Inter Tight">Peer avg</text>
+        <text x="20" y="72" font-size="7" fill="var(--ink-mute)" font-family="Inter Tight">Dining</text>
+        <text x="76" y="72" font-size="7" fill="var(--ink-mute)" font-family="Inter Tight">Shopping</text>
+        <text x="136" y="72" font-size="7" fill="var(--ink-mute)" font-family="Inter Tight">Lifestyle</text>
+        <text x="196" y="72" font-size="7" fill="var(--ink-mute)" font-family="Inter Tight">Essentials</text>
       </svg>
     </div>
-    <div class="graph-months">
-      <span class="gm">1 May</span><span class="gm">8</span><span class="gm">15</span><span class="gm">22 ←now</span><span class="gm">31</span>
-    </div>
+    <div style="font-size:10px;color:var(--ink-mute);margin-top:6px;text-align:center;">Based on your estimates. Connect your bank to see real data.</div>
   </div>
 
-  <!-- INSIGHT CARDS — each is entry point to a feature -->
+  <!-- INSIGHT CARDS — slider-derived, lead to features -->
   <div class="sec-lbl" style="margin-top:20px;">Insights</div>
 
   <div class="ins-card" onclick="goTo(11)">
@@ -719,8 +703,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
   <div class="ins-card" onclick="goTo(12)">
     <div class="ins-ic dim">📋</div>
     <div class="ins-body">
-      <div class="ins-hook"><span class="n">₹22,680/year</span> in subscriptions you've forgotten about.</div>
-      <div class="ins-sub">Recurring charges · Tap to review</div>
+      <div class="ins-hook">You may be paying for <span class="n">subscriptions</span> you've forgotten.</div>
+      <div class="ins-sub">Recurring charges · Connect bank to audit</div>
     </div>
     <div class="ins-arr">→</div>
   </div>
@@ -728,8 +712,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
   <div class="ins-card">
     <div class="ins-ic dim">🛵</div>
     <div class="ins-body">
-      <div class="ins-hook">You paid <span class="n">₹3,200</span> for speed, not for things.</div>
-      <div class="ins-sub">Hidden charges · Delivery fees & surge pricing</div>
+      <div class="ins-hook">Delivery fees could be costing you <span class="n">₹2,000–4,000</span> extra.</div>
+      <div class="ins-sub">Hidden charges · Estimated from dining spend</div>
     </div>
     <div class="ins-arr">→</div>
   </div>
@@ -737,8 +721,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
   <div class="ins-card">
     <div class="ins-ic dim">📈</div>
     <div class="ins-body">
-      <div class="ins-hook">At this pace you'll overspend by <span class="n">₹21,440</span> by month end.</div>
-      <div class="ins-sub">Spend forecast · Tap to see projection</div>
+      <div class="ins-hook">At these habits, you save only <span class="n">₹36k/month.</span> You could save ₹60k.</div>
+      <div class="ins-sub">Spend forecast · Based on your inputs</div>
     </div>
     <div class="ins-arr">→</div>
   </div>
@@ -988,8 +972,8 @@ const meta = [
   {name:'EMIs & loans',hint:'What you owe. Last step before insights.'},
   {name:'Loader',hint:'Dark screen, cycling comparisons, progress bar. Auto-advances after 4s.'},
   {name:'Reveal stack',hint:'4 cards. <b>Swipe right</b> with mouse drag. After all 4 swiped → auto-navigates to Lite dashboard.'},
-  {name:'Lite dashboard',hint:'<b>Score occupies ~30%.</b> Short explanation + "Know about your score →". Upcoming payments section. Summary insight cards for Money and Credit — each one tap leads to the section dashboard. Single unlock banner.'},
-  {name:'Money dashboard',hint:'<b>Hero: balance + incoming + outgoing.</b> Graph below: actual spend line vs dashed forecast line — two dots. Then 4 insight cards leading to features: category spend, recurring charges, hidden charges, spend forecast.'},
+  {name:'Lite dashboard',hint:'<b>Score occupies ~30%.</b> Short explanation + "Know about your score →". No upcoming payments (Lite has no bank data). Summary insight cards for Money and Credit — derived from sliders + bureau only. Single unlock banner.'},
+  {name:'Money dashboard (Lite)',hint:'<b>Lite version — no real bank data.</b> Hero shows salary + estimated breakdown from sliders. Graph shows estimated category spend vs peer average. 4 insight cards derived from sliders — each leads to a feature. Note: no transactions, no real balances.'},
   {name:'Insight: Category spend',hint:'Full detail page. Hook → fact → data table → peer comparison. Bottom: <b>feature band</b> — "Open spend tracker →". Also schedule / not now.'},
   {name:'Insight: Recurring charges',hint:'Unused subscriptions named and flagged. Bottom feature band: <b>"Cancel unused subscriptions →"</b>'},
   {name:'Credit dashboard',hint:'<b>Hero: total outstanding ₹38k.</b> Context: score 742, utilisation 38%. Three credit insight cards (dark treatment).'},
