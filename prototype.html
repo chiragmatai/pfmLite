@@ -762,18 +762,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
     <div class="lite-title">Good morning, Arjun</div>
   </div>
 
-  <!-- SCORE CARD — LOCKED (no AA = no score) edge to edge -->
-  <div class="score-card-locked" onclick="goTo(15)">
-    <div class="scl-blur">
-      <div class="scl-num">—</div>
-    </div>
-    <div class="scl-overlay">
-      <div class="scl-lock">🔒</div>
-      <div class="scl-title">Your Upscore is locked</div>
-      <div class="scl-sub">Your credit score is calculated from your actual bank and credit data. Connect your accounts to unlock it.</div>
-      <div class="scl-cta">Unlock Upscore →</div>
-    </div>
-  </div>
+
 
   <!-- INSIGHT CARDS side by side -->
   <div class="sec-lbl">Your insights</div>
@@ -790,13 +779,14 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
     </div>
   </div>
 
-  <!-- UNLOCK -->
-  <div style="margin:20px 22px 0;background:var(--accent);color:var(--card);border-radius:18px;padding:18px;display:flex;justify-content:space-between;align-items:center;gap:12px;cursor:pointer;transition:transform .2s;" onclick="goTo(15)" onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''">
-    <div>
-      <div style="font-family:'Fraunces',serif;font-size:17px;line-height:1.2;">Unlock the full picture</div>
-      <div style="font-size:10px;color:rgba(250,247,240,.7);margin-top:4px;text-transform:uppercase;letter-spacing:.16em;">Live score · Real transactions · Monthly</div>
-    </div>
-    <div style="width:36px;height:36px;border-radius:50%;background:var(--card);color:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;">→</div>
+  <!-- SINGLE UNLOCK BANNER at bottom -->
+  <div style="margin:24px 22px 0;background:var(--ink);border-radius:20px;padding:22px 20px;cursor:pointer;transition:transform .2s;position:relative;overflow:hidden;" onclick="goTo(15)" onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''">
+    <div style="position:absolute;top:-30px;right:-30px;width:110px;height:110px;border:1px solid rgba(255,255,255,.07);border-radius:50%;"></div>
+    <div style="position:absolute;top:-50px;right:-50px;width:150px;height:150px;border:1px solid rgba(255,255,255,.04);border-radius:50%;"></div>
+    <div style="font-size:9px;text-transform:uppercase;letter-spacing:.22em;color:var(--accent-soft);font-weight:600;margin-bottom:10px;position:relative;z-index:1;">Your Upscore is locked</div>
+    <div style="font-family:'Fraunces',serif;font-size:22px;line-height:1.1;letter-spacing:-.02em;color:var(--card);margin-bottom:6px;position:relative;z-index:1;">Connect your accounts to <em style="font-style:italic;color:var(--accent-soft);">unlock the full picture.</em></div>
+    <div style="font-size:11px;color:rgba(250,247,240,.45);margin-bottom:18px;line-height:1.5;position:relative;z-index:1;">Live score · Real transactions · Monthly insights</div>
+    <div style="background:var(--accent);color:var(--card);border-radius:12px;padding:13px 18px;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:8px;position:relative;z-index:1;">Unlock for ₹99/month →</div>
   </div>
 </div>
 </div>
