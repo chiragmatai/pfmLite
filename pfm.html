@@ -19,8 +19,8 @@
 html,body{min-height:100%;}
 body{
   background:var(--bg);font-family:'Inter Tight',sans-serif;color:var(--ink);
-  min-height:100vh;padding:32px 20px;display:flex;align-items:flex-start;
-  justify-content:center;gap:48px;position:relative;
+  min-height:100vh;padding:36px 20px;
+  display:flex;align-items:flex-start;justify-content:center;gap:48px;
 }
 body::before{content:'';position:fixed;inset:0;
   background:radial-gradient(circle at 20% 30%,#e8e2d4 0%,transparent 40%),
@@ -28,16 +28,18 @@ body::before{content:'';position:fixed;inset:0;
   opacity:.5;pointer-events:none;z-index:0;}
 
 /* SIDEBAR */
-.side{position:relative;z-index:2;width:200px;padding-top:8px;display:flex;flex-direction:column;gap:8px;position:sticky;top:32px;}
-.side-tag{font-size:10px;text-transform:uppercase;letter-spacing:.22em;color:var(--ink-soft);font-weight:600;}
-.side-step{font-family:'Fraunces',serif;font-size:13px;font-style:italic;color:var(--accent);margin-top:2px;}
-.side-name{font-family:'Fraunces',serif;font-size:20px;line-height:1.1;letter-spacing:-.01em;}
-.side-hint{font-size:11px;color:var(--ink-soft);line-height:1.6;margin-top:6px;padding:10px 12px;background:var(--card);border-radius:10px;border:1px solid var(--div);}
-.side-hint strong{color:var(--ink);}
-.nav-row{display:flex;gap:6px;margin-top:8px;}
-.nb{background:var(--card);border:1px solid var(--div);color:var(--ink);border-radius:8px;padding:6px 12px;font-size:11px;cursor:pointer;font-family:inherit;transition:all .2s;}
+.side{position:sticky;top:36px;z-index:2;width:190px;display:flex;flex-direction:column;gap:10px;}
+.s-tag{font-size:10px;text-transform:uppercase;letter-spacing:.22em;color:var(--ink-soft);font-weight:600;}
+.s-step{font-family:'Fraunces',serif;font-size:12px;font-style:italic;color:var(--accent);}
+.s-name{font-family:'Fraunces',serif;font-size:20px;line-height:1.1;letter-spacing:-.01em;}
+.s-hint{font-size:11px;color:var(--ink-soft);line-height:1.6;margin-top:4px;
+  padding:10px 12px;background:var(--card);border-radius:10px;border:1px solid var(--div);}
+.s-hint b{color:var(--ink);}
+.nav-row{display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;}
+.nb{background:var(--card);border:1px solid var(--div);color:var(--ink);border-radius:8px;
+  padding:6px 10px;font-size:11px;cursor:pointer;font-family:inherit;transition:all .2s;}
 .nb:hover{background:var(--ink);color:var(--card);}
-.rail{display:flex;gap:3px;margin-top:10px;}
+.rail{display:flex;gap:3px;margin-top:8px;}
 .rd{flex:1;height:3px;background:rgba(26,24,20,.1);border-radius:2px;cursor:pointer;transition:background .3s;}
 .rd.p{background:var(--accent-soft);}
 .rd.c{background:var(--accent);}
@@ -47,7 +49,8 @@ body::before{content:'';position:fixed;inset:0;
   flex-shrink:0;box-shadow:0 40px 80px -20px rgba(26,24,20,.3),inset 0 0 0 2px #2a2620;
   position:relative;z-index:2;}
 .ps{width:100%;height:100%;background:var(--card);border-radius:40px;overflow:hidden;position:relative;}
-.di{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:120px;height:32px;background:var(--frame);border-radius:20px;z-index:100;}
+.di{position:absolute;top:12px;left:50%;transform:translateX(-50%);
+  width:120px;height:32px;background:var(--frame);border-radius:20px;z-index:100;}
 
 /* SCREEN SYSTEM */
 .scr{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--card);
@@ -61,582 +64,614 @@ body::before{content:'';position:fixed;inset:0;
 .sb{height:50px;padding:14px 24px 0;display:flex;align-items:flex-start;
   justify-content:space-between;font-size:14px;font-weight:600;color:var(--ink);
   flex-shrink:0;z-index:50;position:relative;}
-.sb.inv{color:var(--card);}
 .sb .ic{display:flex;gap:5px;align-items:center;}
 
 /* SCROLL */
 .body{flex:1;overflow-y:auto;padding-bottom:32px;}
 .body::-webkit-scrollbar{display:none;}
 
-/* ======== SHARED ATOMS ======== */
+/* ——— ATOMS ——— */
 .back{width:30px;height:30px;border-radius:50%;background:rgba(26,24,20,.06);
-  display:flex;align-items:center;justify-content:center;font-size:16px;
-  cursor:pointer;border:none;color:var(--ink);transition:background .15s;}
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;cursor:pointer;border:none;color:var(--ink);transition:background .15s;}
 .back:hover{background:rgba(26,24,20,.12);}
 
-/* ======== SCREEN 0: MAIN DASHBOARD ======== */
-.dash-header{padding:14px 22px 0;display:flex;justify-content:space-between;align-items:center;}
-.dash-title{font-family:'Fraunces',serif;font-size:13px;font-style:italic;color:var(--ink-soft);}
+.sec-hdr{padding:12px 22px 0;display:flex;align-items:center;gap:10px;}
+.sec-title{font-family:'Fraunces',serif;font-size:20px;font-weight:400;
+  letter-spacing:-.02em;flex:1;text-align:center;}
+.sec-title em{font-style:italic;color:var(--accent);}
+
+.feed-label{padding:0 22px;font-size:10px;text-transform:uppercase;
+  letter-spacing:.2em;color:var(--ink-mute);font-weight:600;margin:20px 0 8px;}
+
+.divider{height:1px;background:var(--div);margin:20px 22px 0;}
+
+/* ICONS SVG shorthand */
+.sig svg{display:block;}
+
+/* ——————————————————————————————————————
+   SCREEN 0 · MAIN DASHBOARD
+—————————————————————————————————————— */
+
+.dash-hdr{padding:14px 22px 0;display:flex;justify-content:space-between;align-items:center;}
+.dash-greet{font-family:'Fraunces',serif;font-size:14px;font-style:italic;color:var(--ink-soft);}
 .av{width:32px;height:32px;border-radius:50%;background:var(--accent);color:var(--card);
-  display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:13px;}
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Fraunces',serif;font-size:13px;}
 
-/* UPSCORE PILL — small, always-present at top */
-.us-pill{margin:16px 22px 0;background:var(--ink);color:var(--card);border-radius:14px;
-  padding:14px 18px;display:flex;align-items:center;justify-content:space-between;
-  cursor:pointer;transition:transform .15s;position:relative;overflow:hidden;}
-.us-pill:active{transform:scale(.98);}
-.us-pill::after{content:'';position:absolute;top:-20px;right:-20px;width:80px;height:80px;
-  border:1px solid rgba(232,168,144,.15);border-radius:50%;}
-.us-left .lbl{font-size:9px;text-transform:uppercase;letter-spacing:.2em;color:var(--accent-soft);
-  font-weight:600;margin-bottom:4px;}
-.us-left .num{font-family:'Fraunces',serif;font-size:32px;font-weight:500;line-height:1;
-  letter-spacing:-.02em;display:flex;align-items:baseline;gap:8px;}
-.us-left .num .band{font-size:13px;font-style:italic;color:var(--accent-soft);font-weight:400;}
-.us-right{font-size:11px;color:var(--accent-soft);text-align:right;}
-.us-right .delta{font-family:'Fraunces',serif;font-style:italic;font-size:14px;color:#a8d5b8;}
-.us-right .cta{font-size:9px;text-transform:uppercase;letter-spacing:.15em;
-  color:rgba(250,247,240,.35);margin-top:3px;}
+/* Upscore card */
+.us{margin:16px 22px 0;background:var(--ink);color:var(--card);
+  border-radius:18px;padding:16px 18px;cursor:pointer;transition:transform .15s;
+  position:relative;overflow:hidden;display:flex;justify-content:space-between;align-items:center;}
+.us:active{transform:scale(.98);}
+.us::after{content:'';position:absolute;top:-24px;right:-24px;width:90px;height:90px;
+  border:1px solid rgba(232,168,144,.12);border-radius:50%;}
+.us-l .lbl{font-size:9px;text-transform:uppercase;letter-spacing:.2em;
+  color:var(--accent-soft);font-weight:600;margin-bottom:4px;}
+.us-l .num{font-family:'Fraunces',serif;font-size:38px;font-weight:500;
+  line-height:1;letter-spacing:-.02em;display:flex;align-items:baseline;gap:8px;}
+.us-l .num .band{font-size:13px;font-style:italic;color:var(--accent-soft);font-weight:400;}
+.us-r{text-align:right;position:relative;z-index:1;}
+.us-r .delta{font-family:'Fraunces',serif;font-style:italic;font-size:15px;color:#a8d5b8;}
+.us-r .why{font-size:9px;text-transform:uppercase;letter-spacing:.15em;
+  color:rgba(250,247,240,.3);margin-top:3px;}
 
-/* ENTRY POINTS */
-.entry-row{margin:12px 22px 0;display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+/* Entry cards */
+.entries{margin:10px 22px 0;display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .entry{background:var(--card);border:1px solid var(--div);border-radius:16px;
-  padding:14px 16px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;}
-.entry:hover{transform:translateY(-2px);border-color:rgba(26,24,20,.15);}
+  padding:14px 15px;cursor:pointer;transition:all .2s;}
+.entry:hover{transform:translateY(-2px);border-color:rgba(26,24,20,.16);}
 .entry:active{transform:scale(.98);}
-.entry-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.2em;color:var(--ink-soft);
-  font-weight:600;margin-bottom:6px;display:flex;justify-content:space-between;}
-.entry-lbl span.arr{color:var(--accent);}
-.entry-num{font-family:'Fraunces',serif;font-size:24px;font-weight:400;letter-spacing:-.02em;line-height:1;}
-.entry-sub{font-size:10px;color:var(--ink-soft);margin-top:4px;line-height:1.4;}
-.entry.credit .entry-num{color:var(--accent);}
-.entry-alert{display:inline-flex;align-items:center;gap:4px;margin-top:6px;
+.e-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.18em;
+  color:var(--ink-soft);font-weight:600;margin-bottom:6px;
+  display:flex;justify-content:space-between;align-items:center;}
+.e-lbl .arr{color:var(--accent);font-size:11px;}
+.e-num{font-family:'Fraunces',serif;font-size:26px;font-weight:400;
+  letter-spacing:-.02em;line-height:1;}
+.e-sub{font-size:10px;color:var(--ink-soft);margin-top:4px;line-height:1.4;}
+.e-alert{display:inline-flex;align-items:center;gap:4px;margin-top:6px;
   background:var(--accent-bg);border-radius:6px;padding:3px 7px;
   font-size:9px;font-weight:600;color:var(--accent);}
+.entry.cr .e-num{color:var(--accent);}
 
-/* DAILY UPDATE CARD */
-.daily-card{margin:20px 22px 0;background:var(--ink);color:var(--card);
+/* Daily update card */
+.daily{margin:20px 22px 0;background:var(--ink);color:var(--card);
   border-radius:16px;padding:16px 18px;cursor:pointer;transition:transform .15s;
   position:relative;overflow:hidden;}
-.daily-card:active{transform:scale(.98);}
-.daily-card::before{content:'';position:absolute;top:-30px;right:-30px;width:100px;height:100px;
-  border:1px solid rgba(255,255,255,.07);border-radius:50%;}
-.dc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
-.dc-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.2em;
-  color:rgba(250,247,240,.45);font-weight:600;}
-.dc-time{font-size:9px;color:rgba(250,247,240,.3);}
-.dc-headline{font-family:'Fraunces',serif;font-size:18px;font-weight:400;
-  line-height:1.2;letter-spacing:-.01em;margin-bottom:10px;position:relative;z-index:1;}
-.dc-headline em{font-style:italic;color:var(--accent-soft);}
-.dc-row{display:flex;gap:16px;position:relative;z-index:1;}
-.dc-stat .dl{font-size:9px;text-transform:uppercase;letter-spacing:.15em;
-  color:rgba(250,247,240,.4);margin-bottom:2px;}
-.dc-stat .dv{font-family:'Fraunces',serif;font-style:italic;font-size:14px;}
-.dc-stat .dv.pos{color:#a8d5b8;}
-.dc-stat .dv.neg{color:var(--accent-soft);}
-.dc-arrow{margin-left:auto;font-size:11px;color:rgba(250,247,240,.35);align-self:flex-end;}
+.daily:active{transform:scale(.98);}
+.daily::before{content:'';position:absolute;top:-30px;right:-30px;width:100px;height:100px;
+  border:1px solid rgba(255,255,255,.06);border-radius:50%;}
+.d-top{display:flex;justify-content:space-between;margin-bottom:10px;}
+.d-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.2em;
+  color:rgba(250,247,240,.4);font-weight:600;}
+.d-time{font-size:9px;color:rgba(250,247,240,.25);}
+.d-headline{font-family:'Fraunces',serif;font-size:17px;font-weight:400;
+  line-height:1.25;letter-spacing:-.01em;margin-bottom:12px;position:relative;z-index:1;}
+.d-headline em{font-style:italic;color:var(--accent-soft);}
+.d-stats{display:flex;gap:16px;position:relative;z-index:1;}
+.d-stat .dl{font-size:9px;text-transform:uppercase;letter-spacing:.14em;
+  color:rgba(250,247,240,.35);margin-bottom:2px;}
+.d-stat .dv{font-family:'Fraunces',serif;font-style:italic;font-size:13px;}
+.d-stat .dv.pos{color:#a8d5b8;}
+.d-stat .dv.neg{color:var(--accent-soft);}
+.d-arr{margin-left:auto;font-size:11px;color:rgba(250,247,240,.3);align-self:flex-end;}
 
-/* INSIGHT CARD (on main dashboard — short) */
-.insight-pill{margin:10px 22px 0;background:var(--card);border:1px solid var(--div);
-  border-radius:14px;padding:14px 16px;cursor:pointer;transition:all .2s;
+/* Insight pill (short — on dashboard) */
+.ipill{margin:8px 22px 0;background:var(--card);border:1px solid var(--div);
+  border-radius:14px;padding:13px 15px;cursor:pointer;transition:all .2s;
   display:flex;align-items:center;gap:12px;}
-.insight-pill:hover{transform:translateY(-1px);border-color:rgba(26,24,20,.15);}
-.insight-pill:active{transform:scale(.98);}
-.insight-pill.peer{background:var(--gold-bg);border-color:var(--gold-soft);}
-.ip-icon{width:36px;height:36px;border-radius:50%;flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;font-size:16px;}
-.ip-icon.red{background:var(--accent-bg);}
-.ip-icon.gold{background:var(--gold-bg);}
-.ip-icon.green{background:var(--green-bg);}
+.ipill:hover{transform:translateY(-1px);border-color:rgba(26,24,20,.15);}
+.ipill:active{transform:scale(.98);}
+.ipill.peer{background:var(--gold-bg);border-color:var(--gold-soft);}
+.ipill.dark{background:var(--ink);border-color:transparent;}
+.ip-ic{width:34px;height:34px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:15px;}
+.ip-ic.red{background:var(--accent-bg);}
+.ip-ic.gold{background:rgba(198,156,77,.2);}
+.ip-ic.green{background:var(--green-bg);}
+.ip-ic.dim{background:rgba(26,24,20,.06);}
 .ip-body{flex:1;}
-.ip-text{font-family:'Fraunces',serif;font-size:14px;line-height:1.25;letter-spacing:-.01em;}
-.ip-text .n{font-style:italic;color:var(--accent);font-weight:500;}
-.insight-pill.peer .ip-text .n{color:var(--gold);}
-.ip-sub{font-size:10px;color:var(--ink-soft);margin-top:3px;}
-.ip-arrow{font-size:12px;color:var(--ink-mute);flex-shrink:0;}
+.ip-txt{font-family:'Fraunces',serif;font-size:14px;line-height:1.25;letter-spacing:-.01em;}
+.ip-txt .n{font-style:italic;color:var(--accent);font-weight:500;}
+.ipill.peer .ip-txt .n{color:var(--gold);}
+.ipill.dark .ip-txt{color:var(--card);}
+.ipill.dark .ip-txt .n{color:var(--accent-soft);}
+.ip-sub{font-size:10px;color:var(--ink-soft);margin-top:2px;}
+.ipill.dark .ip-sub{color:rgba(250,247,240,.4);}
+.ip-arr{font-size:11px;color:var(--ink-mute);flex-shrink:0;}
+.ipill.dark .ip-arr{color:rgba(250,247,240,.3);}
 
-.feed-lbl{padding:0 22px;font-size:10px;text-transform:uppercase;letter-spacing:.2em;
-  color:var(--ink-mute);font-weight:600;margin:20px 0 8px;}
-
-/* ======== SCREEN 1: MONEY DASHBOARD ======== */
-.section-header{padding:12px 22px 0;display:flex;align-items:center;gap:12px;}
-.section-title{font-family:'Fraunces',serif;font-size:20px;font-weight:400;
-  letter-spacing:-.02em;flex:1;text-align:center;}
-.section-title em{font-style:italic;color:var(--accent);}
-
-/* MONEY HERO */
-.money-hero{margin:20px 22px 0;text-align:center;}
+/* ——————————————————————————————————————
+   SCREEN 1 · MONEY DASHBOARD
+—————————————————————————————————————— */
+.money-hero{margin:20px 22px 0;text-align:center;padding-bottom:18px;border-bottom:1px solid var(--div);}
 .mh-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.2em;
   color:var(--ink-soft);font-weight:600;margin-bottom:8px;}
 .mh-num{font-family:'Fraunces',serif;font-size:52px;font-weight:400;
   letter-spacing:-.03em;line-height:1;color:var(--green);}
-.mh-sub{font-size:12px;color:var(--ink-soft);margin-top:6px;}
-.mh-context{display:flex;justify-content:center;gap:28px;margin-top:16px;
-  padding-top:14px;border-top:1px solid var(--div);}
-.mh-stat .ml{font-size:9px;text-transform:uppercase;letter-spacing:.18em;
-  color:var(--ink-mute);font-weight:600;margin-bottom:3px;}
-.mh-stat .mv{font-family:'Fraunces',serif;font-style:italic;font-size:18px;}
+.mh-sub{font-size:11px;color:var(--ink-soft);margin-top:5px;}
+.mh-ctx{display:flex;justify-content:center;gap:28px;margin-top:14px;}
+.mh-c .l{font-size:9px;text-transform:uppercase;letter-spacing:.16em;
+  color:var(--ink-mute);font-weight:600;margin-bottom:2px;}
+.mh-c .v{font-family:'Fraunces',serif;font-style:italic;font-size:17px;}
 
-/* MONEY ENTRY POINTS */
-.money-entries{margin:16px 22px 0;display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+/* Money entry points */
+.m-entries{margin:14px 22px 0;display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .me{background:var(--card);border:1px solid var(--div);border-radius:14px;
-  padding:14px 15px;cursor:pointer;transition:all .2s;}
+  padding:13px 14px;cursor:pointer;transition:all .2s;}
 .me:hover{transform:translateY(-2px);border-color:rgba(26,24,20,.15);}
 .me:active{transform:scale(.98);}
-.me-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.18em;
-  color:var(--ink-soft);font-weight:600;margin-bottom:5px;display:flex;
-  justify-content:space-between;align-items:center;}
-.me-lbl .arr{color:var(--accent);font-size:11px;}
-.me-val{font-family:'Fraunces',serif;font-style:italic;font-size:16px;line-height:1.2;}
+.me-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.16em;
+  color:var(--ink-soft);font-weight:600;margin-bottom:4px;
+  display:flex;justify-content:space-between;}
+.me-lbl .arr{color:var(--accent);}
+.me-val{font-family:'Fraunces',serif;font-style:italic;font-size:15px;line-height:1.3;}
 .me-sub{font-size:10px;color:var(--ink-soft);margin-top:3px;}
 .me-tag{display:inline-block;margin-top:5px;font-size:9px;font-weight:600;
   color:var(--accent);background:var(--accent-bg);border-radius:5px;padding:2px 6px;}
+.me-tag.ok{color:var(--green);background:var(--green-bg);}
 
-/* DIVIDER */
-.divider{height:1px;background:var(--div);margin:20px 22px 0;}
-
-/* UPDATE CARD (in section) */
-.uc{margin:10px 22px 0;background:var(--card);border:1px solid var(--div);
-  border-radius:14px;padding:13px 15px;display:flex;align-items:center;gap:12px;
+/* Update card */
+.uc{margin:8px 22px 0;background:var(--card);border:1px solid var(--div);
+  border-radius:13px;padding:12px 14px;display:flex;align-items:center;gap:11px;
   cursor:pointer;transition:all .2s;}
-.uc:hover{border-color:rgba(26,24,20,.15);}
+.uc:hover{border-color:rgba(26,24,20,.14);}
 .uc:active{transform:scale(.99);}
-.ui{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;
-  justify-content:center;font-size:15px;flex-shrink:0;}
-.ui.g{background:var(--green-bg);}
-.ui.r{background:var(--accent-bg);}
-.ui.n{background:rgba(26,24,20,.06);}
-.ub{flex:1;}
-.ut{font-size:13px;font-weight:500;margin-bottom:2px;}
-.us2{font-size:11px;color:var(--ink-soft);line-height:1.4;}
-.ua{font-family:'Fraunces',serif;font-style:italic;font-size:14px;margin-top:1px;}
-.ua.pos{color:var(--green);}
-.ua.neg{color:var(--accent);}
-.uc-arr{font-size:11px;color:var(--ink-mute);}
+.u-ic{width:32px;height:32px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:14px;}
+.u-ic.g{background:var(--green-bg);}
+.u-ic.r{background:var(--accent-bg);}
+.u-ic.n{background:rgba(26,24,20,.06);}
+.u-ic.gold{background:var(--gold-bg);}
+.u-body{flex:1;}
+.u-title{font-size:13px;font-weight:500;margin-bottom:1px;}
+.u-sub{font-size:11px;color:var(--ink-soft);line-height:1.4;}
+.u-amt{font-family:'Fraunces',serif;font-style:italic;font-size:14px;margin-top:1px;}
+.u-amt.pos{color:var(--green);}
+.u-amt.neg{color:var(--accent);}
+.u-arr{font-size:11px;color:var(--ink-mute);flex-shrink:0;}
 
-/* ======== SCREEN 2: INSIGHT DETAIL ======== */
-.detail-header{padding:14px 22px 0;display:flex;align-items:center;gap:12px;}
-.detail-back-row{display:flex;align-items:center;gap:10px;}
-.detail-context{font-size:11px;color:var(--ink-soft);}
+/* ——————————————————————————————————————
+   SCREEN 2 · CREDIT DASHBOARD
+—————————————————————————————————————— */
+.credit-hero{margin:20px 22px 0;text-align:center;padding-bottom:18px;border-bottom:1px solid var(--div);}
+.ch-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.2em;
+  color:var(--ink-soft);font-weight:600;margin-bottom:8px;}
+.ch-num{font-family:'Fraunces',serif;font-size:52px;font-weight:400;
+  letter-spacing:-.03em;line-height:1;color:var(--accent);}
+.ch-sub{font-size:11px;color:var(--ink-soft);margin-top:5px;}
+.ch-ctx{display:flex;justify-content:center;gap:24px;margin-top:14px;}
+.ch-c{text-align:center;}
+.ch-c .l{font-size:9px;text-transform:uppercase;letter-spacing:.16em;
+  color:var(--ink-mute);font-weight:600;margin-bottom:2px;}
+.ch-c .v{font-family:'Fraunces',serif;font-style:italic;font-size:17px;}
+.ch-c .v.ok{color:var(--green);}
+.ch-c .v.warn{color:var(--gold);}
 
-.detail-hero{padding:28px 24px 24px;border-bottom:1px solid var(--div);}
-.dh-hook{font-family:'Fraunces',serif;font-size:28px;line-height:1.05;
+/* ——————————————————————————————————————
+   SCREEN 3 · INSIGHT DETAIL
+—————————————————————————————————————— */
+.det-hdr{padding:14px 22px 0;display:flex;align-items:center;gap:10px;}
+.det-ctx{font-size:11px;color:var(--ink-soft);}
+
+.det-hero{padding:26px 24px 22px;border-bottom:1px solid var(--div);}
+.det-hook{font-family:'Fraunces',serif;font-size:27px;line-height:1.05;
   letter-spacing:-.025em;font-weight:400;font-variation-settings:"SOFT" 30;}
-.dh-hook .big{display:block;font-size:56px;line-height:.9;color:var(--accent);
-  font-style:italic;font-weight:500;margin:6px 0 8px;
+.det-hook .big{display:block;font-size:54px;line-height:.88;color:var(--accent);
+  font-style:italic;font-weight:500;margin:5px 0 7px;
   font-variation-settings:"SOFT" 100,"WONK" 1;}
 
-.detail-body{padding:20px 24px;}
-.db-fact{font-size:14px;line-height:1.6;color:var(--ink-soft);margin-bottom:20px;}
-.db-fact strong{color:var(--ink);}
+.det-body{padding:18px 24px 0;}
+.det-fact{font-size:13px;line-height:1.65;color:var(--ink-soft);margin-bottom:18px;}
+.det-fact strong{color:var(--ink);}
 
-/* DATA BLOCK */
-.data-block{background:rgba(26,24,20,.03);border-radius:12px;padding:14px 16px;margin-bottom:16px;}
+.data-blk{background:rgba(26,24,20,.03);border-radius:12px;
+  padding:14px 16px;margin-bottom:16px;border:1px solid var(--div);}
 .data-row{display:flex;justify-content:space-between;align-items:baseline;
   padding:6px 0;border-bottom:1px solid var(--div);font-size:12px;}
 .data-row:last-child{border-bottom:none;}
 .data-row .dk{color:var(--ink-soft);}
-.data-row .dv{font-family:'Fraunces',serif;font-style:italic;font-size:14px;color:var(--ink);}
-.data-row .dv.accent{color:var(--accent);}
-.data-row .dv.green{color:var(--green);}
-.data-row .dv.gold{color:var(--gold);}
+.data-row .dv{font-family:'Fraunces',serif;font-style:italic;font-size:14px;}
+.data-row .dv.hi{color:var(--accent);}
+.data-row .dv.ok{color:var(--green);}
+.data-row .dv.gd{color:var(--gold);}
 
-/* PEER BLOCK */
-.peer-block{background:var(--gold-bg);border:1px solid var(--gold-soft);
-  border-radius:12px;padding:14px 16px;margin-bottom:20px;}
+.peer-blk{background:var(--gold-bg);border:1px solid var(--gold-soft);
+  border-radius:12px;padding:14px 16px;margin-bottom:18px;}
 .pb-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.2em;
-  color:var(--gold);font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
-.pb-dot{width:10px;height:10px;border-radius:50%;background:var(--gold);}
-.pb-text{font-family:'Fraunces',serif;font-size:15px;line-height:1.3;}
-.pb-text .n{font-style:italic;color:var(--gold);font-weight:500;}
+  color:var(--gold);font-weight:600;margin-bottom:8px;
+  display:flex;align-items:center;gap:6px;}
+.pb-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);}
+.pb-txt{font-family:'Fraunces',serif;font-size:15px;line-height:1.35;}
+.pb-txt .n{font-style:italic;color:var(--gold);font-weight:500;}
+.pb-foot{font-size:10px;color:var(--ink-soft);margin-top:8px;
+  padding-top:8px;border-top:1px solid rgba(198,156,77,.25);}
 
-/* ACTION AREA */
-.action-area{padding:0 24px 24px;}
-.aa-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.2em;
-  color:var(--ink-soft);font-weight:600;margin-bottom:12px;}
-.action-primary{background:var(--ink);color:var(--card);border:none;border-radius:14px;
-  padding:15px 18px;width:100%;font-size:13px;font-weight:600;font-family:inherit;
+.act-area{padding:0 24px 28px;}
+.act-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.2em;
+  color:var(--ink-soft);font-weight:600;margin-bottom:10px;}
+.act-primary{background:var(--ink);color:var(--card);border:none;border-radius:13px;
+  padding:14px 18px;width:100%;font-size:13px;font-weight:600;font-family:inherit;
   cursor:pointer;margin-bottom:8px;display:flex;align-items:center;
   justify-content:space-between;transition:transform .15s;}
-.action-primary:active{transform:scale(.98);}
-.action-primary .gain{font-family:'Fraunces',serif;font-style:italic;
+.act-primary:active{transform:scale(.98);}
+.act-primary .gain{font-family:'Fraunces',serif;font-style:italic;
   font-size:13px;color:var(--accent-soft);}
-.action-secondary{display:flex;gap:8px;}
-.as-btn{flex:1;background:transparent;border:1px solid var(--div);color:var(--ink-soft);
-  border-radius:10px;padding:10px;font-size:11px;font-weight:600;font-family:inherit;
-  cursor:pointer;transition:all .2s;}
-.as-btn:hover{border-color:var(--ink);color:var(--ink);}
+.act-row{display:flex;gap:8px;}
+.act-sec{flex:1;background:transparent;border:1px solid var(--div);color:var(--ink-soft);
+  border-radius:10px;padding:10px;font-size:11px;font-weight:600;
+  font-family:inherit;cursor:pointer;transition:all .2s;}
+.act-sec:hover{border-color:var(--ink);color:var(--ink);}
 
-/* ======== SCREEN 3: SPEND BREAKDOWN ======== */
-.spend-hero{margin:20px 22px 0;background:var(--ink);color:var(--card);
+/* ——————————————————————————————————————
+   SCREEN 4 · SPEND BREAKDOWN
+—————————————————————————————————————— */
+.spend-top{margin:14px 22px 0;background:var(--ink);color:var(--card);
   border-radius:18px;padding:18px;position:relative;overflow:hidden;}
-.spend-hero::before{content:'';position:absolute;top:-30px;right:-30px;
+.spend-top::before{content:'';position:absolute;top:-30px;right:-30px;
   width:100px;height:100px;border:1px solid rgba(255,255,255,.07);border-radius:50%;}
-.sh-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.2em;
+.st-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.2em;
   color:rgba(250,247,240,.4);font-weight:600;margin-bottom:4px;position:relative;z-index:1;}
-.sh-total{font-family:'Fraunces',serif;font-size:32px;font-style:italic;
+.st-num{font-family:'Fraunces',serif;font-size:32px;font-style:italic;
   letter-spacing:-.02em;position:relative;z-index:1;}
-.sh-sub{font-size:11px;color:rgba(250,247,240,.4);margin-top:3px;position:relative;z-index:1;}
-.sh-month{display:flex;align-items:center;justify-content:center;gap:12px;
-  margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.08);
+.st-sub{font-size:11px;color:rgba(250,247,240,.4);margin-top:3px;position:relative;z-index:1;}
+.st-mpick{display:flex;align-items:center;justify-content:center;gap:14px;
+  margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.08);
   position:relative;z-index:1;}
-.sh-marr{background:rgba(255,255,255,.08);border:none;color:var(--card);
-  width:24px;height:24px;border-radius:50%;display:flex;align-items:center;
-  justify-content:center;cursor:pointer;font-size:13px;}
-.sh-mlbl{font-family:'Fraunces',serif;font-style:italic;font-size:13px;}
+.st-marr{background:rgba(255,255,255,.08);border:none;color:var(--card);
+  width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:13px;
+  display:flex;align-items:center;justify-content:center;}
+.st-mlbl{font-family:'Fraunces',serif;font-style:italic;font-size:13px;}
 
-.cat-list{margin:14px 22px 0;}
-.cat-item{background:var(--card);border:1px solid var(--div);border-radius:14px;
-  padding:14px 16px;margin-bottom:8px;cursor:pointer;transition:all .2s;}
-.cat-item:hover{transform:translateY(-1px);border-color:rgba(26,24,20,.15);}
-.cat-item:active{transform:scale(.99);}
-.ci-top{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
-.ci-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
-.ci-name{font-size:13px;font-weight:500;flex:1;}
-.ci-amt{font-family:'Fraunces',serif;font-style:italic;font-size:16px;}
-.ci-bar{height:4px;background:rgba(26,24,20,.07);border-radius:2px;overflow:hidden;}
-.ci-fill{height:100%;border-radius:2px;transition:width .8s cubic-bezier(.22,1,.36,1);}
-.ci-meta{display:flex;justify-content:space-between;margin-top:6px;font-size:10px;color:var(--ink-soft);}
-.ci-badge{font-size:9px;font-weight:600;padding:2px 6px;border-radius:5px;}
-.ci-badge.high{background:var(--accent-bg);color:var(--accent);}
-.ci-badge.ok{background:var(--green-bg);color:var(--green);}
-.ci-badge.peer{background:var(--gold-bg);color:var(--gold);}
+.cat-list{margin:12px 22px 0;}
+.cat{background:var(--card);border:1px solid var(--div);border-radius:13px;
+  padding:13px 15px;margin-bottom:8px;cursor:pointer;transition:all .2s;}
+.cat:hover{transform:translateY(-1px);border-color:rgba(26,24,20,.15);}
+.cat:active{transform:scale(.99);}
+.cat.flagged{border-color:var(--accent-soft);}
+.ct-top{display:flex;align-items:center;gap:9px;margin-bottom:9px;}
+.ct-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.ct-name{font-size:13px;font-weight:500;flex:1;}
+.ct-amt{font-family:'Fraunces',serif;font-style:italic;font-size:15px;}
+.ct-bar{height:4px;background:rgba(26,24,20,.07);border-radius:2px;overflow:hidden;}
+.ct-fill{height:100%;border-radius:2px;}
+.ct-meta{display:flex;justify-content:space-between;margin-top:6px;font-size:10px;color:var(--ink-soft);}
+.badge{font-size:9px;font-weight:600;padding:2px 6px;border-radius:5px;}
+.badge.hi{background:var(--accent-bg);color:var(--accent);}
+.badge.ok{background:var(--green-bg);color:var(--green);}
+.badge.peer{background:var(--gold-bg);color:var(--gold);}
 
-@media(max-width:900px){body{flex-direction:column;align-items:center;gap:20px;padding:20px 16px;}
-.side{width:100%;max-width:360px;position:static;padding-top:0;}}
+@media(max-width:900px){
+  body{flex-direction:column;align-items:center;padding:20px 16px;gap:20px;}
+  .side{width:100%;max-width:360px;position:static;}
+}
 </style>
 </head>
 <body>
 
+<!-- SIDEBAR -->
 <div class="side">
-  <div class="side-tag">Screen</div>
-  <div class="side-step" id="ss">01 of 04</div>
-  <div class="side-name" id="sn">Main Dashboard</div>
-  <div class="side-hint" id="sh">The launchpad. <strong>Three numbers</strong> only — Upscore, Money, Credit. Below them: a daily update card and 2 insight pills. Tap any element to go deeper.</div>
+  <div class="s-tag">Screen</div>
+  <div class="s-step" id="ss">01 of 05</div>
+  <div class="s-name" id="sn">Main Dashboard</div>
+  <div class="s-hint" id="sh">Loading…</div>
   <div class="rail" id="rl"></div>
   <div class="nav-row">
     <button class="nb" onclick="prev()">← Back</button>
     <button class="nb" onclick="next()">Next →</button>
+    <button class="nb" onclick="goTo(0)">↺ Home</button>
   </div>
 </div>
 
-<div class="phone">
-<div class="ps">
-<div class="di"></div>
+<!-- PHONE -->
+<div class="phone"><div class="ps"><div class="di"></div>
 
-<!-- ======================================================
-     SCREEN 0: MAIN DASHBOARD
-====================================================== -->
+<!-- ════════════════════════════════════
+     S0 · MAIN DASHBOARD
+════════════════════════════════════ -->
 <div class="scr on" data-s="0">
 <div class="sb"><span>9:41</span><div class="ic">
   <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg>
   <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg>
 </div></div>
 <div class="body">
-
-  <div class="dash-header">
-    <div class="dash-title">Good morning, Arjun</div>
+  <div class="dash-hdr">
+    <div class="dash-greet">Good morning, Arjun</div>
     <div class="av">A</div>
   </div>
 
-  <!-- UPSCORE PILL -->
-  <div class="us-pill">
-    <div class="us-left">
-      <div class="lbl">Upscore</div>
+  <!-- UPSCORE -->
+  <div class="us">
+    <div class="us-l">
+      <div class="lbl">Your Upscore</div>
       <div class="num">724 <span class="band">Healthy</span></div>
     </div>
-    <div class="us-right">
-      <div class="delta">↑ 12 pts</div>
-      <div class="cta">Tap to see why →</div>
+    <div class="us-r">
+      <div class="delta">↑ 12 pts this month</div>
+      <div class="why">See why →</div>
     </div>
   </div>
 
-  <!-- ENTRY POINTS: MONEY + CREDIT -->
-  <div class="entry-row">
+  <!-- ENTRY POINTS -->
+  <div class="entries">
     <div class="entry" onclick="goTo(1)">
-      <div class="entry-lbl">Money <span class="arr">→</span></div>
-      <div class="entry-num">₹2.4L</div>
-      <div class="entry-sub">+ ₹38,440 net · May</div>
+      <div class="e-lbl">Money <span class="arr">→</span></div>
+      <div class="e-num">₹2.4L</div>
+      <div class="e-sub">+ ₹38,440 net · May</div>
     </div>
-    <div class="entry credit">
-      <div class="entry-lbl">Credit <span class="arr">→</span></div>
-      <div class="entry-num">₹38k</div>
-      <div class="entry-sub">outstanding · 38% util</div>
-      <div class="entry-alert">! Bill due 4 days</div>
-    </div>
-  </div>
-
-  <!-- DAILY UPDATE CARD -->
-  <div class="feed-lbl">Today</div>
-  <div class="daily-card" onclick="goTo(1)">
-    <div class="dc-top">
-      <div class="dc-lbl">Daily update · 8:00am</div>
-      <div class="dc-time">Just now</div>
-    </div>
-    <div class="dc-headline">
-      Salary arrived. <em>₹38,440</em> is yours after all commitments.
-    </div>
-    <div class="dc-row">
-      <div class="dc-stat">
-        <div class="dl">Came in</div>
-        <div class="dv pos">₹1,55,000</div>
-      </div>
-      <div class="dc-stat">
-        <div class="dl">Committed</div>
-        <div class="dv neg">₹1,16,560</div>
-      </div>
-      <div class="dc-stat">
-        <div class="dl">Free</div>
-        <div class="dv pos">₹38,440</div>
-      </div>
-      <div class="dc-arrow">→</div>
+    <div class="entry cr" onclick="goTo(2)">
+      <div class="e-lbl">Credit <span class="arr">→</span></div>
+      <div class="e-num">₹38k</div>
+      <div class="e-sub">outstanding · 38% util</div>
+      <div class="e-alert">⚠ Bill due 4 days</div>
     </div>
   </div>
 
-  <!-- INSIGHT PILLS -->
-  <div class="feed-lbl">Insights</div>
+  <!-- DAILY UPDATE -->
+  <div class="feed-label" style="margin-top:22px;">Today's update</div>
+  <div class="daily" onclick="goTo(1)">
+    <div class="d-top">
+      <div class="d-lbl">Daily digest · 8:00am</div>
+      <div class="d-time">Today</div>
+    </div>
+    <div class="d-headline">
+      Salary in. <em>₹38,440</em> is yours after all commitments this month.
+    </div>
+    <div class="d-stats">
+      <div class="d-stat"><div class="dl">Came in</div><div class="dv pos">₹1,55,000</div></div>
+      <div class="d-stat"><div class="dl">Committed</div><div class="dv neg">₹1,16,560</div></div>
+      <div class="d-stat"><div class="dl">Free</div><div class="dv pos">₹38,440</div></div>
+      <div class="d-arr">→</div>
+    </div>
+  </div>
 
-  <div class="insight-pill" onclick="goTo(2)">
-    <div class="ip-icon red">🍕</div>
+  <!-- INSIGHTS — cross-cutting only, 2 max -->
+  <div class="feed-label">Insights</div>
+
+  <div class="ipill" onclick="goTo(3)">
+    <div class="ip-ic red">🍕</div>
     <div class="ip-body">
-      <div class="ip-text">You worked <span class="n">3 days</span> for Zomato this month.</div>
-      <div class="ip-sub">₹21,000 on food delivery · Tap to see more</div>
+      <div class="ip-txt">You worked <span class="n">3 days</span> for Zomato this month.</div>
+      <div class="ip-sub">₹21,000 on food delivery · Tap for full picture</div>
     </div>
-    <div class="ip-arrow">→</div>
+    <div class="ip-arr">→</div>
   </div>
 
-  <div class="insight-pill peer" onclick="goTo(2)">
-    <div class="ip-icon gold">✨</div>
+  <div class="ipill peer" onclick="goTo(3)">
+    <div class="ip-ic gold">✨</div>
     <div class="ip-body">
-      <div class="ip-text">Someone like you saves <span class="n">₹14k more</span> every month.</div>
-      <div class="ip-sub">Peer comparison · Tap to see more</div>
+      <div class="ip-txt">Someone like you saves <span class="n">₹14k more</span> every month.</div>
+      <div class="ip-sub">Peer comparison · Tap for full picture</div>
     </div>
-    <div class="ip-arrow">→</div>
-  </div>
-
-  <div class="insight-pill">
-    <div class="ip-icon green">📈</div>
-    <div class="ip-body">
-      <div class="ip-text">To stop working today you need <span class="n">₹1.35 Cr.</span></div>
-      <div class="ip-sub">You currently save ₹12,400/month · Tap to see more</div>
-    </div>
-    <div class="ip-arrow">→</div>
+    <div class="ip-arr">→</div>
   </div>
 
 </div>
 </div>
 
-<!-- ======================================================
-     SCREEN 1: MONEY DASHBOARD
-====================================================== -->
+<!-- ════════════════════════════════════
+     S1 · MONEY DASHBOARD
+════════════════════════════════════ -->
 <div class="scr" data-s="1">
 <div class="sb"><span>9:41</span><div class="ic">
   <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg>
   <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg>
 </div></div>
 <div class="body">
-
-  <div class="section-header">
+  <div class="sec-hdr">
     <button class="back" onclick="goTo(0)">←</button>
-    <div class="section-title"><em>Money</em></div>
+    <div class="sec-title"><em>Money</em></div>
     <div style="width:30px;"></div>
   </div>
 
-  <!-- HERO NUMBER -->
+  <!-- HERO: NET CASHFLOW -->
   <div class="money-hero">
     <div class="mh-lbl">Net cashflow · May 2026</div>
     <div class="mh-num">+ ₹38,440</div>
     <div class="mh-sub">↑ ₹6,200 better than April</div>
-    <div class="mh-context">
-      <div class="mh-stat">
-        <div class="ml">In</div>
-        <div class="mv">₹1,55,000</div>
-      </div>
-      <div class="mh-stat">
-        <div class="ml">Out</div>
-        <div class="mv">₹1,16,560</div>
-      </div>
-      <div class="mh-stat">
-        <div class="ml">Accounts</div>
-        <div class="mv">3 linked</div>
-      </div>
+    <div class="mh-ctx">
+      <div class="mh-c"><div class="l">In</div><div class="v">₹1,55,000</div></div>
+      <div class="mh-c"><div class="l">Out</div><div class="v">₹1,16,560</div></div>
+      <div class="mh-c"><div class="l">Accounts</div><div class="v">3 linked</div></div>
     </div>
   </div>
 
   <!-- ENTRY POINTS: SPEND + ACCOUNTS -->
-  <div class="money-entries">
-    <div class="me" onclick="goTo(3)">
+  <div class="m-entries">
+    <div class="me" onclick="goTo(4)">
       <div class="me-lbl">Spend <span class="arr">→</span></div>
-      <div class="me-val">₹1,16,560</div>
-      <div class="me-sub">5 categories · May</div>
+      <div class="me-val">₹1,16,560 · May</div>
+      <div class="me-sub">5 categories</div>
       <div class="me-tag">Lifestyle ↑ 22%</div>
     </div>
     <div class="me">
       <div class="me-lbl">Accounts <span class="arr">→</span></div>
       <div class="me-val">₹2,45,050</div>
       <div class="me-sub">HDFC · ICICI · SBI</div>
+      <div class="me-tag ok">All normal</div>
     </div>
   </div>
 
   <div class="divider"></div>
 
-  <!-- UPDATES -->
-  <div class="feed-lbl" style="margin-top:16px;">Updates</div>
+  <!-- UPDATES — money-specific -->
+  <div class="feed-label">Updates</div>
 
   <div class="uc">
-    <div class="ui g">↓</div>
-    <div class="ub">
-      <div class="ut">Salary credited</div>
-      <div class="ua pos">+ ₹1,55,000</div>
-      <div class="us2">HDFC •••• 4521 · Today 9:02am</div>
+    <div class="u-ic g">↓</div>
+    <div class="u-body">
+      <div class="u-title">Salary credited</div>
+      <div class="u-amt pos">+ ₹1,55,000</div>
+      <div class="u-sub">HDFC •••• 4521 · Today 9:02am</div>
     </div>
-    <div class="uc-arr">→</div>
+    <div class="u-arr">→</div>
   </div>
 
   <div class="uc">
-    <div class="ui r">↑</div>
-    <div class="ub">
-      <div class="ut">EMI debited</div>
-      <div class="ua neg">− ₹18,500</div>
-      <div class="us2">SBI Home Loan · Today 9:15am</div>
+    <div class="u-ic r">↑</div>
+    <div class="u-body">
+      <div class="u-title">EMI debited</div>
+      <div class="u-amt neg">− ₹18,500</div>
+      <div class="u-sub">SBI Home Loan · Today 9:15am</div>
     </div>
-    <div class="uc-arr">→</div>
+    <div class="u-arr">→</div>
   </div>
 
   <div class="uc">
-    <div class="ui r">↑</div>
-    <div class="ub">
-      <div class="ut">Large transaction</div>
-      <div class="ua neg">− ₹24,000</div>
-      <div class="us2">Amazon · Yesterday 11:40pm</div>
+    <div class="u-ic r">↑</div>
+    <div class="u-body">
+      <div class="u-title">Large transaction</div>
+      <div class="u-amt neg">− ₹24,000</div>
+      <div class="u-sub">Amazon · Yesterday 11:40pm</div>
     </div>
-    <div class="uc-arr">→</div>
+    <div class="u-arr">→</div>
   </div>
 
   <div class="uc">
-    <div class="ui n">↻</div>
-    <div class="ub">
-      <div class="ut">3 new subscriptions detected</div>
-      <div class="us2">Notion · Adobe · Duolingo · ₹1,240/mo</div>
+    <div class="u-ic n">↻</div>
+    <div class="u-body">
+      <div class="u-title">3 new subscriptions detected</div>
+      <div class="u-sub">Notion · Adobe · Duolingo · ₹1,240/mo total</div>
     </div>
-    <div class="uc-arr">→</div>
+    <div class="u-arr">→</div>
   </div>
 
-  <!-- INSIGHTS -->
-  <div class="feed-lbl" style="margin-top:20px;">Insights</div>
+  <!-- INSIGHTS — money-specific -->
+  <div class="feed-label">Insights</div>
 
-  <div class="insight-pill" onclick="goTo(2)">
-    <div class="ip-icon red">🍕</div>
+  <div class="ipill" onclick="goTo(3)">
+    <div class="ip-ic red">🍕</div>
     <div class="ip-body">
-      <div class="ip-text">You worked <span class="n">3 days</span> for Zomato this month.</div>
-      <div class="ip-sub">Tap to see the full picture and act</div>
+      <div class="ip-txt">You worked <span class="n">3 days</span> for Zomato this month.</div>
+      <div class="ip-sub">Tap for full picture + action</div>
     </div>
-    <div class="ip-arrow">→</div>
+    <div class="ip-arr">→</div>
   </div>
 
-  <div class="insight-pill">
-    <div class="ip-icon n" style="background:rgba(26,24,20,.06);">📋</div>
+  <div class="ipill">
+    <div class="ip-ic dim">📋</div>
     <div class="ip-body">
-      <div class="ip-text">3 subscriptions unused in 60 days. <span class="n">₹22,680/year</span> leaking.</div>
-      <div class="ip-sub">Tap to review and cancel</div>
+      <div class="ip-txt"><span class="n">₹22,680/year</span> leaking through unused subscriptions.</div>
+      <div class="ip-sub">3 services you haven't used in 60 days</div>
     </div>
-    <div class="ip-arrow">→</div>
+    <div class="ip-arr">→</div>
   </div>
 
-  <div class="insight-pill">
-    <div class="ip-icon" style="background:rgba(26,24,20,.06);">💤</div>
+  <div class="ipill">
+    <div class="ip-ic dim">💤</div>
     <div class="ip-body">
-      <div class="ip-text">₹40,000 sitting idle. <span class="n">Earning ₹0.</span></div>
-      <div class="ip-sub">Savings account vs liquid fund</div>
+      <div class="ip-txt">₹40,000 sitting idle, <span class="n">earning ₹0.</span></div>
+      <div class="ip-sub">Liquid fund earns 7–8% vs savings 3.5%</div>
     </div>
-    <div class="ip-arrow">→</div>
+    <div class="ip-arr">→</div>
   </div>
 
 </div>
 </div>
 
-<!-- ======================================================
-     SCREEN 2: INSIGHT DETAIL PAGE
-====================================================== -->
+<!-- ════════════════════════════════════
+     S2 · CREDIT DASHBOARD
+════════════════════════════════════ -->
 <div class="scr" data-s="2">
 <div class="sb"><span>9:41</span><div class="ic">
   <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg>
   <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg>
 </div></div>
 <div class="body">
-
-  <div class="detail-header">
+  <div class="sec-hdr">
     <button class="back" onclick="goTo(0)">←</button>
-    <div class="detail-context">Money insight · May</div>
+    <div class="sec-title"><em>Credit</em></div>
+    <div style="width:30px;"></div>
   </div>
 
-  <!-- HERO HOOK -->
-  <div class="detail-hero">
-    <div class="dh-hook">
-      This month, you worked
-      <span class="big">3 days</span>
-      to keep Zomato in business.
-    </div>
-  </div>
-
-  <div class="detail-body">
-    <!-- FACT -->
-    <div class="db-fact">
-      ₹21,000 went to food delivery in May. At your salary, <strong>one working day is worth ₹7,000.</strong> That's three full days of your working life, handed to one app.
-    </div>
-
-    <!-- DATA BLOCK -->
-    <div class="data-block">
-      <div class="data-row">
-        <span class="dk">Your dining · May</span>
-        <span class="dv accent">₹21,000</span>
-      </div>
-      <div class="data-row">
-        <span class="dk">Your dining · April</span>
-        <span class="dv">₹16,400</span>
-      </div>
-      <div class="data-row">
-        <span class="dk">Your dining · March</span>
-        <span class="dv">₹14,800</span>
-      </div>
-      <div class="data-row">
-        <span class="dk">Annual run rate</span>
-        <span class="dv accent">₹2,08,000</span>
-      </div>
-    </div>
-
-    <!-- PEER BLOCK -->
-    <div class="peer-block">
-      <div class="pb-lbl"><div class="pb-dot"></div>Peer comparison</div>
-      <div class="pb-text">
-        Software developers in Bangalore your age spend an average of <span class="n">₹9,400</span> on dining. Your spend is <span class="n">2.2x that.</span> The ₹11,600 difference, saved monthly, is ₹1.4L a year.
-      </div>
-    </div>
-
-    <!-- WHAT IT MEANS -->
-    <div class="db-fact">
-      At this rate, your annual dining bill is <strong>₹2,08,000</strong> — the same as a 14-day Europe trip for two. Every year. You haven't taken that trip.
+  <!-- HERO: OUTSTANDING -->
+  <div class="credit-hero">
+    <div class="ch-lbl">Total outstanding</div>
+    <div class="ch-num">₹38,000</div>
+    <div class="ch-sub">across 2 credit cards</div>
+    <div class="ch-ctx">
+      <div class="ch-c"><div class="l">Score</div><div class="v ok">742</div></div>
+      <div class="ch-c"><div class="l">Utilisation</div><div class="v warn">38%</div></div>
+      <div class="ch-c"><div class="l">Cards</div><div class="v">2 active</div></div>
     </div>
   </div>
 
-  <!-- ACTIONS -->
-  <div class="action-area">
-    <div class="aa-lbl">What you can do</div>
-    <button class="action-primary">
-      <span>Get ₹7,000/month back</span>
-      <span class="gain">Set a dining limit →</span>
-    </button>
-    <div class="action-secondary">
-      <button class="as-btn">Remind me Friday</button>
-      <button class="as-btn">Not now</button>
+  <!-- ENTRY POINTS -->
+  <div class="m-entries">
+    <div class="me">
+      <div class="me-lbl">Score <span class="arr">→</span></div>
+      <div class="me-val">742 · Good</div>
+      <div class="me-sub">↑ 14 pts this month</div>
+      <div class="me-tag ok">Improving</div>
     </div>
+    <div class="me">
+      <div class="me-lbl">Cards <span class="arr">→</span></div>
+      <div class="me-val">HDFC · ICICI</div>
+      <div class="me-sub">₹12,400 bill due</div>
+      <div class="me-tag">Due in 4 days</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- UPDATES — credit-specific -->
+  <div class="feed-label">Updates</div>
+
+  <div class="uc">
+    <div class="u-ic gold">★</div>
+    <div class="u-body">
+      <div class="u-title">Credit score moved</div>
+      <div class="u-sub">728 → <strong>742</strong> &nbsp;↑ 14 points · May refresh</div>
+    </div>
+    <div class="u-arr">→</div>
+  </div>
+
+  <div class="uc">
+    <div class="u-ic r">!</div>
+    <div class="u-body">
+      <div class="u-title">HDFC card bill generated</div>
+      <div class="u-amt neg">₹12,400 due</div>
+      <div class="u-sub">Due date: 26 May · 4 days left</div>
+    </div>
+    <div class="u-arr">→</div>
+  </div>
+
+  <div class="uc">
+    <div class="u-ic r">↑</div>
+    <div class="u-body">
+      <div class="u-title">ICICI utilisation high</div>
+      <div class="u-sub">64% of ₹80,000 limit used · Ideal is below 30%</div>
+    </div>
+    <div class="u-arr">→</div>
+  </div>
+
+  <!-- INSIGHTS — credit-specific -->
+  <div class="feed-label">Insights</div>
+
+  <div class="ipill dark">
+    <div class="ip-ic" style="background:rgba(255,255,255,.1);">💸</div>
+    <div class="ip-body">
+      <div class="ip-txt">Credit card interest this year = <span class="n">5 weeks</span> of salary.</div>
+      <div class="ip-sub">₹18,000 paid to banks in interest · Tap to see more</div>
+    </div>
+    <div class="ip-arr">→</div>
+  </div>
+
+  <div class="ipill dark">
+    <div class="ip-ic" style="background:rgba(255,255,255,.1);">🏠</div>
+    <div class="ip-body">
+      <div class="ip-txt">At your score, a home loan costs <span class="n">₹3.2L more</span> than people like you.</div>
+      <div class="ip-sub">Score 742 vs peers at 780+ · Tap to see more</div>
+    </div>
+    <div class="ip-arr">→</div>
   </div>
 
 </div>
 </div>
 
-<!-- ======================================================
-     SCREEN 3: SPEND BREAKDOWN
-====================================================== -->
+<!-- ════════════════════════════════════
+     S3 · INSIGHT DETAIL
+════════════════════════════════════ -->
 <div class="scr" data-s="3">
 <div class="sb"><span>9:41</span><div class="ic">
   <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg>
@@ -644,151 +679,211 @@ body::before{content:'';position:fixed;inset:0;
 </div></div>
 <div class="body">
 
-  <div class="section-header">
+  <div class="det-hdr">
     <button class="back" onclick="goTo(1)">←</button>
-    <div class="section-title">Spend</div>
+    <div class="det-ctx">Money insight · May 2026</div>
+  </div>
+
+  <!-- HOOK -->
+  <div class="det-hero">
+    <div class="det-hook">
+      This month, you worked
+      <span class="big">3 days</span>
+      to keep Zomato in business.
+    </div>
+  </div>
+
+  <div class="det-body">
+    <div class="det-fact">
+      ₹21,000 went to food delivery in May. At your salary, <strong>one working day is worth ₹7,000.</strong> That's three full days of your life handed to one app.
+    </div>
+
+    <div class="data-blk">
+      <div class="data-row"><span class="dk">Your dining · May</span><span class="dv hi">₹21,000</span></div>
+      <div class="data-row"><span class="dk">Your dining · April</span><span class="dv">₹16,400</span></div>
+      <div class="data-row"><span class="dk">Your dining · March</span><span class="dv">₹14,800</span></div>
+      <div class="data-row"><span class="dk">Annual run rate</span><span class="dv hi">₹2,08,000</span></div>
+    </div>
+
+    <div class="peer-blk">
+      <div class="pb-lbl"><div class="pb-dot"></div>Peer comparison</div>
+      <div class="pb-txt">
+        Software developers in Bangalore your age spend an average of <span class="n">₹9,400</span> on dining.
+        Your spend is <span class="n">2.2× that.</span> The ₹11,600 monthly difference is ₹1.4L a year.
+      </div>
+      <div class="pb-foot">Based on comparing your profile against millions of similar users.</div>
+    </div>
+
+    <div class="det-fact">
+      At this rate your annual dining bill equals a <strong>14-day Europe trip for two.</strong> Every year. You haven't taken it.
+    </div>
+  </div>
+
+  <div class="act-area">
+    <div class="act-lbl">What you can do</div>
+    <button class="act-primary">
+      <span>Get ₹7,000/month back</span>
+      <span class="gain">Set a dining limit →</span>
+    </button>
+    <div class="act-row">
+      <button class="act-sec">Remind me Friday</button>
+      <button class="act-sec">Not now</button>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ════════════════════════════════════
+     S4 · SPEND BREAKDOWN
+════════════════════════════════════ -->
+<div class="scr" data-s="4">
+<div class="sb"><span>9:41</span><div class="ic">
+  <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg>
+  <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg>
+</div></div>
+<div class="body">
+
+  <div class="sec-hdr">
+    <button class="back" onclick="goTo(1)">←</button>
+    <div class="sec-title">Spend</div>
     <div style="width:30px;"></div>
   </div>
 
-  <!-- SPEND HERO WITH MONTH PICKER -->
-  <div class="spend-hero">
-    <div class="sh-lbl">Total spend</div>
-    <div class="sh-total">₹1,16,560</div>
-    <div class="sh-sub">↑ ₹8,200 more than April</div>
-    <div class="sh-month">
-      <button class="sh-marr">‹</button>
-      <div class="sh-mlbl">May 2026</div>
-      <button class="sh-marr" style="opacity:.3;cursor:not-allowed;">›</button>
+  <div class="spend-top">
+    <div class="st-lbl">Total spend</div>
+    <div class="st-num">₹1,16,560</div>
+    <div class="st-sub">↑ ₹8,200 more than April</div>
+    <div class="st-mpick">
+      <button class="st-marr">‹</button>
+      <div class="st-mlbl">May 2026</div>
+      <button class="st-marr" style="opacity:.3;cursor:not-allowed;">›</button>
     </div>
   </div>
 
-  <!-- CATEGORY LIST -->
   <div class="cat-list">
 
-    <div class="cat-item">
-      <div class="ci-top">
-        <div class="ci-dot" style="background:var(--ink);"></div>
-        <div class="ci-name">Essentials</div>
-        <div class="ci-amt">₹46,500</div>
+    <div class="cat">
+      <div class="ct-top">
+        <div class="ct-dot" style="background:var(--ink);"></div>
+        <div class="ct-name">Essentials</div>
+        <div class="ct-amt">₹46,500</div>
       </div>
-      <div class="ci-bar"><div class="ci-fill" style="background:var(--ink);width:80%;"></div></div>
-      <div class="ci-meta">
-        <span>Rent, bills, groceries, commute</span>
-        <span class="ci-badge ok">On track</span>
-      </div>
+      <div class="ct-bar"><div class="ct-fill" style="background:var(--ink);width:80%;"></div></div>
+      <div class="ct-meta"><span>Rent · bills · groceries</span><span class="badge ok">Normal</span></div>
     </div>
 
-    <div class="cat-item" onclick="goTo(2)" style="border-color:var(--accent-soft);">
-      <div class="ci-top">
-        <div class="ci-dot" style="background:var(--accent);"></div>
-        <div class="ci-name">Lifestyle</div>
-        <div class="ci-amt">₹34,100</div>
+    <div class="cat flagged" onclick="goTo(3)">
+      <div class="ct-top">
+        <div class="ct-dot" style="background:var(--accent);"></div>
+        <div class="ct-name">Lifestyle</div>
+        <div class="ct-amt">₹34,100</div>
       </div>
-      <div class="ci-bar"><div class="ci-fill" style="background:var(--accent);width:59%;"></div></div>
-      <div class="ci-meta">
-        <span>Dining, shopping, going out</span>
-        <span class="ci-badge high">↑ 22% vs April</span>
-      </div>
+      <div class="ct-bar"><div class="ct-fill" style="background:var(--accent);width:59%;"></div></div>
+      <div class="ct-meta"><span>Dining · shopping · going out</span><span class="badge hi">↑ 22% vs Apr</span></div>
     </div>
 
-    <div class="cat-item">
-      <div class="ci-top">
-        <div class="ci-dot" style="background:var(--accent-soft);"></div>
-        <div class="ci-name">EMIs</div>
-        <div class="ci-amt">₹23,250</div>
+    <div class="cat">
+      <div class="ct-top">
+        <div class="ct-dot" style="background:var(--accent-soft);"></div>
+        <div class="ct-name">EMIs</div>
+        <div class="ct-amt">₹23,250</div>
       </div>
-      <div class="ci-bar"><div class="ci-fill" style="background:var(--accent-soft);width:40%;"></div></div>
-      <div class="ci-meta">
-        <span>Home loan · Car loan</span>
-        <span class="ci-badge ok">Fixed</span>
-      </div>
+      <div class="ct-bar"><div class="ct-fill" style="background:var(--accent-soft);width:40%;"></div></div>
+      <div class="ct-meta"><span>Home loan · Car loan</span><span class="badge ok">Fixed</span></div>
     </div>
 
-    <div class="cat-item">
-      <div class="ci-top">
-        <div class="ci-dot" style="background:var(--green);"></div>
-        <div class="ci-name">Investments</div>
-        <div class="ci-amt">₹12,400</div>
+    <div class="cat">
+      <div class="ct-top">
+        <div class="ct-dot" style="background:var(--green);"></div>
+        <div class="ct-name">Investments</div>
+        <div class="ct-amt">₹12,400</div>
       </div>
-      <div class="ci-bar"><div class="ci-fill" style="background:var(--green);width:21%;"></div></div>
-      <div class="ci-meta">
-        <span>SIP · PPF · FD</span>
-        <span class="ci-badge peer">Below peers</span>
-      </div>
+      <div class="ct-bar"><div class="ct-fill" style="background:var(--green);width:21%;"></div></div>
+      <div class="ct-meta"><span>SIP · PPF · FD</span><span class="badge peer">Below peers</span></div>
     </div>
 
-    <div class="cat-item">
-      <div class="ci-top">
-        <div class="ci-dot" style="background:var(--ink-mute);"></div>
-        <div class="ci-name">Others</div>
-        <div class="ci-amt">₹4,810</div>
+    <div class="cat">
+      <div class="ct-top">
+        <div class="ct-dot" style="background:var(--ink-mute);"></div>
+        <div class="ct-name">Others</div>
+        <div class="ct-amt">₹4,810</div>
       </div>
-      <div class="ci-bar"><div class="ci-fill" style="background:var(--ink-mute);width:8%;"></div></div>
-      <div class="ci-meta">
-        <span>Transfers, miscellaneous</span>
-        <span></span>
-      </div>
+      <div class="ct-bar"><div class="ct-fill" style="background:var(--ink-mute);width:8%;"></div></div>
+      <div class="ct-meta"><span>Transfers · misc</span><span></span></div>
     </div>
 
   </div>
 </div>
 </div>
 
-</div></div>
+</div></div><!-- phone -->
 
 <script>
-const screens=document.querySelectorAll('.scr');
-const meta=[
+const screens = document.querySelectorAll('.scr');
+const meta = [
   {
-    name:'Main Dashboard',
-    hint:'<strong>Three numbers only</strong> — Upscore, Money balance, Credit outstanding. Below: a daily update card (what happened today, always there) and 2–3 insight pills (one line each). Nothing else. Tap <strong>Money →</strong> or any insight pill to go deeper.'
+    name: 'Main Dashboard',
+    hint: '<b>Three numbers:</b> Upscore, Money balance, Credit outstanding. <b>One daily update card</b> — a digest of what happened today, always present, refreshes at 8am. <b>Two insight pills</b> — cross-cutting only, one line each. Nothing else. Tap <b>Money →</b> or <b>Credit →</b> or any insight pill.'
   },
   {
-    name:'Money Dashboard',
-    hint:'One level deeper. <strong>Hero number: net cashflow</strong> (the most important money number). Context: in/out. Two entry points: Spend → and Accounts →. Below: updates (what happened) then insights (what it means). Same pill format as the main dashboard.'
+    name: 'Money Dashboard',
+    hint: '<b>Hero: net cashflow</b> (+ ₹38,440). Context: in/out/accounts. Two entry points: <b>Spend →</b> and <b>Accounts →</b>. Then <b>money-specific updates</b> (salary, EMI, transactions) and <b>money-specific insight pills</b>. Updates and insights that are money-related never appear on the main dashboard.'
   },
   {
-    name:'Insight Detail Page',
-    hint:'Opened by tapping any insight pill. <strong>Full story: hook + data + peer context + action.</strong> Three action options — do it now, schedule, or dismiss. The card on the dashboard was one line. This page is the full article.'
+    name: 'Credit Dashboard',
+    hint: '<b>Hero: total outstanding</b> (₹38,000) — the most visceral credit number. Context below: score + utilisation. Two entry points: <b>Score →</b> and <b>Cards →</b>. Then <b>credit-specific updates</b> and <b>credit-specific insights</b>. Note the dark treatment for credit insight pills — distinct from money.'
   },
   {
-    name:'Spend Breakdown',
-    hint:'Opened from the Spend → entry point on Money. <strong>Month picker at top.</strong> Every category as a card with a bar, amount, and status badge. Tap Lifestyle → to drill into transactions and see the dining insight in context.'
+    name: 'Insight Detail Page',
+    hint: 'Opened by tapping any insight pill — from main dashboard, money, or credit. <b>Full story:</b> hook → fact → data table → peer comparison → second fact. <b>Three action options</b> at the bottom: act now, schedule, or dismiss. The pill was one line. This page is the full article.'
+  },
+  {
+    name: 'Spend Breakdown',
+    hint: 'Opened from <b>Spend →</b> on the money dashboard. Month picker at top. Five categories with bars and status badges. <b>Lifestyle is flagged</b> (↑ 22%) and tappable — tapping it goes to the insight detail page for that insight.'
   }
 ];
-let cur=0;
-const rl=document.getElementById('rl');
-meta.forEach((_,i)=>{const d=document.createElement('div');d.className='rd';d.onclick=()=>goTo(i);rl.appendChild(d);});
+let cur = 0;
 
-function updateSide(){
-  document.getElementById('ss').textContent=`0${cur+1} of 0${meta.length}`;
-  document.getElementById('sn').textContent=meta[cur].name;
-  document.getElementById('sh').innerHTML=meta[cur].hint;
-  document.querySelectorAll('.rd').forEach((d,i)=>{
-    d.classList.remove('c','p');
-    if(i===cur)d.classList.add('c');
-    else if(i<cur)d.classList.add('p');
+const rl = document.getElementById('rl');
+meta.forEach((_, i) => {
+  const d = document.createElement('div');
+  d.className = 'rd';
+  d.onclick = () => goTo(i);
+  rl.appendChild(d);
+});
+
+function updateSide() {
+  document.getElementById('ss').textContent = `0${cur + 1} of 0${meta.length}`;
+  document.getElementById('sn').textContent = meta[cur].name;
+  document.getElementById('sh').innerHTML = meta[cur].hint;
+  document.querySelectorAll('.rd').forEach((d, i) => {
+    d.classList.remove('c', 'p');
+    if (i === cur) d.classList.add('c');
+    else if (i < cur) d.classList.add('p');
   });
 }
 
-function goTo(idx){
-  if(idx<0||idx>=screens.length)return;
+function goTo(idx) {
+  if (idx < 0 || idx >= screens.length) return;
   screens[cur].classList.remove('on');
   screens[cur].classList.add('out');
-  setTimeout(()=>screens[cur].classList.remove('out'),400);
+  setTimeout(() => screens[cur].classList.remove('out'), 400);
   screens[idx].classList.add('on');
-  const b=screens[idx].querySelector('.body');
-  if(b)b.scrollTop=0;
-  cur=idx;
+  const b = screens[idx].querySelector('.body');
+  if (b) b.scrollTop = 0;
+  cur = idx;
   updateSide();
 }
 
-function next(){goTo(cur+1);}
-function prev(){goTo(cur-1);}
-document.addEventListener('keydown',e=>{
-  if(e.key==='ArrowRight')next();
-  if(e.key==='ArrowLeft')prev();
+function next() { goTo(cur + 1); }
+function prev() { goTo(cur - 1); }
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') next();
+  if (e.key === 'ArrowLeft') prev();
 });
+
 updateSide();
 </script>
 </body>
