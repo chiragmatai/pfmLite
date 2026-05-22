@@ -427,6 +427,116 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
   body{flex-direction:column;align-items:center;padding:20px 16px;gap:20px;}
   .side{width:100%;max-width:360px;position:static;}
 }
+
+/* ═══ POST-AA SCREENS (S18-S23) ═══ */
+.us{margin:14px 22px 0;background:var(--ink);color:var(--card);border-radius:18px;padding:16px 18px;cursor:pointer;transition:transform .15s;position:relative;overflow:hidden;display:flex;justify-content:space-between;align-items:center;}
+.us:active{transform:scale(.98);}
+.us::after{content:'';position:absolute;top:-24px;right:-24px;width:90px;height:90px;border:1px solid rgba(232,168,144,.12);border-radius:50%;}
+.us-l .lbl{font-size:9px;text-transform:uppercase;letter-spacing:.2em;color:var(--accent-soft);font-weight:600;margin-bottom:4px;}
+.us-l .num{font-family:'Fraunces',serif;font-size:38px;font-weight:500;line-height:1;letter-spacing:-.02em;display:flex;align-items:baseline;gap:8px;}
+.us-l .num .band{font-size:13px;font-style:italic;color:var(--accent-soft);font-weight:400;}
+.us-r{text-align:right;position:relative;z-index:1;}
+.us-r .delta{font-family:'Fraunces',serif;font-style:italic;font-size:15px;color:#a8d5b8;}
+.us-r .why{font-size:9px;text-transform:uppercase;letter-spacing:.15em;color:rgba(250,247,240,.3);margin-top:3px;}
+.snapshots{margin:12px 22px 0;display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.snap{border-radius:16px;padding:14px 15px;cursor:pointer;transition:all .2s;}
+.snap:hover{transform:translateY(-2px);}
+.snap:active{transform:scale(.98);}
+.snap.money{background:var(--card);border:1px solid var(--div);}
+.snap.credit{background:var(--ink);color:var(--card);}
+.snap-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.18em;font-weight:600;margin-bottom:5px;display:flex;justify-content:space-between;align-items:center;}
+.snap.money .snap-lbl{color:var(--ink-soft);}
+.snap.credit .snap-lbl{color:var(--accent-soft);}
+.snap-arr{font-size:11px;}
+.snap.money .snap-arr{color:var(--accent);}
+.snap.credit .snap-arr{color:rgba(250,247,240,.4);}
+.snap-num{font-family:'Fraunces',serif;font-size:24px;font-weight:400;letter-spacing:-.02em;line-height:1;}
+.snap.credit .snap-num{color:var(--accent-soft);}
+.snap-sub{font-size:10px;margin-top:4px;line-height:1.4;}
+.snap.money .snap-sub{color:var(--ink-soft);}
+.snap.credit .snap-sub{color:rgba(250,247,240,.45);}
+.snap-alert{display:inline-flex;align-items:center;gap:4px;margin-top:6px;background:var(--accent);border-radius:6px;padding:3px 7px;font-size:9px;font-weight:600;color:var(--card);}
+.money-nums{margin:18px 22px 0;}
+.mn-balance{text-align:center;padding-bottom:16px;border-bottom:1px solid var(--div);}
+.mn-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:var(--ink-soft);font-weight:600;margin-bottom:6px;}
+.mn-num{font-family:'Fraunces',serif;font-size:52px;font-weight:400;letter-spacing:-.03em;line-height:1;}
+.mn-sub{font-size:11px;color:var(--ink-soft);margin-top:4px;}
+.mn-flows{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:14px;}
+.mn-flow{text-align:center;padding:0 12px;}
+.mn-flow+.mn-flow{border-left:1px solid var(--div);}
+.mn-flow .fl{font-size:9px;text-transform:uppercase;letter-spacing:.16em;color:var(--ink-mute);font-weight:600;margin-bottom:3px;}
+.mn-flow .fv{font-family:'Fraunces',serif;font-style:italic;font-size:20px;}
+.mn-flow .fd{font-size:10px;margin-top:2px;}
+.graph-card{margin:14px 22px 0;background:var(--card);border:1px solid var(--div);border-radius:16px;padding:16px 18px;}
+.graph-title{font-size:10px;text-transform:uppercase;letter-spacing:.18em;color:var(--ink-soft);font-weight:600;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center;}
+.graph-legend{display:flex;gap:10px;}
+.leg{display:flex;align-items:center;gap:4px;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-soft);}
+.leg-dot{width:8px;height:8px;border-radius:50%;}
+.graph-area{height:88px;position:relative;margin:12px 0 4px;}
+.graph-months{display:flex;justify-content:space-between;margin-top:4px;}
+.gm{font-size:9px;color:var(--ink-mute);}
+.credit-hero{margin:18px 22px 0;text-align:center;padding-bottom:16px;border-bottom:1px solid var(--div);}
+.ch-num{font-family:'Fraunces',serif;font-size:52px;font-weight:400;letter-spacing:-.03em;line-height:1;color:var(--accent);}
+.ch-sub{font-size:11px;color:var(--ink-soft);margin-top:4px;}
+.ch-ctx{display:flex;justify-content:center;gap:24px;margin-top:14px;}
+.ch-c .l{font-size:9px;text-transform:uppercase;letter-spacing:.16em;color:var(--ink-mute);font-weight:600;margin-bottom:2px;}
+.ch-c .v{font-family:'Fraunces',serif;font-style:italic;font-size:17px;}
+.ch-c .v.ok{color:var(--green);}
+.ch-c .v.warn{color:var(--gold);}
+.unlock-banner{margin:18px 22px 0;background:var(--accent);color:var(--card);border-radius:18px;padding:18px;display:flex;justify-content:space-between;align-items:center;gap:12px;cursor:pointer;transition:transform .2s;}
+.unlock-banner:hover{transform:translateY(-2px);}
+.unlock-banner:active{transform:scale(.98);}
+.ub-text .ub-title{font-family:'Fraunces',serif;font-size:17px;line-height:1.2;}
+.ub-text .ub-sub{font-size:10px;color:rgba(250,247,240,.65);margin-top:4px;text-transform:uppercase;letter-spacing:.15em;}
+.ub-arr{width:36px;height:36px;border-radius:50%;background:var(--card);color:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.det-hdr{padding:14px 22px 0;display:flex;align-items:center;gap:10px;}
+.det-ctx{font-size:11px;color:var(--ink-soft);}
+.det-hero{padding:24px 24px 20px;border-bottom:1px solid var(--div);}
+.det-hook{font-family:'Fraunces',serif;font-size:26px;line-height:1.05;letter-spacing:-.025em;font-weight:400;font-variation-settings:"SOFT" 30;}
+.det-hook .big{display:block;font-size:50px;line-height:.88;color:var(--accent);font-style:italic;font-weight:500;margin:5px 0 7px;font-variation-settings:"SOFT" 100,"WONK" 1;}
+.det-body{padding:18px 24px 0;}
+.det-fact{font-size:13px;line-height:1.65;color:var(--ink-soft);margin-bottom:16px;}
+.det-fact strong{color:var(--ink);}
+.data-blk{background:rgba(26,24,20,.03);border-radius:12px;padding:14px 16px;margin-bottom:14px;border:1px solid var(--div);}
+.d-row{display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-bottom:1px solid var(--div);font-size:12px;}
+.d-row:last-child{border-bottom:none;}
+.d-row .dk{color:var(--ink-soft);}
+.d-row .dv{font-family:'Fraunces',serif;font-style:italic;font-size:14px;}
+.d-row .dv.hi{color:var(--accent);}
+.d-row .dv.ok{color:var(--green);}
+.peer-blk{background:var(--gold-bg);border:1px solid var(--gold-soft);border-radius:12px;padding:14px 16px;margin-bottom:16px;}
+.pb-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.2em;color:var(--gold);font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.pb-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);}
+.pb-txt{font-family:'Fraunces',serif;font-size:15px;line-height:1.35;}
+.pb-txt .n{font-style:italic;color:var(--gold);font-weight:500;}
+.pb-foot{font-size:10px;color:var(--ink-soft);margin-top:8px;padding-top:8px;border-top:1px solid rgba(198,156,77,.25);}
+.feat-band{margin:4px 24px 0;background:var(--accent-bg);border-radius:14px;padding:16px 18px;border:1px solid var(--accent-soft);}
+.feat-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.2em;color:var(--accent);font-weight:600;margin-bottom:6px;}
+.feat-title{font-family:'Fraunces',serif;font-size:17px;line-height:1.2;margin-bottom:12px;}
+.feat-title em{font-style:italic;color:var(--accent);}
+.act-row{display:flex;gap:8px;padding:14px 24px 0;}
+.act-sec{flex:1;background:transparent;border:1px solid var(--div);color:var(--ink-soft);border-radius:10px;padding:10px;font-size:11px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .2s;}
+.act-sec:hover{border-color:var(--ink);color:var(--ink);}
+.ins-card{margin:10px 22px 0;background:var(--card);border:1px solid var(--div);border-radius:16px;padding:15px 17px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:13px;}
+.ins-card:hover{transform:translateY(-1px);border-color:rgba(26,24,20,.15);}
+.ins-card:active{transform:scale(.98);}
+.ins-card.dark{background:var(--ink);border-color:transparent;}
+.ins-ic{width:38px;height:38px;border-radius:11px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.ins-ic.red{background:var(--accent-bg);}
+.ins-ic.dim{background:rgba(26,24,20,.06);}
+.ins-ic.inv{background:rgba(255,255,255,.1);}
+.ins-body{flex:1;}
+.ins-hook{font-family:'Fraunces',serif;font-size:14px;line-height:1.25;letter-spacing:-.01em;font-weight:400;}
+.ins-hook .n{font-style:italic;color:var(--accent);font-weight:500;}
+.ins-card.dark .ins-hook{color:var(--card);}
+.ins-card.dark .ins-hook .n{color:var(--accent-soft);}
+.ins-sub{font-size:10px;color:var(--ink-soft);margin-top:2px;}
+.ins-card.dark .ins-sub{color:rgba(250,247,240,.4);}
+.ins-arr{font-size:12px;color:var(--ink-mute);flex-shrink:0;}
+.ins-card.dark .ins-arr{color:rgba(255,255,255,.25);}
+.sec-hdr{padding:12px 22px 0;display:flex;align-items:center;gap:10px;}
+.sec-ttl{font-family:'Fraunces',serif;font-size:20px;font-weight:400;letter-spacing:-.02em;flex:1;text-align:center;}
+.sec-ttl em{font-style:italic;color:var(--accent);}
 </style>
 </head>
 <body>
@@ -1015,6 +1125,349 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 </div>
 </div>
 
+
+<!-- ══════════════════════════════════
+     S0 · MAIN DASHBOARD (post-AA)
+══════════════════════════════════ -->
+<div class="scr" data-s="18">
+<div class="sb"><span>9:41</span><div class="ic"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
+<div class="body">
+
+  <div style="padding:14px 22px 0;display:flex;justify-content:space-between;align-items:center;">
+    <div style="font-family:'Fraunces',serif;font-size:14px;font-style:italic;color:var(--ink-soft);">Good morning, Arjun</div>
+    <div style="width:32px;height:32px;border-radius:50%;background:var(--accent);color:var(--card);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:13px;">A</div>
+  </div>
+
+  <!-- UPSCORE — compact -->
+  <div class="us">
+    <div class="us-l">
+      <div class="lbl">Upscore</div>
+      <div class="num">724 <span class="band">Healthy</span></div>
+    </div>
+    <div class="us-r">
+      <div class="delta">↑ 12 pts this month</div>
+      <div class="why">See why →</div>
+    </div>
+  </div>
+
+  <!-- SNAPSHOT CARDS — side by side -->
+  <div class="snapshots">
+    <div class="snap money" onclick="goTo(19)">
+      <div class="snap-lbl">Money <span class="snap-arr">→</span></div>
+      <div class="snap-num">₹2.4L</div>
+      <div class="snap-sub">bank balance</div>
+    </div>
+    <div class="snap credit" onclick="goTo(20)">
+      <div class="snap-lbl">Credit <span class="snap-arr">→</span></div>
+      <div class="snap-num">₹38k</div>
+      <div class="snap-sub">outstanding</div>
+      <div class="snap-alert">Bill due 4 days</div>
+    </div>
+  </div>
+
+  <!-- DAILY UPDATE -->
+  <div class="sec-lbl">Today</div>
+  <div style="margin:0 22px;background:var(--ink);color:var(--card);border-radius:16px;padding:16px 18px;cursor:pointer;position:relative;overflow:hidden;" onclick="goTo(19)">
+    <div style="position:absolute;top:-28px;right:-28px;width:90px;height:90px;border:1px solid rgba(255,255,255,.06);border-radius:50%;"></div>
+    <div style="font-size:9px;text-transform:uppercase;letter-spacing:.2em;color:rgba(250,247,240,.4);font-weight:600;margin-bottom:8px;">Daily digest · 8:00am</div>
+    <div style="font-family:'Fraunces',serif;font-size:17px;font-weight:400;line-height:1.25;letter-spacing:-.01em;margin-bottom:12px;position:relative;z-index:1;">Salary in. <em style="font-style:italic;color:var(--accent-soft);">₹38,440</em> is yours after all commitments.</div>
+    <div style="display:flex;gap:16px;position:relative;z-index:1;">
+      <div><div style="font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:rgba(250,247,240,.35);margin-bottom:2px;">Came in</div><div style="font-family:'Fraunces',serif;font-style:italic;font-size:13px;color:#a8d5b8;">₹1,55,000</div></div>
+      <div><div style="font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:rgba(250,247,240,.35);margin-bottom:2px;">Committed</div><div style="font-family:'Fraunces',serif;font-style:italic;font-size:13px;color:var(--accent-soft);">₹1,16,560</div></div>
+      <div><div style="font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:rgba(250,247,240,.35);margin-bottom:2px;">Free</div><div style="font-family:'Fraunces',serif;font-style:italic;font-size:13px;color:#a8d5b8;">₹38,440</div></div>
+      <div style="margin-left:auto;font-size:11px;color:rgba(250,247,240,.3);align-self:flex-end;">→</div>
+    </div>
+  </div>
+
+  <!-- INSIGHTS -->
+  <div class="sec-lbl">Insights</div>
+  <div style="margin:0 22px;background:var(--card);border:1px solid var(--div);border-radius:14px;padding:13px 15px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all .2s;" onclick="goTo(21)">
+    <div style="width:34px;height:34px;border-radius:50%;background:var(--accent-bg);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">🍕</div>
+    <div style="flex:1;"><div style="font-family:'Fraunces',serif;font-size:14px;line-height:1.25;letter-spacing:-.01em;">You worked <em style="font-style:italic;color:var(--accent);font-weight:500;">3 days</em> for Zomato this month.</div><div style="font-size:10px;color:var(--ink-soft);margin-top:2px;">Money insight · Tap for full picture</div></div>
+    <div style="font-size:12px;color:var(--ink-mute);">→</div>
+  </div>
+  <div style="margin:8px 22px 0;background:var(--gold-bg);border:1px solid var(--gold-soft);border-radius:14px;padding:13px 15px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all .2s;">
+    <div style="width:34px;height:34px;border-radius:50%;background:rgba(198,156,77,.2);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">✨</div>
+    <div style="flex:1;"><div style="font-family:'Fraunces',serif;font-size:14px;line-height:1.25;letter-spacing:-.01em;">Someone like you saves <em style="font-style:italic;color:var(--gold);font-weight:500;">₹14k more</em> every month.</div><div style="font-size:10px;color:var(--ink-soft);margin-top:2px;">Peer insight · Tap for full picture</div></div>
+    <div style="font-size:12px;color:var(--ink-mute);">→</div>
+  </div>
+
+</div>
+</div>
+
+<!-- ══════════════════════════════════
+     S1 · MONEY DASHBOARD
+══════════════════════════════════ -->
+<div class="scr" data-s="19">
+<div class="sb"><span>9:41</span><div class="ic"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
+<div class="body">
+  <div class="sec-hdr">
+    <button class="back" onclick="goTo(18)">←</button>
+    <div class="sec-ttl"><em>Money</em></div>
+    <div style="width:30px;"></div>
+  </div>
+
+  <!-- HIERARCHY: balance → outflow → inflow -->
+  <div class="money-nums">
+    <div class="mn-balance">
+      <div class="mn-lbl">Balance · May 2026</div>
+      <div class="mn-num">₹2,45,050</div>
+      <div class="mn-sub">across 3 accounts · ↑ ₹38,440 this month</div>
+    </div>
+    <div class="mn-flows">
+      <div class="mn-flow">
+        <div class="fl">Total outflow</div>
+        <div class="fv" style="color:var(--accent);">₹1,16,560</div>
+        <div class="fd" style="color:var(--ink-soft);">↑ ₹8,200 vs April</div>
+      </div>
+      <div class="mn-flow">
+        <div class="fl">Total inflow</div>
+        <div class="fv" style="color:var(--green);">₹1,55,000</div>
+        <div class="fd" style="color:var(--ink-soft);">Salary · 1 May</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SPEND vs FORECAST GRAPH -->
+  <div class="graph-card">
+    <div class="graph-title">
+      <span>Spend · May</span>
+      <div class="graph-legend">
+        <div class="leg"><div class="leg-dot" style="background:var(--accent);"></div>Current</div>
+        <div class="leg"><div class="leg-dot" style="border:1.5px dashed var(--ink-mute);background:transparent;"></div>Forecast</div>
+      </div>
+    </div>
+    <div class="graph-area">
+      <svg viewBox="0 0 280 80" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">
+        <line x1="0" y1="55" x2="280" y2="55" stroke="rgba(26,24,20,.06)" stroke-width="1"/>
+        <line x1="0" y1="28" x2="280" y2="28" stroke="rgba(26,24,20,.06)" stroke-width="1"/>
+        <!-- spend area fill -->
+        <polyline points="0,75 46,60 93,48 140,36 186,22" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- forecast dashed -->
+        <polyline points="186,22 233,14 280,8" fill="none" stroke="var(--ink-mute)" stroke-width="2" stroke-dasharray="5,3" stroke-linecap="round"/>
+        <!-- current dot -->
+        <circle cx="186" cy="22" r="6" fill="var(--accent)" stroke="var(--card)" stroke-width="2.5"/>
+        <!-- forecast dot -->
+        <circle cx="280" cy="8" r="5" fill="var(--card)" stroke="var(--ink-mute)" stroke-width="2"/>
+        <!-- label current -->
+        <rect x="100" y="4" width="68" height="14" rx="3" fill="var(--accent-bg)"/>
+        <text x="134" y="14" font-size="8" fill="var(--accent)" font-family="Inter Tight" text-anchor="middle" font-weight="600">₹1.16L · now</text>
+        <!-- label forecast -->
+        <text x="278" y="6" font-size="8" fill="var(--ink-mute)" font-family="Inter Tight" text-anchor="end">₹1.38L forecast</text>
+      </svg>
+    </div>
+    <div class="graph-months">
+      <span class="gm">1 May</span><span class="gm">8</span><span class="gm">15</span><span class="gm">22 ← now</span><span class="gm">31</span>
+    </div>
+  </div>
+
+  <!-- INSIGHT CARDS → features -->
+  <div class="sec-lbl">Insights</div>
+
+  <div class="ins-card" onclick="goTo(21)">
+    <div class="ins-ic red">🍕</div>
+    <div class="ins-body">
+      <div class="ins-hook">Lifestyle is <span class="n">38% of salary</span> — 2× what peers spend.</div>
+      <div class="ins-sub">Category wise spends →</div>
+    </div>
+    <div class="ins-arr">→</div>
+  </div>
+
+  <div class="ins-card" onclick="goTo(22)">
+    <div class="ins-ic dim">📋</div>
+    <div class="ins-body">
+      <div class="ins-hook"><span class="n">₹22,680/year</span> in subscriptions you've forgotten.</div>
+      <div class="ins-sub">Recurring charges →</div>
+    </div>
+    <div class="ins-arr">→</div>
+  </div>
+
+  <div class="ins-card">
+    <div class="ins-ic dim">🛵</div>
+    <div class="ins-body">
+      <div class="ins-hook">You paid <span class="n">₹3,200</span> for speed, not for things.</div>
+      <div class="ins-sub">Hidden charges →</div>
+    </div>
+    <div class="ins-arr">→</div>
+  </div>
+
+  <div class="ins-card">
+    <div class="ins-ic dim">📈</div>
+    <div class="ins-body">
+      <div class="ins-hook">On track to overspend by <span class="n">₹21,440</span> by month end.</div>
+      <div class="ins-sub">Spend forecast →</div>
+    </div>
+    <div class="ins-arr">→</div>
+  </div>
+
+</div>
+</div>
+
+<!-- ══════════════════════════════════
+     S2 · CREDIT DASHBOARD
+══════════════════════════════════ -->
+<div class="scr" data-s="20">
+<div class="sb"><span>9:41</span><div class="ic"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
+<div class="body">
+  <div class="sec-hdr">
+    <button class="back" onclick="goTo(18)">←</button>
+    <div class="sec-ttl"><em>Credit</em></div>
+    <div style="width:30px;"></div>
+  </div>
+
+  <div class="credit-hero">
+    <div class="mn-lbl">Total outstanding</div>
+    <div class="ch-num">₹38,000</div>
+    <div class="ch-sub">across 2 credit cards</div>
+    <div class="ch-ctx">
+      <div class="ch-c"><div class="l">Score</div><div class="v ok">742</div></div>
+      <div class="ch-c"><div class="l">Utilisation</div><div class="v warn">38%</div></div>
+      <div class="ch-c"><div class="l">Cards</div><div class="v">2 active</div></div>
+    </div>
+  </div>
+
+  <div class="sec-lbl">Insights</div>
+
+  <div class="ins-card dark">
+    <div class="ins-ic inv">💸</div>
+    <div class="ins-body">
+      <div class="ins-hook">Credit card interest this year = <span class="n">5 weeks</span> of salary.</div>
+      <div class="ins-sub">₹18,000 paid to banks · Tap to see more</div>
+    </div>
+    <div class="ins-arr">→</div>
+  </div>
+
+  <div class="ins-card dark">
+    <div class="ins-ic inv">🏠</div>
+    <div class="ins-body">
+      <div class="ins-hook">At your score, home loan costs <span class="n">₹3.2L more</span> than peers.</div>
+      <div class="ins-sub">Score 742 vs peers at 780+ · Tap to see more</div>
+    </div>
+    <div class="ins-arr">→</div>
+  </div>
+
+  <div class="ins-card dark">
+    <div class="ins-ic inv">📊</div>
+    <div class="ins-body">
+      <div class="ins-hook">ICICI at <span class="n">64% utilisation.</span> Drop below 30% for +22 pts.</div>
+      <div class="ins-sub">Utilisation impact · Tap to see how</div>
+    </div>
+    <div class="ins-arr">→</div>
+  </div>
+
+  <!-- UNLOCK after credit insights -->
+  <div class="unlock-banner">
+    <div class="ub-text">
+      <div class="ub-title">See your full credit picture</div>
+      <div class="ub-sub">Score · EMI calendar · Loan eligibility</div>
+    </div>
+    <div class="ub-arr">→</div>
+  </div>
+
+</div>
+</div>
+
+<!-- ══════════════════════════════════
+     S3 · INSIGHT DETAIL: CATEGORY SPEND
+══════════════════════════════════ -->
+<div class="scr" data-s="21">
+<div class="sb"><span>9:41</span><div class="ic"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
+<div class="body">
+  <div class="det-hdr"><button class="back" onclick="goTo(19)">←</button><div class="det-ctx">Category wise spends</div></div>
+  <div class="det-hero">
+    <div class="det-hook">Your lifestyle is eating<span class="big">38%</span>of salary every month.</div>
+  </div>
+  <div class="det-body">
+    <div class="det-fact">₹34,100 on lifestyle in May — dining, shopping, going out. <strong>Peers average 22%.</strong> The 16-point gap is ₹24,800/month you could be saving.</div>
+    <div class="data-blk">
+      <div class="d-row"><span class="dk">Dining & delivery</span><span class="dv hi">₹21,000</span></div>
+      <div class="d-row"><span class="dk">Shopping</span><span class="dv">₹8,200</span></div>
+      <div class="d-row"><span class="dk">Going out</span><span class="dv">₹4,900</span></div>
+      <div class="d-row"><span class="dk">Total lifestyle · May</span><span class="dv hi">₹34,100</span></div>
+    </div>
+    <div class="peer-blk">
+      <div class="pb-lbl"><div class="pb-dot"></div>Peer comparison</div>
+      <div class="pb-txt">Software developers your age in Bangalore average <span class="n">₹17,200</span> on lifestyle. You spend <span class="n">₹16,900 more.</span> That's ₹2L extra a year.</div>
+      <div class="pb-foot">Based on comparing your profile against millions of similar users.</div>
+    </div>
+  </div>
+  <div class="feat-band">
+    <div class="feat-lbl">Feature → Category spend tracker</div>
+    <div class="feat-title">See every rupee by category. Set limits. <em>Track monthly.</em></div>
+    <button class="btn-dark">Open spend tracker →</button>
+  </div>
+  <div class="act-row">
+    <button class="act-sec">Remind me Friday</button>
+    <button class="act-sec">Not now</button>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════
+     S4 · INSIGHT DETAIL: RECURRING CHARGES
+══════════════════════════════════ -->
+<div class="scr" data-s="22">
+<div class="sb"><span>9:41</span><div class="ic"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
+<div class="body">
+  <div class="det-hdr"><button class="back" onclick="goTo(19)">←</button><div class="det-ctx">Recurring charges</div></div>
+  <div class="det-hero">
+    <div class="det-hook">11 subscriptions. 3 you haven't touched in<span class="big">60 days.</span></div>
+  </div>
+  <div class="det-body">
+    <div class="det-fact">₹4,280/month in recurring charges. <strong>3 services you haven't used in 60 days</strong> cost ₹1,890/month — ₹22,680 a year, going nowhere.</div>
+    <div class="data-blk">
+      <div class="d-row"><span class="dk" style="color:var(--accent);font-weight:600;">⚠ Notion</span><span class="dv hi">₹440 · unused 74 days</span></div>
+      <div class="d-row"><span class="dk" style="color:var(--accent);font-weight:600;">⚠ Adobe CC</span><span class="dv hi">₹540 · unused 68 days</span></div>
+      <div class="d-row"><span class="dk" style="color:var(--accent);font-weight:600;">⚠ Duolingo</span><span class="dv hi">₹260 · unused 91 days</span></div>
+      <div class="d-row"><span class="dk">Netflix</span><span class="dv ok">₹649 · active</span></div>
+      <div class="d-row"><span class="dk">Spotify</span><span class="dv ok">₹119 · active</span></div>
+      <div class="d-row"><span class="dk">All 11 subscriptions</span><span class="dv hi">₹4,280/mo total</span></div>
+    </div>
+  </div>
+  <div class="feat-band">
+    <div class="feat-lbl">Feature → Subscription manager</div>
+    <div class="feat-title">Cancel the 3 unused. Get <em>₹1,890/month back.</em></div>
+    <button class="btn-dark">Cancel unused subscriptions →</button>
+  </div>
+  <div class="act-row">
+    <button class="act-sec">Remind me Friday</button>
+    <button class="act-sec">Not now</button>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════
+     S5 · INSIGHT DETAIL: SPEND FORECAST
+══════════════════════════════════ -->
+<div class="scr" data-s="23">
+<div class="sb"><span>9:41</span><div class="ic"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
+<div class="body">
+  <div class="det-hdr"><button class="back" onclick="goTo(19)">←</button><div class="det-ctx">Spend forecast</div></div>
+  <div class="det-hero">
+    <div class="det-hook">You'll overspend by<span class="big">₹21,440</span>by 31 May.</div>
+  </div>
+  <div class="det-body">
+    <div class="det-fact">At your current pace, you'll spend ₹1,38,000 this month — <strong>₹21,440 more than your typical month.</strong> The overshoot is coming from lifestyle, which is running 38% of salary.</div>
+    <div class="data-blk">
+      <div class="d-row"><span class="dk">Spent so far (22 May)</span><span class="dv hi">₹1,16,560</span></div>
+      <div class="d-row"><span class="dk">Forecast by 31 May</span><span class="dv hi">₹1,38,000</span></div>
+      <div class="d-row"><span class="dk">Your typical month</span><span class="dv">₹1,08,200</span></div>
+      <div class="d-row"><span class="dk">Overshoot</span><span class="dv hi">+ ₹21,440</span></div>
+    </div>
+    <div class="det-fact">If you reduce dining and shopping by ₹500/day for the remaining 9 days, you'll land within ₹5,000 of your typical month.</div>
+  </div>
+  <div class="feat-band">
+    <div class="feat-lbl">Feature → Spend forecast</div>
+    <div class="feat-title">Set a monthly budget. Get alerted <em>before</em> you overshoot.</div>
+    <button class="btn-dark">Set a monthly budget →</button>
+  </div>
+  <div class="act-row">
+    <button class="act-sec">Remind me Friday</button>
+    <button class="act-sec">Not now</button>
+  </div>
+</div>
+</div>
+
 </div></div><!-- phone -->
 
 <script>
@@ -1038,6 +1491,12 @@ const meta = [
   {name:'CVP',hint:'Unlock screen. Video, 3 hooks, ₹99/month CTA.'},
   {name:'UPI mandate',hint:'Plan details + UPI app selector.'},
   {name:'AA processing',hint:'Processing animation with check states.'},
+  {name:'Post-AA Dashboard',hint:'<b>Post-AA main dashboard.</b> Upscore unlocked. Money + Credit side-by-side snapshot cards. Daily update + insights below.'},
+  {name:'Money Dashboard',hint:'<b>Balance → Outflow → Inflow hierarchy.</b> Spend vs forecast graph. 4 insight cards each leading to a feature.'},
+  {name:'Credit Dashboard',hint:'<b>Outstanding as hero.</b> Score + utilisation as context. 3 insight cards. Unlock banner at bottom.'},
+  {name:'Insight: Category spend',hint:'Hook → data → peer comparison → feature band: Open spend tracker →'},
+  {name:'Insight: Recurring charges',hint:'Named unused subscriptions. Feature: Cancel unused →'},
+  {name:'Insight: Spend forecast',hint:'Overspend projection. Feature: Set a monthly budget →'},
 ];
 
 let cur = 0;
@@ -1185,7 +1644,7 @@ function startProc() {
   checks.forEach((c,i) => { c.classList.remove('done','active'); if(i<2)c.classList.add('done'); if(i===2)c.classList.add('active'); });
   setTimeout(() => { checks[2].classList.remove('active'); checks[2].classList.add('done'); checks[3].classList.add('active'); }, 1800);
   setTimeout(() => { checks[3].classList.remove('active'); checks[3].classList.add('done'); }, 3400);
-  setTimeout(() => { if (cur===17) goTo(10); }, 4200);
+  setTimeout(() => { if (cur===17) goTo(18); }, 4200);
 }
 
 function selUpi(el) {
