@@ -1908,7 +1908,12 @@
           <div style="padding:12px 22px 0;display:flex;align-items:center;gap:10px;">
             <div class="back-btn" onclick="goTo(15)">←</div>
             <div style="font-family:'Fraunces',serif;font-size:20px;font-weight:400;letter-spacing:-.02em;flex:1;text-align:center;font-style:italic;color:var(--accent);">Money</div>
-            <div style="width:30px;"></div>
+            <!-- Month toggle -->
+            <div style="display:flex;align-items:center;gap:4px;background:rgba(26,24,20,.06);border-radius:20px;padding:4px 8px;">
+              <button onclick="prevMonth(this)" style="background:none;border:none;cursor:pointer;font-size:13px;color:var(--ink-soft);padding:0 2px;line-height:1;">‹</button>
+              <span id="moneyMonth" style="font-size:11px;font-weight:600;color:var(--ink);min-width:46px;text-align:center;">May</span>
+              <button onclick="nextMonth(this)" style="background:none;border:none;cursor:pointer;font-size:13px;color:var(--ink-mute);padding:0 2px;line-height:1;">›</button>
+            </div>
           </div>
 
           <!-- 1. BALANCE HERO -->
@@ -1961,6 +1966,11 @@
             </svg>
             <div style="display:flex;justify-content:space-between;margin-top:4px;font-size:9px;color:var(--ink-mute);">
               <span>1 May</span><span>8</span><span>15</span><span>22 ←now</span><span>31</span>
+            </div>
+            <!-- Projection statement -->
+            <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--card-divide);display:flex;justify-content:space-between;align-items:center;">
+              <div style="font-size:12px;color:var(--ink-soft);line-height:1.4;">Projected to end May at</div>
+              <div style="font-family:'Fraunces',serif;font-style:italic;font-size:18px;color:var(--accent);">₹1,38,000 <span style="font-size:11px;color:var(--ink-soft);font-style:normal;font-family:'Inter Tight',sans-serif;">↑ ₹21,440 over usual</span></div>
             </div>
           </div>
 
@@ -2817,6 +2827,27 @@
         c.classList.add('flying-in');
       }, delay);
     });
+  }
+
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  let currentMonthIdx = 4; // May
+  function prevMonth(btn) {
+    if (currentMonthIdx > 0) {
+      currentMonthIdx--;
+      document.getElementById('moneyMonth').textContent = months[currentMonthIdx];
+      const nextBtn = btn.nextElementSibling.nextElementSibling;
+      if (nextBtn) nextBtn.style.color = 'var(--ink-soft)';
+    }
+    if (currentMonthIdx === 0) btn.style.color = 'var(--ink-mute)';
+  }
+  function nextMonth(btn) {
+    if (currentMonthIdx < 4) { // can't go beyond current month (May)
+      currentMonthIdx++;
+      document.getElementById('moneyMonth').textContent = months[currentMonthIdx];
+      const prevBtn = btn.previousElementSibling.previousElementSibling;
+      if (prevBtn) prevBtn.style.color = 'var(--ink-soft)';
+    }
+    if (currentMonthIdx === 4) btn.style.color = 'var(--ink-mute)';
   }
 
   function selectUpi(el) {
