@@ -1830,17 +1830,44 @@
           </div>
         </div>
         <div class="screen-pfm" style="flex: 1;">
-          <!-- UPSCORE — edge to edge, no side padding, seamless -->
-          <div onclick="goTo(20)" style="background:var(--ink);color:var(--card-bg);padding:20px 22px 22px;position:relative;overflow:hidden;cursor:pointer;transition:transform .15s;" onmouseenter="this.style.transform='scale(1)'" onmouseleave="this.style.transform=''">
-            <div style="position:absolute;top:-50px;right:-50px;width:180px;height:180px;border:1px solid rgba(232,168,144,.1);border-radius:50%;pointer-events:none;"></div>
-            <div style="position:absolute;top:-28px;right:-28px;width:120px;height:120px;border:1px solid rgba(232,168,144,.07);border-radius:50%;pointer-events:none;"></div>
-            <div style="font-size:9px;text-transform:uppercase;letter-spacing:.22em;color:var(--accent-soft);font-weight:600;margin-bottom:8px;position:relative;z-index:1;">Upscore</div>
-            <div style="display:flex;align-items:baseline;gap:12px;position:relative;z-index:1;">
-              <div style="font-family:'Fraunces',serif;font-size:64px;font-weight:500;line-height:1;letter-spacing:-.02em;" id="upscoreNum">0</div>
-              <div style="font-family:'Fraunces',serif;font-style:italic;font-size:16px;color:var(--accent-soft);">Healthy</div>
+          <!-- UPSCORE — edge to edge, personalised health assessment -->
+          <div onclick="goTo(20)" style="background:linear-gradient(160deg,#1a1612 0%,#0e0d0a 100%);color:var(--card-bg);padding:22px 22px 22px;position:relative;overflow:hidden;cursor:pointer;" >
+            <div style="position:absolute;top:-60px;right:-60px;width:200px;height:200px;border:1px solid rgba(224,85,53,.1);border-radius:50%;pointer-events:none;"></div>
+            <div style="position:absolute;top:-30px;right:-30px;width:130px;height:130px;border:1px solid rgba(224,85,53,.07);border-radius:50%;pointer-events:none;"></div>
+
+            <!-- Greeting + verdict -->
+            <div style="position:relative;z-index:1;">
+              <div style="font-size:12px;color:rgba(240,236,228,.45);margin-bottom:10px;letter-spacing:.01em;">Hey Chirag,</div>
+              <div style="font-family:'Fraunces',serif;font-size:26px;font-weight:400;line-height:1.1;letter-spacing:-.02em;margin-bottom:14px;">
+                your financial health is
+                <span style="display:inline;font-style:italic;color:var(--accent-soft);"> Healthy.</span>
+              </div>
             </div>
-            <div style="font-size:11px;color:rgba(250,247,240,.5);margin-top:6px;position:relative;z-index:1;">↑ 12 points since last refresh · May 2026</div>
-            <div style="margin-top:14px;display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);border-radius:8px;padding:7px 12px;font-size:11px;font-weight:600;position:relative;z-index:1;">Know about Upscore →</div>
+
+            <!-- Score row -->
+            <div style="position:relative;z-index:1;display:flex;align-items:flex-end;justify-content:space-between;padding-top:14px;border-top:1px solid rgba(240,236,228,.08);">
+              <div>
+                <div style="font-size:9px;text-transform:uppercase;letter-spacing:.22em;color:rgba(240,236,228,.4);font-weight:600;margin-bottom:4px;">Your Upscore</div>
+                <div style="display:flex;align-items:baseline;gap:10px;">
+                  <div style="font-family:'Fraunces',serif;font-size:52px;font-weight:500;line-height:1;letter-spacing:-.02em;" id="upscoreNum">0</div>
+                  <div style="font-size:11px;color:rgba(240,236,228,.4);margin-bottom:4px;">↑ 12 pts · May</div>
+                </div>
+              </div>
+              <!-- Score bar -->
+              <div style="width:80px;padding-bottom:6px;">
+                <div style="height:4px;background:rgba(240,236,228,.1);border-radius:2px;overflow:hidden;margin-bottom:4px;">
+                  <div style="width:68%;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-soft));border-radius:2px;"></div>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:8px;color:rgba(240,236,228,.3);">
+                  <span>300</span><span>900</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- CTA -->
+            <div style="position:relative;z-index:1;margin-top:12px;">
+              <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:7px 12px;font-size:11px;font-weight:600;color:rgba(240,236,228,.7);">Know about Upscore →</div>
+            </div>
           </div>
           <div class="snapshots">
             <div class="snapshot" onclick="goTo(16)" style="cursor:pointer;">
