@@ -1,0 +1,3103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Upscore — Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..900,0..100,0..1&family=Inter+Tight:wght@300..700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #efebe3;
+    --bg-grain: #e8e2d4;
+    --ink: #1a1814;
+    --ink-soft: #4a4438;
+    --ink-mute: #8a8278;
+    --accent: #c8442a;
+    --accent-soft: #e8a890;
+    --accent-bg: #f5d9cc;
+    --gold: #c69c4d;
+    --gold-soft: #e8d4a8;
+    --gold-bg: #f5ebd2;
+    --positive: #2d6a4f;
+    --negative: #c8442a;
+    --card-bg: #faf7f0;
+    --card-divide: rgba(26, 24, 20, 0.08);
+    --phone-frame: #1a1814;
+    --phone-screen: #faf7f0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { min-height: 100%; }
+
+  body {
+    background: var(--bg);
+    font-family: 'Inter Tight', sans-serif;
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 40px 20px;
+    position: relative;
+    overflow-x: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 60px;
+  }
+
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background-image:
+      radial-gradient(circle at 20% 30%, var(--bg-grain) 0%, transparent 40%),
+      radial-gradient(circle at 80% 70%, var(--bg-grain) 0%, transparent 40%);
+    opacity: 0.5; pointer-events: none; z-index: 0;
+  }
+  body::after {
+    content: ''; position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+    opacity: 0.1; pointer-events: none; mix-blend-mode: multiply; z-index: 1;
+  }
+
+  .controls {
+    position: relative; z-index: 2;
+    width: 200px;
+    display: flex; flex-direction: column;
+    gap: 14px;
+  }
+  .control-tag {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.22em;
+    color: var(--ink-soft); font-weight: 600;
+  }
+  .control-step {
+    font-family: 'Fraunces', serif; font-size: 14px;
+    font-style: italic; color: var(--accent);
+  }
+  .control-name {
+    font-family: 'Fraunces', serif; font-size: 22px;
+    line-height: 1.1; letter-spacing: -0.01em;
+  }
+  .nav-buttons { display: flex; gap: 8px; margin-top: 8px; }
+  .nav-mini {
+    background: var(--card-bg); border: 1px solid var(--card-divide);
+    color: var(--ink); border-radius: 8px; padding: 6px 12px;
+    font-size: 11px; cursor: pointer; font-family: inherit;
+    transition: all 0.2s;
+  }
+  .nav-mini:hover { background: var(--ink); color: var(--card-bg); }
+  .progress-rail { margin-top: 16px; display: flex; gap: 3px; }
+  .progress-rail-dot {
+    flex: 1; height: 3px;
+    background: rgba(26,24,20,0.1); border-radius: 2px;
+    cursor: pointer; transition: background 0.3s;
+  }
+  .progress-rail-dot.passed { background: var(--accent-soft); }
+  .progress-rail-dot.current { background: var(--accent); }
+
+  .phone {
+    width: 360px; height: 740px;
+    background: var(--phone-frame);
+    border-radius: 50px; padding: 10px;
+    flex-shrink: 0;
+    box-shadow:
+      0 40px 80px -20px rgba(26, 24, 20, 0.3),
+      0 0 0 1px rgba(26, 24, 20, 0.05),
+      inset 0 0 0 2px #2a2620;
+    position: relative; z-index: 2;
+  }
+  .phone-screen {
+    width: 100%; height: 100%;
+    background: var(--phone-screen); border-radius: 40px;
+    overflow: hidden; position: relative;
+  }
+  .dynamic-island {
+    position: absolute; top: 12px; left: 50%;
+    transform: translateX(-50%);
+    width: 120px; height: 32px;
+    background: var(--phone-frame); border-radius: 20px;
+    z-index: 100;
+  }
+  .screen {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    background: var(--phone-screen);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1), transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    transform: translateX(20px);
+  }
+  .screen.active { opacity: 1; pointer-events: auto; transform: translateX(0); }
+  .screen.exit-left { transform: translateX(-20px); opacity: 0; }
+
+  .status-bar {
+    height: 50px; padding: 14px 28px 0;
+    display: flex; align-items: flex-start; justify-content: space-between;
+    font-size: 14px; font-weight: 600; color: var(--ink);
+    flex-shrink: 0; position: relative; z-index: 50;
+  }
+  .status-bar.dark { color: var(--card-bg); }
+  .status-bar .icons { display: flex; gap: 5px; align-items: center; }
+
+  /* HOME */
+  .screen-home {
+    flex: 1;
+    background: linear-gradient(180deg, #1a1814 0%, #111109 100%);
+    position: relative;
+  }
+  .home-blur-content {
+    filter: blur(8px); opacity: 0.55; pointer-events: none;
+    padding: 12px 22px;
+  }
+  .home-blur-content .row {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 24px;
+  }
+  .home-blur-content .blob {
+    background: rgba(0,0,0,0.08); border-radius: 14px;
+    margin-bottom: 12px;
+  }
+  .home-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(245, 240, 230, 0.3) 0%, rgba(26, 24, 20, 0.15) 60%, rgba(26, 24, 20, 0.7) 100%);
+    z-index: 1;
+  }
+  .bottomsheet {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: var(--ink); color: var(--card-bg);
+    border-radius: 28px 28px 0 0; padding: 26px 24px 28px;
+    z-index: 10; box-shadow: 0 -20px 60px rgba(0,0,0,0.25);
+  }
+  .screen.active .bottomsheet { animation: slideUp 0.7s 0.3s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+  .bottomsheet-handle {
+    width: 36px; height: 4px; background: rgba(255,255,255,0.2);
+    border-radius: 2px; margin: 0 auto 18px;
+  }
+  .bottomsheet-tag {
+    font-size: 9px; text-transform: uppercase; letter-spacing: 0.22em;
+    color: var(--accent-soft); margin-bottom: 12px; font-weight: 600;
+  }
+  .bottomsheet-title {
+    font-family: 'Fraunces', serif; font-size: 26px; line-height: 1.1;
+    letter-spacing: -0.02em; margin-bottom: 18px; font-weight: 400;
+  }
+  .bottomsheet-title em { font-style: italic; color: var(--accent-soft); }
+
+  .btn-cta {
+    background: var(--card-bg); color: var(--ink); border: none;
+    border-radius: 12px; padding: 15px; width: 100%; font-size: 13px;
+    font-weight: 600; font-family: inherit; cursor: pointer;
+    transition: transform 0.15s; display: flex; align-items: center;
+    justify-content: center; gap: 6px;
+  }
+  .btn-cta:active { transform: scale(0.97); }
+  .btn-cta-dark {
+    background: var(--ink); color: var(--card-bg); border: none;
+    border-radius: 12px; padding: 15px; width: 100%; font-size: 13px;
+    font-weight: 600; font-family: inherit; cursor: pointer;
+    transition: transform 0.15s; display: flex; align-items: center;
+    justify-content: center; gap: 6px;
+  }
+  .btn-cta-dark:active { transform: scale(0.97); }
+  .btn-cta-accent {
+    background: var(--accent); color: var(--card-bg); border: none;
+    border-radius: 12px; padding: 15px; width: 100%; font-size: 13px;
+    font-weight: 600; font-family: inherit; cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .btn-cta-accent:active { transform: scale(0.97); }
+
+  /* ONBOARDING */
+  .onboard-header {
+    padding: 14px 22px 12px; display: flex; align-items: center; gap: 12px;
+    border-bottom: 1px solid var(--card-divide);
+  }
+  .back-btn {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: rgba(26,24,20,0.06); display: flex; align-items: center;
+    justify-content: center; font-size: 16px; color: var(--ink);
+    flex-shrink: 0; cursor: pointer; transition: background 0.15s;
+  }
+  .back-btn:hover { background: rgba(26,24,20,0.12); }
+  .onboard-header-right {
+    flex: 1; text-align: right; font-size: 10px;
+    color: var(--ink-soft); text-transform: uppercase;
+    letter-spacing: 0.18em; font-weight: 600;
+  }
+  .onboard-progress {
+    height: 3px; background: rgba(26,24,20,0.1);
+    border-radius: 2px; overflow: hidden;
+    margin: 0 22px;
+  }
+  .onboard-progress-fill {
+    height: 100%; background: var(--accent); border-radius: 2px;
+    transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .section-block {
+    padding: 28px 26px 0; text-align: center;
+  }
+  .section-block-tag {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.25em;
+    color: var(--ink-mute); font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .section-block-title {
+    font-family: 'Fraunces', serif;
+    font-size: 38px; line-height: 0.95;
+    letter-spacing: -0.03em; font-weight: 400;
+    font-variation-settings: "SOFT" 30;
+  }
+  .section-block-title em {
+    font-style: italic; color: var(--accent);
+    font-variation-settings: "SOFT" 100, "WONK" 1;
+  }
+  .onboard-body {
+    padding: 24px 26px; flex: 1; overflow-y: auto;
+    display: flex; flex-direction: column;
+  }
+  .profile-form { display: flex; flex-direction: column; gap: 22px; margin-top: 8px; }
+  .form-label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.18em;
+    color: var(--ink-soft); font-weight: 600; margin-bottom: 8px;
+  }
+  .form-input {
+    width: 100%; background: transparent;
+    border: none; border-bottom: 1.5px solid var(--card-divide);
+    padding: 8px 0; font-size: 22px;
+    font-family: 'Fraunces', serif; color: var(--ink);
+    letter-spacing: -0.01em; outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-input:focus { border-color: var(--accent); }
+  .form-input.large { font-size: 32px; font-weight: 400; }
+  .form-helper { font-size: 11px; color: var(--ink-soft); margin-top: 6px; }
+
+  .category-icon-wrap { text-align: center; margin-bottom: 8px; margin-top: 12px; }
+  .category-icon {
+    width: 84px; height: 84px; margin: 0 auto;
+    background: var(--accent-bg); border-radius: 26px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 42px; transform: rotate(-3deg);
+  }
+  .screen.active .category-icon {
+    animation: iconPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+  @keyframes iconPop {
+    0% { transform: scale(0.6) rotate(-12deg); opacity: 0; }
+    100% { transform: scale(1) rotate(-3deg); opacity: 1; }
+  }
+  .category-sub {
+    font-size: 12px; color: var(--ink-soft);
+    text-align: center; line-height: 1.5;
+    margin-top: 14px; margin-bottom: 24px;
+  }
+  .rupee-display { text-align: center; margin-bottom: 16px; }
+  .rupee-value {
+    font-family: 'Fraunces', serif; font-size: 56px;
+    line-height: 1; color: var(--ink); font-weight: 400;
+    letter-spacing: -0.03em;
+    font-variation-settings: "SOFT" 60;
+  }
+  .rupee-value .num {
+    font-style: italic; color: var(--accent);
+    font-variation-settings: "SOFT" 100, "WONK" 1;
+  }
+  .rupee-label {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em;
+    color: var(--ink-soft); margin-top: 6px; font-weight: 600;
+  }
+  .rupee-slider-row {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 8px; padding: 0 4px;
+  }
+  .rupee-slider {
+    flex: 1; -webkit-appearance: none; appearance: none;
+    height: 4px; background: rgba(26,24,20,0.1);
+    border-radius: 2px; outline: none; cursor: pointer;
+  }
+  .rupee-slider::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 22px; height: 22px; background: var(--ink);
+    border-radius: 50%; border: 3px solid var(--card-bg);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2); cursor: pointer;
+  }
+  .rupee-slider::-moz-range-thumb {
+    width: 22px; height: 22px; background: var(--ink);
+    border-radius: 50%; border: 3px solid var(--card-bg);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2); cursor: pointer;
+  }
+  .rupee-ends {
+    display: flex; justify-content: space-between;
+    font-size: 10px; color: var(--ink-mute);
+    margin: 8px 4px 0;
+  }
+  .chip-row {
+    display: flex; gap: 8px; justify-content: center;
+    flex-wrap: wrap; margin-top: 22px;
+  }
+  .chip {
+    background: var(--card-bg);
+    border: 1px solid var(--card-divide);
+    color: var(--ink-soft); border-radius: 20px;
+    padding: 8px 14px; font-size: 11px;
+    cursor: pointer; transition: all 0.2s;
+    font-family: inherit; font-weight: 500;
+  }
+  .chip:hover { border-color: var(--ink); color: var(--ink); }
+  .chip.selected {
+    background: var(--ink); color: var(--card-bg); border-color: var(--ink);
+  }
+  .onboard-footer { padding: 16px 22px 24px; border-top: 1px solid var(--card-divide); }
+
+  /* LOADER */
+  .screen-loader {
+    background: var(--ink); color: var(--card-bg);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 40px 28px; text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .ring {
+    position: absolute; border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 50%; animation: pulseRing 3s ease-out infinite;
+  }
+  .ring.r1 { width: 300px; height: 300px; }
+  .ring.r2 { width: 220px; height: 220px; animation-delay: 0.5s; }
+  .ring.r3 { width: 380px; height: 380px; animation-delay: 1s; }
+  @keyframes pulseRing {
+    0% { transform: scale(0.7); opacity: 0.8; }
+    100% { transform: scale(1.2); opacity: 0; }
+  }
+  .loader-dot {
+    width: 14px; height: 14px; background: var(--accent);
+    border-radius: 50%; margin-bottom: 36px;
+    animation: dotPulse 1.4s ease-in-out infinite;
+    position: relative; z-index: 2;
+  }
+  @keyframes dotPulse {
+    0%, 100% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 0 var(--accent); }
+    50% { transform: scale(1.3); opacity: 0.8; box-shadow: 0 0 0 12px rgba(200,68,42,0); }
+  }
+  .loader-text {
+    font-family: 'Fraunces', serif; font-size: 24px; line-height: 1.25;
+    font-weight: 400; letter-spacing: -0.01em; margin-bottom: 18px;
+    position: relative; z-index: 2; max-width: 280px;
+    transition: opacity 0.4s, transform 0.4s;
+  }
+  .loader-text em { font-style: italic; color: var(--accent-soft); }
+  .loader-sub {
+    font-size: 11px; color: rgba(250,247,240,0.4);
+    text-transform: uppercase; letter-spacing: 0.2em;
+    position: relative; z-index: 2;
+  }
+  .loader-bar {
+    width: 200px; height: 2px; background: rgba(255,255,255,0.08);
+    border-radius: 1px; margin-top: 20px; overflow: hidden;
+    position: relative; z-index: 2;
+  }
+  .loader-bar-fill {
+    height: 100%; background: var(--accent); border-radius: 1px;
+    animation: loadProgress 4s ease-out forwards;
+  }
+  @keyframes loadProgress { from { width: 0; } to { width: 100%; } }
+
+  /* ========== UNIVERSAL STACK VIEWER ========== */
+  .stack-screen {
+    flex: 1;
+    background: linear-gradient(180deg, #1a1814 0%, #111109 100%);
+    position: relative;
+    display: flex; flex-direction: column;
+  }
+  .stack-top-bar {
+    padding: 16px 22px 0;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .stack-top-label {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.22em;
+    color: var(--ink-soft); font-weight: 600;
+  }
+  .stack-close {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: rgba(26,24,20,0.06); border: none;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; color: var(--ink); cursor: pointer;
+  }
+  .stack-counter {
+    font-family: 'Fraunces', serif; font-style: italic;
+    font-size: 14px; color: var(--ink-soft);
+    text-align: center;
+    margin-top: 8px;
+  }
+  .stack-counter strong { color: var(--ink); font-style: normal; font-weight: 500; }
+  .stack-area {
+    flex: 1; position: relative; perspective: 1000px;
+    padding: 30px 24px 100px;
+  }
+  .stack-card {
+    position: absolute;
+    top: 30px; left: 24px; right: 24px;
+    height: calc(100% - 130px);
+    background: var(--card-bg);
+    border-radius: 22px;
+    padding: 30px 28px;
+    box-shadow: 0 20px 50px -10px rgba(26, 24, 20, 0.2),
+                0 4px 12px rgba(26, 24, 20, 0.06);
+    cursor: grab;
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+                opacity 0.4s ease,
+                box-shadow 0.4s ease;
+    will-change: transform;
+    display: flex; flex-direction: column;
+    justify-content: space-between;
+    user-select: none;
+  }
+  .stack-card:active { cursor: grabbing; }
+  .stack-card.dragging { transition: none; }
+  .stack-card.swiped-out {
+    transform: translateX(450px) rotate(15deg) !important;
+    opacity: 0 !important;
+    transition: transform 0.5s ease-out, opacity 0.4s ease-out;
+  }
+
+  .stack-card.peer {
+    background: var(--gold-bg);
+    border: 1px solid var(--gold-soft);
+  }
+  .stack-card.peer .stack-card-big { color: var(--gold); }
+  .stack-card.peer .peer-mark {
+    position: absolute;
+    top: 24px; left: 28px;
+    font-size: 22px; opacity: 0.9;
+  }
+  .stack-card.peer .peer-footer {
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(198, 156, 77, 0.3);
+    font-size: 10px;
+    color: var(--ink-soft);
+    line-height: 1.4;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .stack-card.peer .peer-footer-icon {
+    width: 14px; height: 14px;
+    background: var(--gold);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--card-bg);
+    font-size: 8px;
+    flex-shrink: 0;
+  }
+
+  /* Credit cards in stack viewer */
+  .stack-card.credit {
+    background: var(--ink);
+    color: var(--card-bg);
+  }
+  .stack-card.credit .stack-card-headline { color: var(--card-bg); }
+  .stack-card.credit .stack-card-big { color: var(--accent-soft); }
+  .stack-card.credit .stack-card-body { color: rgba(250, 247, 240, 0.65); }
+  .stack-card.credit::before {
+    content: ''; position: absolute;
+    top: -30px; right: -30px;
+    width: 120px; height: 120px;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 50%;
+  }
+  .stack-card.credit::after {
+    content: ''; position: absolute;
+    top: -50px; right: -50px;
+    width: 160px; height: 160px;
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 50%;
+  }
+
+  /* Locked card in stack */
+  .stack-card.locked {
+    background: var(--ink);
+    color: var(--card-bg);
+    cursor: pointer;
+  }
+  .stack-card.locked .stack-card-headline {
+    color: var(--card-bg);
+    filter: blur(6px);
+    user-select: none;
+  }
+  .stack-card.locked .stack-card-body {
+    color: rgba(250, 247, 240, 0.5);
+    filter: blur(4px);
+  }
+  .stack-card.locked .locked-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column;
+    padding: 30px;
+    background: linear-gradient(180deg, rgba(26,24,20,0.3) 0%, rgba(26,24,20,0.85) 100%);
+    border-radius: 22px;
+    text-align: center;
+  }
+  .stack-card.locked .locked-lock {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--card-bg);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+    margin-bottom: 16px;
+  }
+  .stack-card.locked .locked-title {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    line-height: 1.15;
+    margin-bottom: 8px;
+    color: var(--card-bg);
+  }
+  .stack-card.locked .locked-title em {
+    font-style: italic;
+    color: var(--accent-soft);
+  }
+  .stack-card.locked .locked-sub {
+    font-size: 12px;
+    color: rgba(250, 247, 240, 0.6);
+    line-height: 1.5;
+    margin-bottom: 16px;
+    max-width: 220px;
+  }
+  .stack-card.locked .locked-cta {
+    background: var(--accent);
+    color: var(--card-bg);
+    border-radius: 10px;
+    padding: 10px 18px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center; gap: 6px;
+  }
+
+  .stack-card-headline {
+    font-family: 'Fraunces', serif;
+    font-size: 30px;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    font-weight: 400;
+    font-variation-settings: "SOFT" 30;
+    margin-top: 12px;
+  }
+  .stack-card-big {
+    display: block;
+    font-size: 64px;
+    line-height: 0.9;
+    color: var(--accent);
+    font-style: italic;
+    font-weight: 500;
+    margin: 8px 0;
+    font-variation-settings: "SOFT" 100, "WONK" 1;
+  }
+  .stack-card-body {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    margin-top: 18px;
+    max-width: 260px;
+  }
+  .stack-card-decor {
+    position: absolute;
+    top: 24px; right: 24px;
+    width: 50px; height: 50px;
+    opacity: 0.35;
+  }
+  .swipe-hint {
+    position: absolute;
+    bottom: 14px; left: 0; right: 0;
+    text-align: center;
+    font-size: 10px; color: var(--ink-mute);
+    text-transform: uppercase; letter-spacing: 0.18em;
+    opacity: 0.7;
+    pointer-events: none;
+  }
+  .stack-card.credit .swipe-hint { color: rgba(250,247,240,0.4); }
+
+  .stack-continue-wrap {
+    position: absolute;
+    bottom: 24px; left: 24px; right: 24px;
+    z-index: 50;
+    opacity: 0;
+    transform: translateY(20px);
+    pointer-events: none;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .stack-continue-wrap.show {
+    opacity: 1; transform: translateY(0); pointer-events: auto;
+  }
+
+  /* ========== LITE DASHBOARD ========== */
+  .screen-lite { overflow-y: auto; padding-bottom: 20px; }
+
+  .lite-header {
+    padding: 14px 22px 18px; display: flex;
+    justify-content: space-between; align-items: center;
+  }
+  .lite-title {
+    font-family: 'Fraunces', serif; font-size: 24px;
+    letter-spacing: -0.02em; font-weight: 400;
+  }
+  .lite-title em { font-style: italic; color: var(--accent); }
+  .lite-avatar {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: var(--accent); color: var(--card-bg);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Fraunces', serif; font-size: 14px; font-weight: 500;
+  }
+
+  .locked-score {
+    margin: 0 22px 22px; background: var(--ink); color: var(--card-bg);
+    border-radius: 20px; padding: 20px; position: relative; overflow: hidden;
+    cursor: pointer; transition: transform 0.2s;
+  }
+  .locked-score:hover { transform: translateY(-2px); }
+  .locked-score:active { transform: scale(0.98); }
+  .locked-score::before {
+    content: ''; position: absolute; top: -40px; right: -40px;
+    width: 150px; height: 150px;
+    border: 1px solid rgba(255,255,255,0.08); border-radius: 50%;
+  }
+  .locked-score::after {
+    content: ''; position: absolute; top: -20px; right: -20px;
+    width: 110px; height: 110px;
+    border: 1px solid rgba(255,255,255,0.06); border-radius: 50%;
+  }
+  .ls-label {
+    font-size: 9px; text-transform: uppercase; letter-spacing: 0.22em;
+    color: var(--accent-soft); font-weight: 600; margin-bottom: 8px;
+    position: relative; z-index: 1;
+  }
+  .ls-row {
+    display: flex; align-items: baseline; gap: 14px;
+    position: relative; z-index: 1;
+  }
+  .ls-score {
+    font-family: 'Fraunces', serif; font-size: 52px; font-style: italic;
+    line-height: 1; color: rgba(250,247,240,0.2); letter-spacing: -0.02em;
+  }
+  .ls-lock-icon {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--accent); color: var(--card-bg);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+  }
+  .ls-msg {
+    font-size: 12px; color: rgba(250,247,240,0.6); line-height: 1.5;
+    margin-top: 12px; position: relative; z-index: 1;
+  }
+  .ls-cta {
+    margin-top: 14px; background: var(--accent);
+    border: none; color: var(--card-bg);
+    border-radius: 10px; padding: 10px 14px; font-size: 11px;
+    font-weight: 600; display: inline-flex; align-items: center; gap: 6px;
+    position: relative; z-index: 1;
+  }
+
+  /* Pile of cards on dashboard */
+  .pile-section {
+    margin: 0 22px 18px;
+  }
+
+  .pile-section-label {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em;
+    color: var(--ink-soft); font-weight: 600;
+    margin-bottom: 10px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+
+  .pile-section-count {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--accent);
+    font-size: 11px;
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 400;
+  }
+
+  .pile-stack {
+    position: relative;
+    height: 140px;
+    cursor: pointer;
+    transition: transform 0.25s ease;
+  }
+
+  .pile-stack:hover { transform: translateY(-3px); }
+  .pile-stack:active { transform: scale(0.98); }
+
+  .pile-stack-card {
+    position: absolute;
+    left: 0; right: 0;
+    background: var(--card-bg);
+    border: 1px solid var(--card-divide);
+    border-radius: 16px;
+    padding: 18px 20px;
+    box-shadow: 0 4px 12px rgba(26,24,20,0.06);
+    height: 120px;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .pile-stack.money .pile-stack-card:nth-child(1) {
+    top: 20px; z-index: 1;
+    transform: rotate(2deg);
+  }
+  .pile-stack.money .pile-stack-card:nth-child(2) {
+    top: 10px; z-index: 2;
+    transform: rotate(-1.5deg);
+  }
+  .pile-stack.money .pile-stack-card:nth-child(3) {
+    top: 0; z-index: 3;
+    transform: rotate(0deg);
+  }
+
+  .pile-stack.credit .pile-stack-card:nth-child(1) {
+    top: 20px; z-index: 1;
+    transform: rotate(-2deg);
+    background: var(--ink);
+  }
+  .pile-stack.credit .pile-stack-card:nth-child(2) {
+    top: 10px; z-index: 2;
+    transform: rotate(1.5deg);
+    background: var(--ink);
+  }
+  .pile-stack.credit .pile-stack-card:nth-child(3) {
+    top: 0; z-index: 3;
+    transform: rotate(0deg);
+    background: var(--ink);
+    color: var(--card-bg);
+  }
+
+  .pile-preview {
+    font-family: 'Fraunces', serif;
+    font-size: 15px;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+  .pile-preview .num {
+    font-style: italic; color: var(--accent); font-weight: 500;
+  }
+
+  .pile-stack.credit .pile-preview { color: var(--card-bg); }
+  .pile-stack.credit .pile-preview .num { color: var(--accent-soft); }
+
+  .pile-stack-card-meta {
+    font-size: 9px; text-transform: uppercase; letter-spacing: 0.18em;
+    color: var(--ink-soft); font-weight: 600;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .pile-stack.credit .pile-stack-card-meta { color: rgba(250,247,240,0.5); }
+
+  .pile-tap-hint {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--accent);
+    font-size: 12px;
+  }
+  .pile-stack.credit .pile-tap-hint { color: var(--accent-soft); }
+
+  /* Card fly-in animation */
+  .pile-stack-card.flying-in {
+    animation: flyIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  @keyframes flyIn {
+    0% { transform: translateY(-200px) rotate(8deg) scale(1.1); opacity: 0; }
+    100% { opacity: 1; }
+  }
+
+  .unlock-banner {
+    margin: 24px 22px 12px; background: var(--accent);
+    color: var(--card-bg); border-radius: 18px; padding: 18px;
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 12px; cursor: pointer; transition: transform 0.2s;
+  }
+  .unlock-banner:hover { transform: translateY(-2px); }
+  .unlock-banner:active { transform: scale(0.98); }
+  .unlock-banner-text {
+    font-family: 'Fraunces', serif; font-size: 16px; line-height: 1.2;
+  }
+  .unlock-banner-text em {
+    font-style: normal; display: block; font-size: 10px;
+    color: rgba(250,247,240,0.75); margin-top: 4px;
+    font-family: 'Inter Tight', sans-serif;
+    text-transform: uppercase; letter-spacing: 0.18em;
+  }
+  .unlock-banner-arrow {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--card-bg); color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 14px;
+  }
+
+  /* CVP */
+  .screen-cvp {
+    background: var(--ink); color: var(--card-bg);
+    padding: 24px 22px; position: relative; overflow: hidden;
+  }
+  .cvp-close {
+    position: absolute; top: 60px; right: 18px;
+    width: 30px; height: 30px; background: rgba(255,255,255,0.1);
+    color: var(--card-bg); border-radius: 50%; display: flex;
+    align-items: center; justify-content: center; font-size: 14px;
+    z-index: 5; cursor: pointer; border: none;
+  }
+  .cvp-video {
+    height: 180px;
+    background: linear-gradient(135deg, #2a2620 0%, #3a3530 100%);
+    border-radius: 18px; margin-top: 16px; margin-bottom: 22px;
+    position: relative; display: flex; align-items: center;
+    justify-content: center; overflow: hidden;
+  }
+  .cvp-video::before {
+    content: ''; position: absolute; width: 220px; height: 220px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--accent) 0%, transparent 60%);
+    opacity: 0.4; animation: pulseBg 4s ease-in-out infinite;
+  }
+  @keyframes pulseBg {
+    0%, 100% { transform: scale(1); opacity: 0.4; }
+    50% { transform: scale(1.2); opacity: 0.6; }
+  }
+  .cvp-play {
+    width: 56px; height: 56px; border-radius: 50%;
+    background: var(--card-bg); color: var(--ink);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 2; box-shadow: 0 8px 24px rgba(200,68,42,0.3);
+    cursor: pointer; font-size: 16px;
+  }
+  .cvp-tag {
+    font-size: 9px; text-transform: uppercase; letter-spacing: 0.22em;
+    color: var(--accent-soft); font-weight: 600; margin-bottom: 10px;
+  }
+  .cvp-title {
+    font-family: 'Fraunces', serif; font-size: 28px; line-height: 1.05;
+    letter-spacing: -0.02em; font-weight: 400; margin-bottom: 18px;
+  }
+  .cvp-title em { font-style: italic; color: var(--accent-soft); }
+  .cvp-hooks { margin-bottom: 16px; }
+  .cvp-hook {
+    border-top: 1px solid rgba(255,255,255,0.1); padding: 12px 0;
+    font-size: 13px; line-height: 1.4;
+  }
+  .cvp-hook .hookno {
+    font-family: 'Fraunces', serif; font-style: italic;
+    color: var(--accent-soft); font-size: 11px;
+    display: block; margin-bottom: 2px;
+  }
+
+  /* UPI */
+  .unlock-header {
+    padding: 14px 22px; border-bottom: 1px solid var(--card-divide);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .unlock-step {
+    font-size: 11px; color: var(--ink-soft);
+    font-family: 'Fraunces', serif; font-style: italic;
+  }
+  .unlock-body { flex: 1; padding: 28px 22px; overflow-y: auto; }
+  .unlock-step-num {
+    font-family: 'Fraunces', serif; font-style: italic;
+    color: var(--accent); font-size: 13px; margin-bottom: 8px;
+  }
+  .unlock-title {
+    font-family: 'Fraunces', serif; font-size: 28px; line-height: 1.05;
+    letter-spacing: -0.02em; margin-bottom: 10px; font-weight: 400;
+  }
+  .unlock-title em { font-style: italic; color: var(--accent); }
+  .unlock-sub {
+    font-size: 12px; color: var(--ink-soft);
+    margin-bottom: 28px; line-height: 1.5;
+  }
+  .upi-box {
+    border: 1px solid var(--card-divide); border-radius: 14px;
+    padding: 18px; margin-bottom: 18px; background: var(--card-bg);
+  }
+  .upi-row {
+    display: flex; justify-content: space-between;
+    align-items: center; padding: 8px 0; font-size: 12px;
+  }
+  .upi-row + .upi-row { border-top: 1px solid var(--card-divide); }
+  .upi-label { color: var(--ink-soft); }
+  .upi-value { color: var(--ink); font-weight: 500; }
+  .upi-amount {
+    font-family: 'Fraunces', serif; font-style: italic;
+    font-size: 18px; color: var(--accent);
+  }
+  .upi-app-select {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 8px; margin-bottom: 18px;
+  }
+  .upi-app {
+    background: var(--card-bg); border: 1px solid var(--card-divide);
+    border-radius: 12px; padding: 12px 4px; font-size: 9px;
+    text-align: center; color: var(--ink-soft); cursor: pointer;
+    transition: all 0.2s;
+  }
+  .upi-app.selected {
+    border-color: var(--accent); background: var(--accent-bg); color: var(--ink);
+  }
+  .upi-app .ic {
+    width: 28px; height: 28px; border-radius: 7px;
+    background: var(--ink); margin: 0 auto 4px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--card-bg); font-size: 14px;
+    font-family: 'Fraunces', serif; font-style: italic;
+  }
+  .unlock-footer { padding: 16px 22px 24px; border-top: 1px solid var(--card-divide); }
+
+  /* PROCESSING */
+  .screen-process {
+    background: var(--ink); color: var(--card-bg);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 40px 28px; text-align: center; position: relative; overflow: hidden;
+  }
+  .process-checks {
+    margin-bottom: 32px; position: relative; z-index: 2;
+    display: flex; flex-direction: column; gap: 14px;
+    text-align: left; max-width: 240px; width: 100%;
+  }
+  .process-check {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 13px; opacity: 0.3; transition: opacity 0.4s;
+  }
+  .process-check.active { opacity: 1; }
+  .process-check.done { opacity: 0.7; }
+  .process-check .dot {
+    width: 18px; height: 18px; border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,0.3);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: all 0.4s;
+  }
+  .process-check.active .dot { border-color: var(--accent); background: var(--accent); }
+  .process-check.done .dot { border-color: var(--accent-soft); background: var(--accent-soft); }
+  .process-check.done .dot::after { content: '✓'; color: var(--ink); font-size: 11px; font-weight: 700; }
+  .process-check.active .dot::after {
+    content: ''; width: 8px; height: 8px;
+    border: 1.5px solid var(--card-bg); border-top-color: transparent;
+    border-radius: 50%; animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* PFM DASHBOARD */
+  .screen-pfm { overflow-y: auto; padding-bottom: 16px; }
+  .upscore-card {
+    margin: 0 22px 14px;
+    background: linear-gradient(135deg, var(--ink) 0%, #2a251e 100%);
+    color: var(--card-bg); border-radius: 20px; padding: 20px;
+    position: relative; overflow: hidden; cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .upscore-card:active { transform: scale(0.98); }
+  .upscore-card::before {
+    content: ''; position: absolute; top: -50px; right: -50px;
+    width: 160px; height: 160px;
+    border: 1px solid rgba(232,168,144,0.15); border-radius: 50%;
+  }
+  .upscore-card::after {
+    content: ''; position: absolute; top: -30px; right: -30px;
+    width: 120px; height: 120px;
+    border: 1px solid rgba(232,168,144,0.1); border-radius: 50%;
+  }
+  .upscore-label {
+    font-size: 9px; text-transform: uppercase; letter-spacing: 0.22em;
+    color: var(--accent-soft); font-weight: 600; margin-bottom: 6px;
+    position: relative; z-index: 1;
+  }
+  .upscore-row {
+    display: flex; align-items: baseline; gap: 10px;
+    position: relative; z-index: 1;
+  }
+  .upscore-num {
+    font-family: 'Fraunces', serif; font-size: 56px; font-weight: 500;
+    line-height: 1; letter-spacing: -0.02em; color: var(--card-bg);
+    font-variation-settings: "SOFT" 100;
+  }
+  .upscore-band {
+    font-family: 'Fraunces', serif; font-style: italic;
+    font-size: 14px; color: var(--accent-soft);
+  }
+  .upscore-delta {
+    margin-top: 10px; font-size: 11px; color: var(--accent-soft);
+    display: flex; align-items: center; gap: 6px; position: relative; z-index: 1;
+  }
+  .upscore-cta {
+    margin-top: 12px; font-size: 10px; color: rgba(250,247,240,0.5);
+    text-transform: uppercase; letter-spacing: 0.18em;
+    display: flex; align-items: center; gap: 4px;
+    position: relative; z-index: 1;
+  }
+  .snapshots {
+    margin: 0 22px 14px; display: grid;
+    grid-template-columns: 1fr 1fr; gap: 10px;
+  }
+  .snapshot {
+    background: var(--card-bg); border: 1px solid var(--card-divide);
+    border-radius: 14px; padding: 14px; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .snapshot:hover { transform: translateY(-2px); border-color: var(--ink); }
+  .snapshot:active { transform: scale(0.98); }
+  .snapshot-label {
+    font-size: 9px; text-transform: uppercase; letter-spacing: 0.18em;
+    color: var(--ink-soft); font-weight: 600; margin-bottom: 6px;
+  }
+  .snapshot-value {
+    font-family: 'Fraunces', serif; font-size: 22px;
+    font-weight: 400; letter-spacing: -0.02em;
+  }
+  .snapshot-sub { font-size: 10px; color: var(--ink-soft); margin-top: 4px; }
+  .snapshot.credit .snapshot-value { color: var(--accent); }
+  .emi-alert {
+    margin: 0 22px 14px; background: var(--accent-bg);
+    border-left: 3px solid var(--accent); border-radius: 10px;
+    padding: 12px 14px; display: flex; align-items: center; gap: 10px;
+  }
+  .emi-alert-icon {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--accent); color: var(--card-bg);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; flex-shrink: 0;
+  }
+  .emi-alert-text { font-size: 12px; line-height: 1.3; }
+  .emi-alert-text strong { color: var(--ink); }
+  .emi-alert-text em {
+    color: var(--accent); font-style: italic;
+    font-family: 'Fraunces', serif; font-size: 14px;
+  }
+  .daily-update {
+    margin: 0 22px 10px; background: var(--card-bg);
+    border: 1px solid var(--card-divide); border-radius: 16px;
+    padding: 14px 16px;
+  }
+  .daily-update-header {
+    display: flex; justify-content: space-between;
+    align-items: center; margin-bottom: 10px;
+  }
+  .daily-update-title {
+    font-family: 'Fraunces', serif; font-style: italic;
+    font-size: 14px; color: var(--ink);
+  }
+  .daily-update-time { font-size: 10px; color: var(--ink-soft); }
+  .daily-update-row {
+    display: flex; justify-content: space-between;
+    padding: 4px 0; font-size: 11px;
+  }
+  .daily-update-row .lbl { color: var(--ink-soft); }
+  .daily-update-row .val { color: var(--ink); font-weight: 500; }
+  .daily-update-row .val.pos { color: var(--positive); }
+  .daily-update-row .val.neg { color: var(--negative); }
+
+  .section-title {
+    padding: 0 22px; font-size: 10px; text-transform: uppercase;
+    letter-spacing: 0.2em; color: var(--ink-soft); font-weight: 600;
+    margin: 18px 0 10px;
+  }
+
+  @keyframes hintPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(200,68,42,0); }
+    50% { box-shadow: 0 0 0 8px rgba(200,68,42,0.15); }
+  }
+  .pulse-hint { animation: hintPulse 2s ease-in-out infinite; }
+
+  @media (max-width: 900px) {
+    body { flex-direction: column; gap: 30px; padding: 30px 16px; }
+    .controls { width: 100%; max-width: 360px; }
+  }
+
+/* IMPROVEMENT SECTION on insight detail */
+.improvement-section {
+  margin: 14px 22px 0; padding: 20px 18px;
+  background: linear-gradient(135deg, #2a2620 0%, #1a1814 100%);
+  color: var(--card-bg); border-radius: 18px;
+  position: relative; overflow: hidden;
+}
+.improvement-section::before {
+  content: ''; position: absolute; top: -30px; right: -30px;
+  width: 120px; height: 120px;
+  border: 1px solid rgba(232,168,144,.1); border-radius: 50%;
+}
+.imp-label {
+  font-size: 9px; text-transform: uppercase; letter-spacing: .22em;
+  color: var(--accent-soft); font-weight: 600; margin-bottom: 10px;
+  position: relative; z-index: 1;
+}
+.imp-title {
+  font-family: 'Fraunces', serif; font-size: 22px; line-height: 1.15;
+  letter-spacing: -.02em; font-weight: 400; margin-bottom: 18px;
+  position: relative; z-index: 1;
+}
+.imp-title em { font-style: italic; color: var(--accent-soft); }
+.imp-impact-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  padding: 14px 0; border-top: 1px solid rgba(255,255,255,.1);
+  border-bottom: 1px solid rgba(255,255,255,.1);
+  margin-bottom: 16px; position: relative; z-index: 1;
+}
+.imp-impact-row .impact-cell .ic-label {
+  font-size: 9px; text-transform: uppercase; letter-spacing: .18em;
+  color: rgba(250,247,240,.5); font-weight: 600; margin-bottom: 4px;
+}
+.imp-impact-row .impact-cell .ic-value {
+  font-family: 'Fraunces', serif; font-style: italic; font-size: 20px;
+  color: var(--card-bg); line-height: 1;
+}
+.imp-impact-row .impact-cell .ic-value.score {
+  color: var(--accent-soft);
+}
+.imp-cta {
+  display: flex; gap: 8px; position: relative; z-index: 1;
+}
+.imp-cta-primary {
+  flex: 1; background: var(--accent); color: var(--card-bg);
+  border: none; border-radius: 12px; padding: 13px;
+  font-size: 13px; font-weight: 600; font-family: inherit;
+  cursor: pointer; transition: transform .15s;
+}
+.imp-cta-primary:active { transform: scale(.98); }
+.imp-cta-secondary {
+  background: transparent; color: rgba(250,247,240,.5);
+  border: 1px solid rgba(255,255,255,.15); border-radius: 12px;
+  padding: 13px 16px; font-size: 12px; font-family: inherit; cursor: pointer;
+}
+
+
+</style>
+</head>
+<body>
+
+  <div class="controls">
+    <div class="control-tag">Step</div>
+    <div class="control-step" id="stepNo">01 of 16</div>
+    <div class="control-name" id="stepName">Discovery</div>
+
+    <div class="progress-rail" id="progressRail"></div>
+
+    <div class="nav-buttons">
+      <button class="nav-mini" onclick="goPrev()">← Back</button>
+      <button class="nav-mini" onclick="goNext()">Skip →</button>
+    </div>
+    <button class="nav-mini" onclick="restart()" style="margin-top: 4px;">Restart</button>
+  </div>
+
+  <div class="phone">
+    <div class="phone-screen">
+      <div class="dynamic-island"></div>
+
+      <!-- SCREEN 0: HOME -->
+      <div class="screen active" data-screen="0">
+        <div class="status-bar">
+          <span>9:41</span>
+          <div class="icons">
+            <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="0.5"/><rect x="4" y="4" width="3" height="6" rx="0.5"/><rect x="8" y="2" width="3" height="8" rx="0.5"/><rect x="12" y="0" width="3" height="10" rx="0.5"/></svg>
+            <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x="0.5" y="0.5" width="20" height="10" rx="2" stroke="currentColor" opacity="0.4"/><rect x="22" y="3.5" width="1.5" height="4" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg>
+          </div>
+        </div>
+        <div class="screen-home" style="flex:1;">
+          <div class="home-blur-content">
+            <div class="row">
+              <div>
+                <div class="blob" style="width: 90px; height: 14px;"></div>
+                <div class="blob" style="width: 70px; height: 20px; margin-top: 6px;"></div>
+              </div>
+              <div class="blob" style="width: 38px; height: 38px; border-radius: 50%;"></div>
+            </div>
+            <div class="blob" style="height: 100px; margin-bottom: 18px;"></div>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 18px;">
+              <div class="blob" style="height: 54px;"></div>
+              <div class="blob" style="height: 54px;"></div>
+              <div class="blob" style="height: 54px;"></div>
+              <div class="blob" style="height: 54px;"></div>
+            </div>
+            <div class="blob" style="height: 60px; margin-bottom: 10px;"></div>
+            <div class="blob" style="height: 60px;"></div>
+          </div>
+          <div class="home-overlay"></div>
+          <div class="bottomsheet">
+            <div class="bottomsheet-handle"></div>
+            <div class="bottomsheet-tag">New for you</div>
+            <h3 class="bottomsheet-title">Learn more about your money in <em>60 seconds</em> than you have in 6 months.</h3>
+            <button class="btn-cta pulse-hint" onclick="goNext()">Show me →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCREEN 1: PROFILE -->
+      <div class="screen" data-screen="1">
+        <div class="status-bar">
+          <span>9:41</span>
+          <div class="icons">
+            <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="0.5"/><rect x="4" y="4" width="3" height="6" rx="0.5"/><rect x="8" y="2" width="3" height="8" rx="0.5"/><rect x="12" y="0" width="3" height="10" rx="0.5"/></svg>
+            <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x="0.5" y="0.5" width="20" height="10" rx="2" stroke="currentColor" opacity="0.4"/><rect x="22" y="3.5" width="1.5" height="4" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg>
+          </div>
+        </div>
+        <div class="onboard-header">
+          <div class="back-btn" onclick="goPrev()">←</div>
+          <div class="onboard-header-right">Step 1 of 6</div>
+        </div>
+        <div class="onboard-progress"><div class="onboard-progress-fill" style="width: 16%;"></div></div>
+        <div class="section-block">
+          <div class="section-block-tag">First up</div>
+          <h1 class="section-block-title">About <em>you</em></h1>
+        </div>
+        <div class="onboard-body">
+          <div class="profile-form">
+            <div class="form-field">
+              <div class="form-label">Monthly take-home</div>
+              <input type="text" class="form-input large" value="₹1,55,000" />
+              <div class="form-helper">Tap to edit if this isn't right.</div>
+            </div>
+            <div class="form-field">
+              <div class="form-label">Industry</div>
+              <input type="text" class="form-input" value="Technology" />
+            </div>
+            <div class="form-field">
+              <div class="form-label">Designation</div>
+              <input type="text" class="form-input" value="Software Developer" />
+            </div>
+          </div>
+        </div>
+        <div class="onboard-footer">
+          <button class="btn-cta-dark" onclick="goNext()">Continue →</button>
+        </div>
+      </div>
+
+      <!-- SCREEN 2: DINING -->
+      <div class="screen" data-screen="2">
+        <div class="status-bar">
+          <span>9:41</span>
+          <div class="icons">
+            <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="0.5"/><rect x="4" y="4" width="3" height="6" rx="0.5"/><rect x="8" y="2" width="3" height="8" rx="0.5"/><rect x="12" y="0" width="3" height="10" rx="0.5"/></svg>
+            <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x="0.5" y="0.5" width="20" height="10" rx="2" stroke="currentColor" opacity="0.4"/><rect x="22" y="3.5" width="1.5" height="4" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg>
+          </div>
+        </div>
+        <div class="onboard-header">
+          <div class="back-btn" onclick="goPrev()">←</div>
+          <div class="onboard-header-right">Step 2 of 6</div>
+        </div>
+        <div class="onboard-progress"><div class="onboard-progress-fill" style="width: 33%;"></div></div>
+        <div class="section-block">
+          <div class="section-block-tag">The fun stuff</div>
+          <h1 class="section-block-title">Eating <em>out</em></h1>
+        </div>
+        <div class="onboard-body">
+          <div class="category-icon-wrap"><div class="category-icon">🍕</div></div>
+          <p class="category-sub">Roughly how much goes to Zomato, Swiggy, restaurants in a month?</p>
+          <div class="rupee-display">
+            <div class="rupee-value">₹<span class="num" id="dining-val">12,000</span></div>
+            <div class="rupee-label">Per month</div>
+          </div>
+          <div class="rupee-slider-row">
+            <input type="range" min="0" max="40000" value="12000" step="500" class="rupee-slider" oninput="updateRupee('dining', this)">
+          </div>
+          <div class="rupee-ends"><span>₹0</span><span>₹40,000</span></div>
+          <div class="chip-row">
+            <button class="chip" onclick="pickChip('dining', 3000, this)">₹3k</button>
+            <button class="chip" onclick="pickChip('dining', 7000, this)">₹7k</button>
+            <button class="chip selected" onclick="pickChip('dining', 12000, this)">₹12k</button>
+            <button class="chip" onclick="pickChip('dining', 20000, this)">₹20k</button>
+          </div>
+        </div>
+        <div class="onboard-footer"><button class="btn-cta-dark" onclick="goNext()">Continue →</button></div>
+      </div>
+
+      <!-- SCREEN 3: SHOPPING -->
+      <div class="screen" data-screen="3">
+        <div class="status-bar">
+          <span>9:41</span>
+          <div class="icons">
+            <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="0.5"/><rect x="4" y="4" width="3" height="6" rx="0.5"/><rect x="8" y="2" width="3" height="8" rx="0.5"/><rect x="12" y="0" width="3" height="10" rx="0.5"/></svg>
+            <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x="0.5" y="0.5" width="20" height="10" rx="2" stroke="currentColor" opacity="0.4"/><rect x="22" y="3.5" width="1.5" height="4" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg>
+          </div>
+        </div>
+        <div class="onboard-header">
+          <div class="back-btn" onclick="goPrev()">←</div>
+          <div class="onboard-header-right">Step 3 of 6</div>
+        </div>
+        <div class="onboard-progress"><div class="onboard-progress-fill" style="width: 50%;"></div></div>
+        <div class="section-block">
+          <div class="section-block-tag">The fun stuff</div>
+          <h1 class="section-block-title"><em>Shopping</em></h1>
+        </div>
+        <div class="onboard-body">
+          <div class="category-icon-wrap"><div class="category-icon">🛍️</div></div>
+          <p class="category-sub">Clothes, gadgets, beauty, the Amazon habit. Monthly average.</p>
+          <div class="rupee-display">
+            <div class="rupee-value">₹<span class="num" id="shopping-val">8,000</span></div>
+            <div class="rupee-label">Per month</div>
+          </div>
+          <div class="rupee-slider-row">
+            <input type="range" min="0" max="40000" value="8000" step="500" class="rupee-slider" oninput="updateRupee('shopping', this)">
+          </div>
+          <div class="rupee-ends"><span>₹0</span><span>₹40,000</span></div>
+          <div class="chip-row">
+            <button class="chip" onclick="pickChip('shopping', 2000, this)">₹2k</button>
+            <button class="chip" onclick="pickChip('shopping', 5000, this)">₹5k</button>
+            <button class="chip selected" onclick="pickChip('shopping', 8000, this)">₹8k</button>
+            <button class="chip" onclick="pickChip('shopping', 15000, this)">₹15k</button>
+          </div>
+        </div>
+        <div class="onboard-footer"><button class="btn-cta-dark" onclick="goNext()">Continue →</button></div>
+      </div>
+
+      <!-- SCREEN 4: RENT -->
+      <div class="screen" data-screen="4">
+        <div class="status-bar">
+          <span>9:41</span>
+          <div class="icons">
+            <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="0.5"/><rect x="4" y="4" width="3" height="6" rx="0.5"/><rect x="8" y="2" width="3" height="8" rx="0.5"/><rect x="12" y="0" width="3" height="10" rx="0.5"/></svg>
+            <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x="0.5" y="0.5" width="20" height="10" rx="2" stroke="currentColor" opacity="0.4"/><rect x="22" y="3.5" width="1.5" height="4" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg>
+          </div>
+        </div>
+        <div class="onboard-header">
+          <div class="back-btn" onclick="goPrev()">←</div>
+          <div class="onboard-header-right">Step 4 of 6</div>
+        </div>
+        <div class="onboard-progress"><div class="onboard-progress-fill" style="width: 66%;"></div></div>
+        <div class="section-block">
+          <div class="section-block-tag">The non-negotiables</div>
+          <h1 class="section-block-title"><em>Rent</em> & home</h1>
+        </div>
+        <div class="onboard-body">
+          <div class="category-icon-wrap"><div class="category-icon">🏠</div></div>
+          <p class="category-sub">Rent, maintenance, society charges. Roof over your head.</p>
+          <div class="rupee-display">
+            <div class="rupee-value">₹<span class="num" id="rent-val">23,000</span></div>
+            <div class="rupee-label">Per month</div>
+          </div>
+          <div class="rupee-slider-row">
+            <input type="range" min="0" max="60000" value="23000" step="1000" class="rupee-slider" oninput="updateRupee('rent', this)">
+          </div>
+          <div class="rupee-ends"><span>₹0</span><span>₹60,000</span></div>
+          <div class="chip-row">
+            <button class="chip" onclick="pickChip('rent', 10000, this)">₹10k</button>
+            <button class="chip" onclick="pickChip('rent', 18000, this)">₹18k</button>
+            <button class="chip selected" onclick="pickChip('rent', 23000, this)">₹23k</button>
+            <button class="chip" onclick="pickChip('rent', 35000, this)">₹35k</button>
+          </div>
+        </div>
+        <div class="onboard-footer"><button class="btn-cta-dark" onclick="goNext()">Continue →</button></div>
+      </div>
+
+      <!-- SCREEN 5: INVESTMENTS -->
+      <div class="screen" data-screen="5">
+        <div class="status-bar">
+          <span>9:41</span>
+          <div class="icons">
+            <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="0.5"/><rect x="4" y="4" width="3" height="6" rx="0.5"/><rect x="8" y="2" width="3" height="8" rx="0.5"/><rect x="12" y="0" width="3" height="10" rx="0.5"/></svg>
+            <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x="0.5" y="0.5" width="20" height="10" rx="2" stroke="currentColor" opacity="0.4"/><rect x="22" y="3.5" width="1.5" height="4" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg>
+          </div>
+        </div>
+        <div class="onboard-header">
+          <div class="back-btn" onclick="goPrev()">←</div>
+          <div class="onboard-header-right">Step 5 of 6</div>
+        </div>
+        <div class="onboard-progress"><div class="onboard-progress-fill" style="width: 83%;"></div></div>
+        <div class="section-block">
+          <div class="section-block-tag">Growing money</div>
+          <h1 class="section-block-title"><em>Investments</em></h1>
+        </div>
+        <div class="onboard-body">
+          <div class="category-icon-wrap"><div class="category-icon">🌱</div></div>
+          <p class="category-sub">SIPs, FDs, PPF, stocks. Anything growing with time.</p>
+          <div class="rupee-display">
+            <div class="rupee-value">₹<span class="num" id="invest-val">12,000</span></div>
+            <div class="rupee-label">Per month</div>
+          </div>
+          <div class="rupee-slider-row">
+            <input type="range" min="0" max="50000" value="12000" step="1000" class="rupee-slider" oninput="updateRupee('invest', this)">
+          </div>
+          <div class="rupee-ends"><span>₹0</span><span>₹50,000</span></div>
+          <div class="chip-row">
+            <button class="chip" onclick="pickChip('invest', 0, this)">Nothing yet</button>
+            <button class="chip" onclick="pickChip('invest', 5000, this)">₹5k</button>
+            <button class="chip selected" onclick="pickChip('invest', 12000, this)">₹12k</button>
+            <button class="chip" onclick="pickChip('invest', 25000, this)">₹25k</button>
+          </div>
+        </div>
+        <div class="onboard-footer"><button class="btn-cta-dark" onclick="goNext()">Continue →</button></div>
+      </div>
+
+      <!-- SCREEN 6: EMIs -->
+      <div class="screen" data-screen="6">
+        <div class="status-bar">
+          <span>9:41</span>
+          <div class="icons">
+            <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="0.5"/><rect x="4" y="4" width="3" height="6" rx="0.5"/><rect x="8" y="2" width="3" height="8" rx="0.5"/><rect x="12" y="0" width="3" height="10" rx="0.5"/></svg>
+            <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x="0.5" y="0.5" width="20" height="10" rx="2" stroke="currentColor" opacity="0.4"/><rect x="22" y="3.5" width="1.5" height="4" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg>
+          </div>
+        </div>
+        <div class="onboard-header">
+          <div class="back-btn" onclick="goPrev()">←</div>
+          <div class="onboard-header-right">Step 6 of 6</div>
+        </div>
+        <div class="onboard-progress"><div class="onboard-progress-fill" style="width: 100%;"></div></div>
+        <div class="section-block">
+          <div class="section-block-tag">What you owe</div>
+          <h1 class="section-block-title"><em>EMIs</em> & loans</h1>
+        </div>
+        <div class="onboard-body">
+          <div class="category-icon-wrap"><div class="category-icon">📉</div></div>
+          <p class="category-sub">Home, car, personal, education. All loan repayments combined.</p>
+          <div class="rupee-display">
+            <div class="rupee-value">₹<span class="num" id="emi-val">23,000</span></div>
+            <div class="rupee-label">Per month</div>
+          </div>
+          <div class="rupee-slider-row">
+            <input type="range" min="0" max="60000" value="23000" step="1000" class="rupee-slider" oninput="updateRupee('emi', this)">
+          </div>
+          <div class="rupee-ends"><span>₹0</span><span>₹60,000</span></div>
+          <div class="chip-row">
+            <button class="chip" onclick="pickChip('emi', 0, this)">None</button>
+            <button class="chip" onclick="pickChip('emi', 10000, this)">₹10k</button>
+            <button class="chip selected" onclick="pickChip('emi', 23000, this)">₹23k</button>
+            <button class="chip" onclick="pickChip('emi', 40000, this)">₹40k</button>
+          </div>
+        </div>
+        <div class="onboard-footer"><button class="btn-cta-dark" onclick="goNext()">See my insights →</button></div>
+      </div>
+
+      <!-- SCREEN 7: LOADER -->
+      <div class="screen" data-screen="7">
+        <div class="status-bar dark">
+          <span>9:41</span>
+          <div class="icons">
+            <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="0.5"/><rect x="4" y="4" width="3" height="6" rx="0.5"/><rect x="8" y="2" width="3" height="8" rx="0.5"/><rect x="12" y="0" width="3" height="10" rx="0.5"/></svg>
+            <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x="0.5" y="0.5" width="20" height="10" rx="2" stroke="currentColor" opacity="0.4"/><rect x="22" y="3.5" width="1.5" height="4" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg>
+          </div>
+        </div>
+        <div class="screen-loader" style="flex: 1;">
+          <div class="ring r1"></div>
+          <div class="ring r2"></div>
+          <div class="ring r3"></div>
+          <div class="loader-dot"></div>
+          <div class="loader-text" id="loaderText">Comparing you with people in <em>Bangalore</em>...</div>
+          <div class="loader-sub">A million data points</div>
+          <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+        </div>
+      </div>
+
+      <!-- SCREEN 8: INITIAL REVEAL STACK (money) -->
+      <div class="screen" data-screen="8">
+        <div class="status-bar">
+          <span>9:41</span>
+          <div class="icons">
+            <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="0.5"/><rect x="4" y="4" width="3" height="6" rx="0.5"/><rect x="8" y="2" width="3" height="8" rx="0.5"/><rect x="12" y="0" width="3" height="10" rx="0.5"/></svg>
+            <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x="0.5" y="0.5" width="20" height="10" rx="2" stroke="currentColor" opacity="0.4"/><rect x="22" y="3.5" width="1.5" height="4" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg>
+          </div>
+        </div>
+        <div class="stack-screen">
+          <div class="stack-top-bar">
+            <span class="stack-top-label">Your insights</span>
+          </div>
+          <div class="stack-counter"><strong id="revealCounter">1</strong> of 4 · swipe right</div>
+
+          <div class="stack-area" id="revealStack" data-context="reveal">
+            <div class="stack-card" data-card="3" data-type="money">
+              <h2 class="stack-card-headline">
+                To stop working today, you'd need
+                <span class="stack-card-big">₹1.35 Cr</span>
+                set aside.
+              </h2>
+              <p class="stack-card-body">To stop in 10 years instead, save ₹50,000 a month from now. You're at ₹12,000.</p>
+            </div>
+            <div class="stack-card peer" data-card="2" data-type="peer">
+              <span class="peer-mark">✨</span>
+              <h2 class="stack-card-headline">
+                Someone exactly like you saves
+                <span class="stack-card-big">₹14k more</span>
+                every month.
+              </h2>
+              <p class="stack-card-body">Same age, same salary, same city. One habit different. Over 10 years, that's a small home.</p>
+              <div class="peer-footer">
+                <div class="peer-footer-icon">i</div>
+                <span>Based on comparing your profile against millions of similar users.</span>
+              </div>
+            </div>
+            <div class="stack-card" data-card="1" data-type="money">
+              <h2 class="stack-card-headline">
+                Every year, you spend a
+                <span class="stack-card-big">Europe trip</span>
+                on things you won't remember.
+              </h2>
+              <p class="stack-card-body">₹4.1L on lifestyle this year. A 14-day Europe trip for two costs the same. You aren't taking it.</p>
+            </div>
+            <div class="stack-card" data-card="0" data-type="money">
+              <h2 class="stack-card-headline">
+                This month, you worked
+                <span class="stack-card-big">3 days</span>
+                to keep Zomato in business.
+              </h2>
+              <p class="stack-card-body">₹21,000 went to food delivery. At ₹7,000 a day, that's three full days of work, gone.</p>
+              <div class="swipe-hint">Swipe right →</div>
+            </div>
+          </div>
+
+          <div class="stack-continue-wrap" id="revealContinue">
+            <button class="btn-cta-dark" onclick="goNext()">Continue →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCREEN 9: PREVIEW GATE -->
+      <div class="screen" data-screen="9">
+        <div class="status-bar" style="color:var(--card-bg);"><span>9:41</span></div>
+        <div style="flex:1;background:linear-gradient(160deg,#0e0d0a 0%,#1a1612 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:36px 28px;text-align:center;position:relative;overflow:hidden;">
+          <div style="position:absolute;top:-60px;right:-60px;width:220px;height:220px;border:1px solid rgba(224,85,53,.1);border-radius:50%;"></div>
+          <div style="width:64px;height:64px;border-radius:20px;background:rgba(224,85,53,.15);border:1px solid rgba(224,85,53,.25);display:flex;align-items:center;justify-content:center;margin-bottom:24px;font-size:28px;position:relative;z-index:1;">&#128065;</div>
+          <div style="font-size:10px;text-transform:uppercase;letter-spacing:.22em;color:var(--accent-soft);font-weight:600;margin-bottom:12px;position:relative;z-index:1;">What you're unlocking</div>
+          <div style="font-family:'Fraunces',serif;font-size:30px;font-weight:400;line-height:1.1;letter-spacing:-.02em;color:var(--card-bg);margin-bottom:14px;position:relative;z-index:1;">Here's what your<br>dashboard <em style="font-style:italic;color:var(--accent-soft);">could look like.</em></div>
+          <div style="font-size:13px;color:rgba(240,236,228,.5);line-height:1.6;max-width:260px;margin-bottom:36px;position:relative;z-index:1;">We built this preview from what you told us. Connect your bank to see your real numbers.</div>
+          <button onclick="goTo(10)" style="background:var(--accent);color:white;border:none;border-radius:14px;padding:15px 28px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;width:100%;max-width:280px;position:relative;z-index:1;">Explore your preview &#8594;</button>
+          <button onclick="goTo(12)" style="background:transparent;color:rgba(240,236,228,.4);border:none;padding:14px;font-size:12px;font-family:inherit;cursor:pointer;margin-top:4px;position:relative;z-index:1;">Skip to dashboard</button>
+        </div>
+      </div>
+
+      <!-- SCREEN 10: PREVIEW MONEY -->
+      <div class="screen" data-screen="10">
+        <div class="status-bar"><span>9:41</span><div class="icons"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg></div></div>
+        <div style="flex:1;display:flex;flex-direction:column;">
+          <div style="background:var(--accent);padding:7px 22px;display:flex;align-items:center;gap:8px;flex-shrink:0;">
+            <div style="font-size:9px;text-transform:uppercase;letter-spacing:.18em;color:rgba(255,255,255,.9);font-weight:600;flex:1;">Preview &middot; Based on your inputs</div>
+            <button onclick="goTo(11)" style="background:rgba(255,255,255,.2);border:none;color:white;border-radius:6px;padding:4px 10px;font-size:10px;font-weight:600;font-family:inherit;cursor:pointer;">See credit &#8594;</button>
+          </div>
+          <div style="flex:1;overflow-y:auto;padding-bottom:24px;">
+            <div style="padding:12px 22px 0;display:flex;align-items:center;gap:10px;">
+              <div class="back-btn" onclick="goTo(9)">&#8592;</div>
+              <div style="font-family:'Fraunces',serif;font-size:20px;font-weight:400;letter-spacing:-.02em;flex:1;text-align:center;font-style:italic;color:var(--accent);">Money</div>
+              <div style="width:30px;"></div>
+            </div>
+            <div style="margin:16px 22px 0;text-align:center;">
+              <div style="font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:var(--ink-soft);font-weight:600;margin-bottom:6px;">Estimated balance</div>
+              <div id="previewBalance" style="font-family:'Fraunces',serif;font-size:52px;font-weight:400;letter-spacing:-.03em;line-height:1;color:#4aad80;">&#8213;</div>
+              <div style="font-size:11px;color:var(--ink-soft);margin-top:4px;">calculated from your salary</div>
+            </div>
+            <div style="margin:14px 22px 0;display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+              <div style="background:var(--card-bg);border:1px solid var(--card-divide);border-radius:16px;padding:14px 15px;position:relative;">
+                <div style="font-size:9px;text-transform:uppercase;letter-spacing:.18em;color:var(--ink-soft);font-weight:600;margin-bottom:6px;">Inflow</div>
+                <div id="previewInflow" style="font-family:'Fraunces',serif;font-style:italic;font-size:22px;color:#4aad80;">&#8213;</div>
+                <div style="font-size:10px;color:var(--ink-soft);margin-top:4px;">Salary &middot; estimated</div>
+                <div style="position:absolute;top:10px;right:10px;font-size:9px;background:rgba(61,138,100,.15);color:#4aad80;border-radius:4px;padding:2px 6px;font-weight:600;">Est</div>
+              </div>
+              <div style="background:var(--card-bg);border:1px solid var(--card-divide);border-radius:16px;padding:14px 15px;position:relative;">
+                <div style="font-size:9px;text-transform:uppercase;letter-spacing:.18em;color:var(--ink-soft);font-weight:600;margin-bottom:6px;">Outflow</div>
+                <div id="previewOutflow" style="font-family:'Fraunces',serif;font-style:italic;font-size:22px;color:var(--accent);">&#8213;</div>
+                <div style="font-size:10px;color:var(--ink-soft);margin-top:4px;">Across categories</div>
+                <div style="position:absolute;top:10px;right:10px;font-size:9px;background:rgba(224,85,53,.12);color:var(--accent);border-radius:4px;padding:2px 6px;font-weight:600;">Est</div>
+              </div>
+            </div>
+            <div style="margin:12px 22px 0;background:var(--card-bg);border:1px solid var(--card-divide);border-radius:16px;padding:16px;">
+              <div style="font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:var(--ink-soft);font-weight:600;margin-bottom:12px;">Your spend categories &middot; estimated</div>
+              <div id="previewCats"></div>
+            </div>
+            <div style="margin:12px 22px 0;background:var(--card-bg);border:1px solid var(--card-divide);border-radius:16px;overflow:hidden;">
+              <div style="padding:10px 16px;border-bottom:1px solid var(--card-divide);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.15em;color:var(--ink-soft);">Sample transactions</div>
+              <div style="padding:12px 16px;border-bottom:1px solid var(--card-divide);display:flex;align-items:center;gap:12px;">
+                <div style="width:32px;height:32px;border-radius:9px;background:rgba(240,236,228,.06);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">&#127757;</div>
+                <div style="flex:1;"><div style="font-size:13px;font-weight:500;">Zomato</div><div style="font-size:10px;color:var(--ink-soft);">Food delivery &middot; 22 May</div></div>
+                <div style="font-family:'Fraunces',serif;font-style:italic;font-size:14px;color:var(--accent);">&#8722; &#8377;840</div>
+              </div>
+              <div style="padding:12px 16px;border-bottom:1px solid var(--card-divide);display:flex;align-items:center;gap:12px;">
+                <div style="width:32px;height:32px;border-radius:9px;background:rgba(61,138,100,.12);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">&#128188;</div>
+                <div style="flex:1;"><div style="font-size:13px;font-weight:500;">Salary credit</div><div style="font-size:10px;color:var(--ink-soft);">1 May, 9:02am</div></div>
+                <div id="previewSalaryTxn" style="font-family:'Fraunces',serif;font-style:italic;font-size:14px;color:#4aad80;">+ &#8377;1,55,000</div>
+              </div>
+              <div style="padding:12px 16px;display:flex;align-items:center;gap:12px;">
+                <div style="width:32px;height:32px;border-radius:9px;background:rgba(240,236,228,.06);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">&#127968;</div>
+                <div style="flex:1;"><div style="font-size:13px;font-weight:500;">Loan EMI</div><div style="font-size:10px;color:var(--ink-soft);">Auto-debit &middot; 1 May</div></div>
+                <div id="previewEmiTxn" style="font-family:'Fraunces',serif;font-style:italic;font-size:14px;color:var(--accent);">&#8722; &#8377;23,000</div>
+              </div>
+            </div>
+            <div style="margin:14px 22px 0;background:linear-gradient(135deg,#1a1612 0%,#0e0d0a 100%);border-radius:18px;padding:20px;position:relative;overflow:hidden;cursor:pointer;" onclick="goTo(15)">
+              <div style="position:absolute;top:-20px;right:-20px;width:100px;height:100px;border:1px solid rgba(224,85,53,.1);border-radius:50%;"></div>
+              <div style="font-size:9px;text-transform:uppercase;letter-spacing:.2em;color:var(--accent-soft);font-weight:600;margin-bottom:8px;position:relative;z-index:1;">This is a preview</div>
+              <div style="font-family:'Fraunces',serif;font-size:19px;line-height:1.15;color:var(--card-bg);margin-bottom:14px;position:relative;z-index:1;">Connect your bank to see <em style="font-style:italic;color:var(--accent-soft);">your real numbers.</em></div>
+              <div style="display:inline-flex;align-items:center;gap:6px;background:var(--accent);color:white;border-radius:10px;padding:10px 16px;font-size:12px;font-weight:600;position:relative;z-index:1;">Unlock for &#8377;99/month &#8594;</div>
+            </div>
+            <div style="height:8px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCREEN 11: PREVIEW CREDIT -->
+      <div class="screen" data-screen="11">
+        <div class="status-bar"><span>9:41</span><div class="icons"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg></div></div>
+        <div style="flex:1;display:flex;flex-direction:column;">
+          <div style="background:var(--accent);padding:7px 22px;display:flex;align-items:center;gap:8px;flex-shrink:0;">
+            <div style="font-size:9px;text-transform:uppercase;letter-spacing:.18em;color:rgba(255,255,255,.9);font-weight:600;flex:1;">Preview &middot; Bureau data</div>
+            <button onclick="goTo(15)" style="background:rgba(255,255,255,.2);border:none;color:white;border-radius:6px;padding:4px 10px;font-size:10px;font-weight:600;font-family:inherit;cursor:pointer;">Unlock real data &#8594;</button>
+          </div>
+          <div style="flex:1;overflow-y:auto;padding-bottom:24px;">
+            <div style="padding:12px 22px 0;display:flex;align-items:center;gap:10px;">
+              <div class="back-btn" onclick="goTo(10)">&#8592;</div>
+              <div style="font-family:'Fraunces',serif;font-size:20px;font-weight:400;flex:1;text-align:center;font-style:italic;color:var(--accent);">Credit</div>
+              <div style="width:30px;"></div>
+            </div>
+            <div style="margin:16px 22px 0;background:linear-gradient(135deg,#1a1612 0%,#0e0d0a 100%);border-radius:20px;padding:22px 20px;position:relative;overflow:hidden;">
+              <div style="position:absolute;top:-30px;right:-30px;width:120px;height:120px;border:1px solid rgba(224,85,53,.1);border-radius:50%;"></div>
+              <div style="font-size:9px;text-transform:uppercase;letter-spacing:.2em;color:rgba(240,236,228,.4);font-weight:600;margin-bottom:4px;position:relative;z-index:1;">Your credit score &middot; Real bureau data</div>
+              <div style="font-family:'Fraunces',serif;font-size:52px;font-weight:400;line-height:1;color:var(--accent-soft);position:relative;z-index:1;">742</div>
+              <div style="font-size:11px;color:rgba(240,236,228,.45);margin-top:4px;position:relative;z-index:1;">Good &middot; &#8593; 14 pts this month</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;margin-top:14px;padding-top:14px;border-top:1px solid rgba(240,236,228,.08);position:relative;z-index:1;">
+                <div style="text-align:center;border-right:1px solid rgba(240,236,228,.08);"><div style="font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:rgba(240,236,228,.4);font-weight:600;margin-bottom:3px;">Outstanding</div><div style="font-family:'Fraunces',serif;font-style:italic;font-size:16px;color:var(--accent);">&#8377;38k</div></div>
+                <div style="text-align:center;border-right:1px solid rgba(240,236,228,.08);"><div style="font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:rgba(240,236,228,.4);font-weight:600;margin-bottom:3px;">Utilisation</div><div style="font-family:'Fraunces',serif;font-style:italic;font-size:16px;color:var(--gold);">38%</div></div>
+                <div style="text-align:center;"><div style="font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:rgba(240,236,228,.4);font-weight:600;margin-bottom:3px;">Cards</div><div style="font-family:'Fraunces',serif;font-style:italic;font-size:16px;">2</div></div>
+              </div>
+            </div>
+            <div style="margin:12px 22px 0;background:var(--card-bg);border:1px solid var(--card-divide);border-radius:16px;padding:16px;">
+              <div style="font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:var(--ink-soft);font-weight:600;margin-bottom:12px;">What your score costs you</div>
+              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--card-divide);font-size:12px;"><span style="color:var(--ink-soft);">Home loan (&#8377;50L, 20yr)</span><span style="font-family:'Fraunces',serif;font-style:italic;">8.9% p.a.</span></div>
+              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--card-divide);font-size:12px;"><span style="color:var(--ink-soft);">At score 780+</span><span style="font-family:'Fraunces',serif;font-style:italic;color:#4aad80;">8.4% &middot; save &#8377;3.2L</span></div>
+              <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:12px;"><span style="color:var(--ink-soft);">Interest paid this year</span><span style="font-family:'Fraunces',serif;font-style:italic;color:var(--accent);">&#8377;18,000 est.</span></div>
+            </div>
+            <div style="margin:12px 22px 0;background:var(--card-bg);border:1px solid var(--card-divide);border-radius:16px;padding:16px;">
+              <div style="font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:var(--ink-soft);font-weight:600;margin-bottom:12px;">How to improve your score</div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--card-divide);"><div style="font-size:12px;color:var(--ink-soft);">Lower card utilisation below 30%</div><div style="font-size:11px;font-weight:600;color:#4aad80;background:rgba(61,138,100,.12);border-radius:5px;padding:2px 7px;">+22 pts</div></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--card-divide);"><div style="font-size:12px;color:var(--ink-soft);">Pay bills on time every month</div><div style="font-size:11px;font-weight:600;color:#4aad80;background:rgba(61,138,100,.12);border-radius:5px;padding:2px 7px;">+8 pts</div></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;"><div style="font-size:12px;color:var(--ink-soft);">Avoid new credit applications</div><div style="font-size:11px;font-weight:600;color:#4aad80;background:rgba(61,138,100,.12);border-radius:5px;padding:2px 7px;">+6 pts</div></div>
+            </div>
+            <div style="margin:14px 22px 0;background:linear-gradient(135deg,#1a1612 0%,#0e0d0a 100%);border-radius:18px;padding:20px;position:relative;overflow:hidden;cursor:pointer;" onclick="goTo(15)">
+              <div style="position:absolute;top:-20px;right:-20px;width:100px;height:100px;border:1px solid rgba(224,85,53,.1);border-radius:50%;"></div>
+              <div style="font-size:9px;text-transform:uppercase;letter-spacing:.2em;color:var(--accent-soft);font-weight:600;margin-bottom:8px;position:relative;z-index:1;">Want the full picture?</div>
+              <div style="font-family:'Fraunces',serif;font-size:19px;line-height:1.15;color:var(--card-bg);margin-bottom:14px;position:relative;z-index:1;">See your real credit data, live score, and improvement plan.</div>
+              <div style="display:inline-flex;align-items:center;gap:6px;background:var(--accent);color:white;border-radius:10px;padding:10px 16px;font-size:12px;font-weight:600;position:relative;z-index:1;">Unlock for &#8377;99/month &#8594;</div>
+            </div>
+            <div style="height:8px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCREEN 9: LITE DASHBOARD -->
+      <div class="screen" data-screen="12">
+        <div class="status-bar">
+          <span>9:41</span>
+          <div class="icons">
+            <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="0.5"/><rect x="4" y="4" width="3" height="6" rx="0.5"/><rect x="8" y="2" width="3" height="8" rx="0.5"/><rect x="12" y="0" width="3" height="10" rx="0.5"/></svg>
+            <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x="0.5" y="0.5" width="20" height="10" rx="2" stroke="currentColor" opacity="0.4"/><rect x="22" y="3.5" width="1.5" height="4" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg>
+          </div>
+        </div>
+        <div class="screen-lite" style="flex:1;overflow-y:auto;padding-bottom:0;">
+
+          <!-- MONEY SECTION — warm illustrated -->
+          <div style="background:linear-gradient(160deg,#f7efe6 0%,#ede3d5 100%);padding:22px 22px 32px;position:relative;overflow:hidden;">
+            <!-- Background circles -->
+            <div style="position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;background:rgba(200,68,42,.07);pointer-events:none;"></div>
+            <div style="position:absolute;top:20px;right:0px;width:100px;height:100px;border-radius:50%;background:rgba(200,68,42,.05);pointer-events:none;"></div>
+            <!-- Coin stack illustration -->
+            <div style="position:absolute;right:24px;top:32px;display:flex;flex-direction:column;align-items:center;gap:-4px;pointer-events:none;">
+              <div style="width:44px;height:44px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:18px;font-style:italic;color:var(--card-bg);box-shadow:0 6px 16px rgba(200,68,42,.35);">₹</div>
+              <div style="width:36px;height:36px;border-radius:50%;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:14px;font-style:italic;color:var(--card-bg);margin-top:-10px;box-shadow:0 4px 12px rgba(200,68,42,.2);">₹</div>
+              <div style="width:28px;height:28px;border-radius:50%;background:var(--accent-bg);border:1px solid var(--accent-soft);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:11px;color:var(--accent);margin-top:-8px;">₹</div>
+            </div>
+            <div style="font-size:9px;text-transform:uppercase;letter-spacing:.22em;color:var(--ink-soft);font-weight:600;margin-bottom:6px;">Money</div>
+            <div style="font-family:'Fraunces',serif;font-size:15px;font-style:italic;color:var(--ink-soft);margin-bottom:16px;">Your spending insights</div>
+            <!-- Pile stack -->
+            <div class="pile-stack money" onclick="openMoneyStack()" style="cursor:pointer;position:relative;z-index:1;">
+              <div class="pile-stack-card flying-in" style="animation-delay:0.2s;">
+                <div class="pile-preview">To stop in 10 years, save <span class="num">₹50k</span> a month. You're at ₹12k.</div>
+              </div>
+              <div class="pile-stack-card flying-in" style="animation-delay:0.1s;">
+                <div class="pile-preview">A <span class="num">Europe trip</span> a year, spent on things you won't remember.</div>
+              </div>
+              <div class="pile-stack-card flying-in" style="animation-delay:0s;">
+                <div class="pile-preview">You worked <span class="num">3 days</span> to keep Zomato in business this month.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CREDIT SECTION — dark illustrated -->
+          <div style="background:linear-gradient(160deg,#1a1814 0%,#251f18 100%);padding:22px 22px 32px;position:relative;overflow:hidden;">
+            <!-- Background circles -->
+            <div style="position:absolute;top:-30px;right:-30px;width:140px;height:140px;border-radius:50%;background:rgba(200,68,42,.1);pointer-events:none;"></div>
+            <!-- Card illustration -->
+            <div style="position:absolute;right:22px;top:28px;pointer-events:none;">
+              <div style="width:52px;height:34px;border-radius:8px;background:linear-gradient(135deg,rgba(232,168,144,.25) 0%,rgba(232,168,144,.1) 100%);border:1px solid rgba(232,168,144,.25);position:relative;margin-bottom:6px;">
+                <div style="position:absolute;bottom:8px;left:8px;right:8px;height:2px;background:rgba(232,168,144,.4);border-radius:1px;"></div>
+                <div style="position:absolute;top:8px;right:8px;width:12px;height:12px;border-radius:50%;background:rgba(200,68,42,.5);"></div>
+              </div>
+              <div style="width:52px;height:34px;border-radius:8px;background:linear-gradient(135deg,rgba(232,168,144,.15) 0%,rgba(232,168,144,.05) 100%);border:1px solid rgba(232,168,144,.15);margin-left:8px;">
+                <div style="margin:10px 8px 0;height:2px;background:rgba(232,168,144,.3);border-radius:1px;"></div>
+              </div>
+            </div>
+            <div style="font-size:9px;text-transform:uppercase;letter-spacing:.22em;color:var(--accent-soft);font-weight:600;margin-bottom:6px;">Credit</div>
+            <div style="font-family:'Fraunces',serif;font-size:15px;font-style:italic;color:rgba(250,247,240,.45);margin-bottom:16px;">Your credit insights</div>
+            <!-- Pile stack credit -->
+            <div class="pile-stack credit" onclick="openCreditStack()" style="cursor:pointer;position:relative;z-index:1;">
+              <div class="pile-stack-card flying-in" style="animation-delay:0.5s;">
+                <div class="pile-preview">🔒 One more insight, waiting for you</div>
+              </div>
+              <div class="pile-stack-card flying-in" style="animation-delay:0.4s;">
+                <div class="pile-preview">A home loan costs <span class="num">₹3.2L more</span> than people like you.</div>
+              </div>
+              <div class="pile-stack-card flying-in" style="animation-delay:0.3s;">
+                <div class="pile-preview">Credit card interest = <span class="num">5 weeks</span> of salary, gone.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SINGLE UNLOCK BANNER -->
+          <div onclick="goToCVP()" style="margin:16px 22px 24px;background:var(--accent);border-radius:20px;padding:20px 22px;cursor:pointer;transition:transform .2s;position:relative;overflow:hidden;" onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''">
+            <div style="position:absolute;top:-28px;right:-28px;width:110px;height:110px;border:1px solid rgba(255,255,255,.15);border-radius:50%;pointer-events:none;"></div>
+            <div style="font-size:9px;text-transform:uppercase;letter-spacing:.22em;color:rgba(250,247,240,.7);font-weight:600;margin-bottom:8px;position:relative;z-index:1;">Your Upscore is locked</div>
+            <div style="font-family:'Fraunces',serif;font-size:20px;line-height:1.1;letter-spacing:-.02em;color:var(--card-bg);margin-bottom:14px;position:relative;z-index:1;">Unlock your score and get deeper insights.</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1;">
+              <div style="font-size:11px;color:rgba(250,247,240,.7);">Live score · Real transactions · Monthly</div>
+              <div style="background:var(--card-bg);color:var(--accent);border-radius:10px;padding:9px 14px;font-size:12px;font-weight:700;white-space:nowrap;">₹99/month →</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- SCREEN 10: MONEY STACK VIEWER -->
+      <div class="screen" data-screen="13">
+        <div class="status-bar">
+          <span>9:41</span>
+          <div class="icons">
+            <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="0.5"/><rect x="4" y="4" width="3" height="6" rx="0.5"/><rect x="8" y="2" width="3" height="8" rx="0.5"/><rect x="12" y="0" width="3" height="10" rx="0.5"/></svg>
+            <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x="0.5" y="0.5" width="20" height="10" rx="2" stroke="currentColor" opacity="0.4"/><rect x="22" y="3.5" width="1.5" height="4" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg>
+          </div>
+        </div>
+        <div class="stack-screen">
+          <div class="stack-top-bar">
+            <span class="stack-top-label">Money insights</span>
+            <button class="stack-close" onclick="goToDashboard()">✕</button>
+          </div>
+          <div class="stack-counter"><strong id="moneyStackCounter">1</strong> of 4 · swipe right</div>
+
+          <div class="stack-area" id="moneyStack" data-context="money">
+            <div class="stack-card" data-card="3" data-type="money">
+              <h2 class="stack-card-headline">
+                To stop working today, you'd need
+                <span class="stack-card-big">₹1.35 Cr</span>
+                set aside.
+              </h2>
+              <p class="stack-card-body">To stop in 10 years instead, save ₹50,000 a month from now. You're at ₹12,000.</p>
+            </div>
+            <div class="stack-card peer" data-card="2" data-type="peer">
+              <span class="peer-mark">✨</span>
+              <h2 class="stack-card-headline">
+                Someone exactly like you saves
+                <span class="stack-card-big">₹14k more</span>
+                every month.
+              </h2>
+              <p class="stack-card-body">Same age, same salary, same city. One habit different. Over 10 years, that's a small home.</p>
+              <div class="peer-footer">
+                <div class="peer-footer-icon">i</div>
+                <span>Based on comparing your profile against millions of similar users.</span>
+              </div>
+            </div>
+            <div class="stack-card" data-card="1" data-type="money">
+              <h2 class="stack-card-headline">
+                Every year, you spend a
+                <span class="stack-card-big">Europe trip</span>
+                on things you won't remember.
+              </h2>
+              <p class="stack-card-body">₹4.1L on lifestyle this year. A 14-day Europe trip for two costs the same. You aren't taking it.</p>
+            </div>
+            <div class="stack-card" data-card="0" data-type="money">
+              <h2 class="stack-card-headline">
+                This month, you worked
+                <span class="stack-card-big">3 days</span>
+                to keep Zomato in business.
+              </h2>
+              <p class="stack-card-body">₹21,000 went to food delivery. At ₹7,000 a day, that's three full days of work, gone.</p>
+              <div class="swipe-hint">Swipe right →</div>
+            </div>
+          </div>
+
+          <div class="stack-continue-wrap" id="moneyContinue">
+            <button class="btn-cta-dark" onclick="goToDashboard()">Back to dashboard →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCREEN 11: CREDIT STACK VIEWER -->
+      <div class="screen" data-screen="14">
+        <div class="status-bar">
+          <span>9:41</span>
+          <div class="icons">
+            <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="0.5"/><rect x="4" y="4" width="3" height="6" rx="0.5"/><rect x="8" y="2" width="3" height="8" rx="0.5"/><rect x="12" y="0" width="3" height="10" rx="0.5"/></svg>
+            <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x="0.5" y="0.5" width="20" height="10" rx="2" stroke="currentColor" opacity="0.4"/><rect x="22" y="3.5" width="1.5" height="4" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg>
+          </div>
+        </div>
+        <div class="stack-screen">
+          <div class="stack-top-bar">
+            <span class="stack-top-label">Credit insights</span>
+            <button class="stack-close" onclick="goToDashboard()">✕</button>
+          </div>
+          <div class="stack-counter"><strong id="creditStackCounter">1</strong> of 3 · swipe right</div>
+
+          <div class="stack-area" id="creditStack" data-context="credit">
+            <div class="stack-card locked" data-card="2" data-type="locked" onclick="lockedCardTap(event, this)">
+              <h2 class="stack-card-headline">
+                Hidden insight blurred so you cannot see what is here yet.
+              </h2>
+              <p class="stack-card-body">Some more body text that is blurred.</p>
+              <div class="locked-overlay">
+                <div class="locked-lock">🔒</div>
+                <div class="locked-title">One more, <em>unlocked</em>.</div>
+                <div class="locked-sub">Your full credit story, monthly, with reasons.</div>
+                <div class="locked-cta">Unlock for ₹99/month →</div>
+              </div>
+            </div>
+            <div class="stack-card credit" data-card="1" data-type="credit">
+              <h2 class="stack-card-headline">
+                At your credit score, a home loan costs you
+                <span class="stack-card-big">₹3.2L more</span>
+                than people like you.
+              </h2>
+              <p class="stack-card-body">Pushing your score 40 points higher gets you the rate that peers in better health pay.</p>
+            </div>
+            <div class="stack-card credit" data-card="0" data-type="credit">
+              <h2 class="stack-card-headline">
+                Your credit card interest this year =
+                <span class="stack-card-big">5 weeks</span>
+                of your salary, gone.
+              </h2>
+              <p class="stack-card-body">Roughly ₹18,000 paid to the bank for the privilege of borrowing from yourself.</p>
+              <div class="swipe-hint">Swipe right →</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCREEN 12: CVP -->
+      <div class="screen" data-screen="15">
+        <div class="status-bar dark">
+          <span>9:41</span>
+          <div class="icons">
+            <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="0.5"/><rect x="4" y="4" width="3" height="6" rx="0.5"/><rect x="8" y="2" width="3" height="8" rx="0.5"/><rect x="12" y="0" width="3" height="10" rx="0.5"/></svg>
+            <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x="0.5" y="0.5" width="20" height="10" rx="2" stroke="currentColor" opacity="0.4"/><rect x="22" y="3.5" width="1.5" height="4" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg>
+          </div>
+        </div>
+        <div class="screen-cvp" style="flex: 1; display: flex; flex-direction: column;">
+          <button class="cvp-close" onclick="goToDashboard()">✕</button>
+          <div class="cvp-video"><div class="cvp-play">▶</div></div>
+          <div class="cvp-tag">What Upscore unlocks</div>
+          <h2 class="cvp-title">Stop guessing. <em>Start seeing.</em></h2>
+          <div class="cvp-hooks">
+            <div class="cvp-hook"><span class="hookno">One</span>Find the ₹5,000+ you're leaking every month without knowing.</div>
+            <div class="cvp-hook"><span class="hookno">Two</span>Your real cashflow. Every account. One view.</div>
+            <div class="cvp-hook"><span class="hookno">Three</span>Your score, monthly. With reasons.</div>
+          </div>
+          <button class="btn-cta-accent pulse-hint" onclick="goNext()">Unlock for ₹99/month</button>
+        </div>
+      </div>
+
+      <!-- SCREEN 13: UPI -->
+      <div class="screen" data-screen="16">
+        <div class="status-bar">
+          <span>9:41</span>
+          <div class="icons">
+            <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="0.5"/><rect x="4" y="4" width="3" height="6" rx="0.5"/><rect x="8" y="2" width="3" height="8" rx="0.5"/><rect x="12" y="0" width="3" height="10" rx="0.5"/></svg>
+            <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x="0.5" y="0.5" width="20" height="10" rx="2" stroke="currentColor" opacity="0.4"/><rect x="22" y="3.5" width="1.5" height="4" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg>
+          </div>
+        </div>
+        <div class="unlock-header">
+          <div class="back-btn" onclick="goPrev()">←</div>
+          <div style="flex: 1; font-size: 13px;">Set up subscription</div>
+          <div class="unlock-step">Step 1 of 3</div>
+        </div>
+        <div class="unlock-body">
+          <div class="unlock-step-num">Subscription</div>
+          <h2 class="unlock-title">Set your <em>auto-pay.</em></h2>
+          <p class="unlock-sub">A monthly UPI mandate. Cancel anytime from your bank app.</p>
+          <div class="upi-box">
+            <div class="upi-row"><span class="upi-label">Plan</span><span class="upi-value">Upscore Monthly</span></div>
+            <div class="upi-row"><span class="upi-label">Amount</span><span class="upi-amount">₹99 / month</span></div>
+            <div class="upi-row"><span class="upi-label">First charge</span><span class="upi-value">Today</span></div>
+            <div class="upi-row"><span class="upi-label">Renews</span><span class="upi-value">1st of every month</span></div>
+          </div>
+          <div style="font-size: 11px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.18em; font-weight: 600; margin-bottom: 10px;">Choose UPI app</div>
+          <div class="upi-app-select">
+            <div class="upi-app selected" onclick="selectUpi(this)"><div class="ic">G</div>GPay</div>
+            <div class="upi-app" onclick="selectUpi(this)"><div class="ic">P</div>PhonePe</div>
+            <div class="upi-app" onclick="selectUpi(this)"><div class="ic">P</div>Paytm</div>
+            <div class="upi-app" onclick="selectUpi(this)"><div class="ic">B</div>BHIM</div>
+          </div>
+        </div>
+        <div class="unlock-footer"><button class="btn-cta-dark" onclick="goNext()">Continue with GPay →</button></div>
+      </div>
+
+      <!-- SCREEN 14: PROCESSING -->
+      <div class="screen" data-screen="17">
+        <div class="status-bar dark">
+          <span>9:41</span>
+          <div class="icons">
+            <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="0.5"/><rect x="4" y="4" width="3" height="6" rx="0.5"/><rect x="8" y="2" width="3" height="8" rx="0.5"/><rect x="12" y="0" width="3" height="10" rx="0.5"/></svg>
+            <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x="0.5" y="0.5" width="20" height="10" rx="2" stroke="currentColor" opacity="0.4"/><rect x="22" y="3.5" width="1.5" height="4" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg>
+          </div>
+        </div>
+        <div class="screen-process" style="flex: 1;">
+          <div class="ring r1"></div>
+          <div class="ring r2"></div>
+          <div class="loader-text" style="margin-bottom: 32px;">Building your <em>full picture</em>.</div>
+          <div class="process-checks" id="processChecks">
+            <div class="process-check done"><div class="dot"></div><div>UPI mandate set up</div></div>
+            <div class="process-check done"><div class="dot"></div><div>Salary bank linked</div></div>
+            <div class="process-check active"><div class="dot"></div><div>Reading your transactions</div></div>
+            <div class="process-check"><div class="dot"></div><div>Generating your score</div></div>
+          </div>
+          <div class="loader-sub">Just a few seconds</div>
+        </div>
+      </div>
+
+      <!-- SCREEN 15: PFM DASHBOARD -->
+      <div class="screen" data-screen="18">
+        <div class="status-bar">
+          <span>9:41</span>
+          <div class="icons">
+            <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="0.5"/><rect x="4" y="4" width="3" height="6" rx="0.5"/><rect x="8" y="2" width="3" height="8" rx="0.5"/><rect x="12" y="0" width="3" height="10" rx="0.5"/></svg>
+            <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x="0.5" y="0.5" width="20" height="10" rx="2" stroke="currentColor" opacity="0.4"/><rect x="22" y="3.5" width="1.5" height="4" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg>
+          </div>
+        </div>
+        <div class="screen-pfm" style="flex: 1;">
+          <!-- UPSCORE — edge to edge, personalised health assessment -->
+          <div onclick="goTo(23)" style="background:linear-gradient(160deg,#1a1612 0%,#0e0d0a 100%);color:var(--card-bg);padding:22px 22px 22px;position:relative;overflow:hidden;cursor:pointer;" >
+            <div style="position:absolute;top:-60px;right:-60px;width:200px;height:200px;border:1px solid rgba(224,85,53,.1);border-radius:50%;pointer-events:none;"></div>
+            <div style="position:absolute;top:-30px;right:-30px;width:130px;height:130px;border:1px solid rgba(224,85,53,.07);border-radius:50%;pointer-events:none;"></div>
+
+            <!-- Greeting + verdict -->
+            <div style="position:relative;z-index:1;">
+              <div style="font-size:12px;color:rgba(240,236,228,.45);margin-bottom:10px;letter-spacing:.01em;">Hey Chirag,</div>
+              <div style="font-family:'Fraunces',serif;font-size:26px;font-weight:400;line-height:1.1;letter-spacing:-.02em;margin-bottom:14px;">
+                your financial health is
+                <span style="display:inline;font-style:italic;color:var(--accent-soft);"> Healthy.</span>
+              </div>
+            </div>
+
+            <!-- Score row -->
+            <div style="position:relative;z-index:1;display:flex;align-items:flex-end;justify-content:space-between;padding-top:14px;border-top:1px solid rgba(240,236,228,.08);">
+              <div>
+                <div style="font-size:9px;text-transform:uppercase;letter-spacing:.22em;color:rgba(240,236,228,.4);font-weight:600;margin-bottom:4px;">Your Upscore</div>
+                <div style="display:flex;align-items:baseline;gap:10px;">
+                  <div style="font-family:'Fraunces',serif;font-size:52px;font-weight:500;line-height:1;letter-spacing:-.02em;" id="upscoreNum">0</div>
+                  <div style="font-size:11px;color:rgba(240,236,228,.4);margin-bottom:4px;">↑ 12 pts · May</div>
+                </div>
+              </div>
+              <!-- Score bar -->
+              <div style="width:80px;padding-bottom:6px;">
+                <div style="height:4px;background:rgba(240,236,228,.1);border-radius:2px;overflow:hidden;margin-bottom:4px;">
+                  <div style="width:68%;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-soft));border-radius:2px;"></div>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:8px;color:rgba(240,236,228,.3);">
+                  <span>300</span><span>900</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- CTA -->
+            <div style="position:relative;z-index:1;margin-top:12px;">
+              <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:7px 12px;font-size:11px;font-weight:600;color:rgba(240,236,228,.7);">Know about Upscore →</div>
+            </div>
+          </div>
+          <div class="snapshots">
+            <div class="snapshot" onclick="goTo(19)" style="cursor:pointer;">
+              <div class="snapshot-label">Money →</div>
+              <div class="snapshot-value">₹2.4L</div>
+              <div class="snapshot-sub">bank balance · 3 accounts</div>
+            </div>
+            <div class="snapshot credit" onclick="goTo(20)" style="cursor:pointer;">
+              <div class="snapshot-label">Credit →</div>
+              <div class="snapshot-value">₹38k</div>
+              <div class="snapshot-sub">outstanding · 2 cards</div>
+            </div>
+          </div>
+          <!-- UPDATES SECTION -->
+          <div style="padding:0 22px;margin:20px 0 10px;display:flex;align-items:center;gap:10px;">
+            <div style="font-size:10px;text-transform:uppercase;letter-spacing:.22em;color:var(--ink-mute);font-weight:600;">Updates</div>
+            <div style="flex:1;height:1px;background:var(--card-divide);"></div>
+          </div>
+
+          <!-- Update card 1: salary -->
+          <div style="margin:0 22px 8px;background:var(--card-bg);border:1px solid var(--card-divide);border-radius:14px;padding:12px 15px;display:flex;align-items:center;gap:12px;">
+            <div style="width:32px;height:32px;border-radius:50%;background:var(--green-bg,#d4ede2);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">↓</div>
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:500;">Salary credited</div>
+              <div style="font-size:10px;color:var(--ink-soft);margin-top:1px;">Kotak •••• 7821 · Today 9:02am</div>
+            </div>
+            <div style="font-family:'Fraunces',serif;font-style:italic;font-size:14px;color:#4aad80;">+₹1,55,000</div>
+          </div>
+
+          <!-- Update card 2: EMI -->
+          <div style="margin:0 22px 8px;background:var(--card-bg);border:1px solid var(--card-divide);border-radius:14px;padding:12px 15px;display:flex;align-items:center;gap:12px;">
+            <div style="width:32px;height:32px;border-radius:50%;background:var(--accent-bg);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">↑</div>
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:500;">SBI EMI debited</div>
+              <div style="font-size:10px;color:var(--ink-soft);margin-top:1px;">Kotak •••• 7821 · Today 9:15am</div>
+            </div>
+            <div style="font-family:'Fraunces',serif;font-style:italic;font-size:14px;color:var(--accent);">−₹18,500</div>
+          </div>
+
+          <!-- INSIGHTS SECTION -->
+          <div style="padding:0 22px;margin:20px 0 10px;display:flex;align-items:center;gap:10px;">
+            <div style="font-size:10px;text-transform:uppercase;letter-spacing:.22em;color:var(--ink-mute);font-weight:600;">Insights</div>
+            <div style="flex:1;height:1px;background:var(--card-divide);"></div>
+          </div>
+
+          <div onclick="goTo(21)" style="margin:0 22px 8px;background:var(--card-bg);border:1px solid var(--card-divide);border-radius:14px;padding:13px 15px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all .2s;" onmouseenter="this.style.transform='translateY(-1px)'" onmouseleave="this.style.transform=''">
+            <div style="width:34px;height:34px;border-radius:50%;background:var(--accent-bg);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">🍕</div>
+            <div style="flex:1;"><div style="font-family:'Fraunces',serif;font-size:14px;line-height:1.25;letter-spacing:-.01em;">You worked <em style="font-style:italic;color:var(--accent);font-weight:500;">3 days</em> for Zomato this month.</div><div style="font-size:10px;color:var(--ink-soft);margin-top:2px;">Food delivery insight · Tap for full picture</div></div>
+            <div style="font-size:12px;color:var(--ink-mute);">→</div>
+          </div>
+
+          <div style="margin:0 22px 8px;background:var(--gold-bg);border:1px solid var(--gold-soft);border-radius:14px;padding:13px 15px;cursor:pointer;display:flex;align-items:center;gap:12px;">
+            <div style="width:34px;height:34px;border-radius:50%;background:rgba(198,156,77,.2);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">✨</div>
+            <div style="flex:1;"><div style="font-family:'Fraunces',serif;font-size:14px;line-height:1.25;letter-spacing:-.01em;">Someone like you saves <em style="font-style:italic;color:var(--gold);font-weight:500;">₹14k more</em> every month.</div><div style="font-size:10px;color:var(--ink-soft);margin-top:2px;">Peer insight · Tap for full picture</div></div>
+            <div style="font-size:12px;color:var(--ink-mute);">→</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- SCREEN 16: MONEY DASHBOARD -->
+      <div class="screen" data-screen="19">
+        <div class="status-bar"><span>9:41</span><div class="icons"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
+        <div class="screen-pfm" style="flex:1;">
+          <div style="padding:12px 22px 0;display:flex;align-items:center;gap:10px;">
+            <div class="back-btn" onclick="goTo(18)">←</div>
+            <div style="font-family:'Fraunces',serif;font-size:20px;font-weight:400;letter-spacing:-.02em;flex:1;text-align:center;font-style:italic;color:var(--accent);">Money</div>
+            <!-- Month toggle -->
+            <div style="display:flex;align-items:center;gap:4px;background:rgba(240,236,228,.08);border-radius:20px;padding:4px 8px;">
+              <button onclick="prevMonth(this)" style="background:none;border:none;cursor:pointer;font-size:13px;color:var(--ink-soft);padding:0 2px;line-height:1;">‹</button>
+              <span id="moneyMonth" style="font-size:11px;font-weight:600;color:var(--ink);min-width:46px;text-align:center;">May</span>
+              <button onclick="nextMonth(this)" style="background:none;border:none;cursor:pointer;font-size:13px;color:var(--ink-mute);padding:0 2px;line-height:1;">›</button>
+            </div>
+          </div>
+
+          <!-- 1. BALANCE HERO -->
+          <div style="margin:18px 22px 0;text-align:center;">
+            <div style="font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:var(--ink-soft);font-weight:600;margin-bottom:6px;">Total balance</div>
+            <div style="font-family:'Fraunces',serif;font-size:56px;font-weight:400;letter-spacing:-.03em;line-height:1;color:#4aad80;">₹2,45,050</div>
+            <div style="font-size:11px;color:var(--ink-soft);margin-top:5px;">across 2 accounts · May 2026</div>
+          </div>
+
+          <!-- 2. INFLOW + OUTFLOW — tappable with chevrons -->
+          <div style="margin:16px 22px 0;display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+
+            <div onclick="goTo(24)" style="background:var(--card-bg);border:1px solid var(--card-divide);border-radius:16px;padding:16px 15px;cursor:pointer;transition:all .2s;position:relative;" onmouseenter="this.style.borderColor='rgba(240,236,228,.2)'" onmouseleave="this.style.borderColor='var(--card-divide)'">
+              <div style="font-size:9px;text-transform:uppercase;letter-spacing:.18em;color:var(--ink-soft);font-weight:600;margin-bottom:6px;">Inflow</div>
+              <div style="font-family:'Fraunces',serif;font-style:italic;font-size:24px;color:#4aad80;line-height:1;">₹1,55,000</div>
+              <div style="font-size:10px;color:var(--ink-soft);margin-top:4px;">Salary · 1 May</div>
+              <div style="position:absolute;top:50%;right:14px;transform:translateY(-50%);font-size:20px;color:var(--ink-mute);line-height:1;">&#8250;</div>
+            </div>
+
+            <div onclick="goTo(25)" style="background:var(--card-bg);border:1px solid var(--card-divide);border-radius:16px;padding:16px 15px;cursor:pointer;transition:all .2s;position:relative;" onmouseenter="this.style.borderColor='rgba(240,236,228,.2)'" onmouseleave="this.style.borderColor='var(--card-divide)'">
+              <div style="font-size:9px;text-transform:uppercase;letter-spacing:.18em;color:var(--ink-soft);font-weight:600;margin-bottom:6px;">Outflow</div>
+              <div style="font-family:'Fraunces',serif;font-style:italic;font-size:24px;color:var(--accent);line-height:1;">&#8377;1,16,560</div>
+              <div style="font-size:10px;color:var(--ink-soft);margin-top:4px;">&#8593; &#8377;8,200 vs April</div>
+              <div style="position:absolute;top:50%;right:14px;transform:translateY(-50%);font-size:20px;color:var(--ink-mute);line-height:1;">&#8250;</div>
+            </div>
+
+          </div>
+
+          <!-- 3. SPEND vs FORECAST CHART -->
+
+          <!-- 3. SPEND vs FORECAST CHART -->
+          <div style="margin:12px 22px 0;background:var(--card-bg);border:1px solid var(--card-divide);border-radius:16px;padding:14px 16px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+              <div style="font-size:10px;text-transform:uppercase;letter-spacing:.18em;color:var(--ink-soft);font-weight:600;">Spend · May</div>
+              <div style="display:flex;gap:12px;">
+                <div style="display:flex;align-items:center;gap:4px;font-size:9px;color:var(--ink-soft);font-weight:600;text-transform:uppercase;letter-spacing:.1em;"><div style="width:7px;height:7px;border-radius:50%;background:var(--accent);"></div>Current</div>
+                <div style="display:flex;align-items:center;gap:4px;font-size:9px;color:var(--ink-soft);font-weight:600;text-transform:uppercase;letter-spacing:.1em;"><div style="width:7px;height:7px;border-radius:50%;border:1.5px dashed var(--ink-mute);"></div>Forecast</div>
+              </div>
+            </div>
+            <svg viewBox="0 0 280 80" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:80px;">
+              <line x1="0" y1="56" x2="280" y2="56" stroke="rgba(26,24,20,.05)" stroke-width="1"/>
+              <line x1="0" y1="30" x2="280" y2="30" stroke="rgba(26,24,20,.05)" stroke-width="1"/>
+              <polyline points="0,74 46,60 93,48 140,36 186,22" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <polyline points="186,22 233,14 280,8" fill="none" stroke="var(--ink-mute)" stroke-width="2" stroke-dasharray="5,3" stroke-linecap="round"/>
+              <circle cx="186" cy="22" r="6" fill="var(--accent)" stroke="var(--card-bg)" stroke-width="2.5"/>
+              <circle cx="280" cy="8" r="5" fill="var(--card-bg)" stroke="var(--ink-mute)" stroke-width="2"/>
+              <rect x="96" y="4" width="72" height="14" rx="3" fill="var(--accent-bg)"/>
+              <text x="132" y="14" font-size="8" fill="var(--accent)" font-family="Inter Tight" text-anchor="middle" font-weight="600">₹1.16L now</text>
+              <text x="278" y="6" font-size="8" fill="var(--ink-mute)" font-family="Inter Tight" text-anchor="end">₹1.38L forecast</text>
+            </svg>
+            <div style="display:flex;justify-content:space-between;margin-top:4px;font-size:9px;color:var(--ink-mute);">
+              <span>1 May</span><span>8</span><span>15</span><span>22 ←now</span><span>31</span>
+            </div>
+            <!-- Projection statement -->
+            <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--card-divide);display:flex;justify-content:space-between;align-items:center;">
+              <div style="font-size:12px;color:var(--ink-soft);line-height:1.4;">Projected to end May at</div>
+              <div style="font-family:'Fraunces',serif;font-style:italic;font-size:18px;color:var(--accent);">₹1,38,000 <span style="font-size:11px;color:var(--ink-soft);font-style:normal;font-family:'Inter Tight',sans-serif;">↑ ₹21,440 over usual</span></div>
+            </div>
+          </div>
+
+          <!-- 4. ACCOUNTS -->
+          <div class="section-title" style="margin-top:18px;">Accounts</div>
+
+          <div onclick="goTo(26)" style="margin:0 22px 8px;background:var(--card-bg);border:1px solid var(--card-divide);border-radius:16px;padding:16px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:14px;" onmouseenter="this.style.borderColor='rgba(240,236,228,.2)'" onmouseleave="this.style.borderColor='var(--card-divide)'">
+            <div style="width:42px;height:42px;border-radius:12px;background:#c8442a;color:white;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:15px;font-style:italic;font-weight:500;flex-shrink:0;">K</div>
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:500;margin-bottom:2px;">Kotak Savings</div>
+              <div style="font-size:10px;color:var(--ink-soft);">•••• 7821 · Last txn 22 May</div>
+            </div>
+            <div style="text-align:right;margin-right:4px;">
+              <div style="font-family:'Fraunces',serif;font-style:italic;font-size:17px;color:#4aad80;">&#8377;1,84,250</div>
+              <div style="font-size:10px;color:var(--ink-soft);margin-top:2px;">+ &#8377;1,55,000 inflow</div>
+            </div>
+            <div style="font-size:20px;color:var(--ink-mute);">&#8250;</div>
+          </div>
+
+          <div onclick="goTo(27)" style="margin:0 22px 8px;background:var(--card-bg);border:1px solid var(--card-divide);border-radius:16px;padding:16px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:14px;" onmouseenter="this.style.borderColor='rgba(240,236,228,.2)'" onmouseleave="this.style.borderColor='var(--card-divide)'">
+            <div style="width:42px;height:42px;border-radius:12px;background:#2a2820;color:white;border:1px solid rgba(240,236,228,.15);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:15px;font-style:italic;font-weight:500;flex-shrink:0;">H</div>
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:500;margin-bottom:2px;">HDFC Savings</div>
+              <div style="font-size:10px;color:var(--ink-soft);">•••• 4521 · Last txn 21 May</div>
+            </div>
+            <div style="text-align:right;margin-right:4px;">
+              <div style="font-family:'Fraunces',serif;font-style:italic;font-size:17px;">&#8377;60,800</div>
+              <div style="font-size:10px;color:var(--ink-soft);margin-top:2px;">&#8722; &#8377;24,000 outflow</div>
+            </div>
+            <div style="font-size:20px;color:var(--ink-mute);">&#8250;</div>
+          </div>
+
+          <div style="margin:0 22px 8px;background:transparent;border:1.5px dashed rgba(240,236,228,.12);border-radius:16px;padding:16px;cursor:pointer;display:flex;align-items:center;gap:14px;">
+            <div style="width:42px;height:42px;border-radius:12px;background:rgba(240,236,228,.06);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">+</div>
+            <div>
+              <div style="font-size:13px;font-weight:500;color:var(--ink-soft);">Add another account</div>
+              <div style="font-size:10px;color:var(--ink-mute);margin-top:2px;">Connect via Account Aggregator</div>
+            </div>
+          </div>
+
+          <!-- UPDATES + INSIGHTS on Money dashboard -->
+          <div style="padding:0 22px;margin:20px 0 10px;display:flex;align-items:center;gap:10px;">
+            <div style="font-size:10px;text-transform:uppercase;letter-spacing:.22em;color:var(--ink-mute);font-weight:600;">Updates</div>
+            <div style="flex:1;height:1px;background:var(--card-divide);"></div>
+          </div>
+
+          <div style="margin:0 22px 8px;background:var(--card-bg);border:1px solid var(--card-divide);border-radius:14px;padding:12px 15px;display:flex;align-items:center;gap:12px;">
+            <div style="width:32px;height:32px;border-radius:50%;background:var(--accent-bg);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">↑</div>
+            <div style="flex:1;"><div style="font-size:13px;font-weight:500;">Large transaction</div><div style="font-size:10px;color:var(--ink-soft);margin-top:1px;">Amazon · ₹24,000 · Yesterday 11:40pm</div></div>
+            <div style="font-size:12px;color:var(--ink-mute);">→</div>
+          </div>
+
+          <div style="margin:0 22px 8px;background:var(--card-bg);border:1px solid var(--card-divide);border-radius:14px;padding:12px 15px;display:flex;align-items:center;gap:12px;">
+            <div style="width:32px;height:32px;border-radius:50%;background:rgba(240,236,228,.08);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">↻</div>
+            <div style="flex:1;"><div style="font-size:13px;font-weight:500;">3 new subscriptions detected</div><div style="font-size:10px;color:var(--ink-soft);margin-top:1px;">Notion · Adobe · Duolingo · ₹1,240/mo total</div></div>
+            <div style="font-size:12px;color:var(--ink-mute);">→</div>
+          </div>
+
+          <div style="padding:0 22px;margin:20px 0 10px;display:flex;align-items:center;gap:10px;">
+            <div style="font-size:10px;text-transform:uppercase;letter-spacing:.22em;color:var(--ink-mute);font-weight:600;">Insights</div>
+            <div style="flex:1;height:1px;background:var(--card-divide);"></div>
+          </div>
+
+          <div onclick="goTo(21)" style="margin:0 22px 8px;background:var(--card-bg);border:1px solid var(--card-divide);border-radius:14px;padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all .2s;" onmouseenter="this.style.transform='translateY(-1px)'" onmouseleave="this.style.transform=''">
+            <div style="width:36px;height:36px;border-radius:10px;background:var(--accent-bg);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🍕</div>
+            <div style="flex:1;"><div style="font-family:'Fraunces',serif;font-size:14px;line-height:1.25;letter-spacing:-.01em;">You worked <em style="font-style:italic;color:var(--accent);font-weight:500;">3 days</em> for Zomato this month.</div><div style="font-size:10px;color:var(--ink-soft);margin-top:2px;">Food delivery insight →</div></div>
+            <div style="font-size:12px;color:var(--ink-mute);">→</div>
+          </div>
+
+          <div onclick="goTo(22)" style="margin:0 22px 8px;background:var(--card-bg);border:1px solid var(--card-divide);border-radius:14px;padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all .2s;" onmouseenter="this.style.transform='translateY(-1px)'" onmouseleave="this.style.transform=''">
+            <div style="width:36px;height:36px;border-radius:10px;background:rgba(240,236,228,.08);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">📋</div>
+            <div style="flex:1;"><div style="font-family:'Fraunces',serif;font-size:14px;line-height:1.25;letter-spacing:-.01em;"><em style="font-style:italic;color:var(--accent);font-weight:500;">₹22,680/year</em> leaking through forgotten subscriptions.</div><div style="font-size:10px;color:var(--ink-soft);margin-top:2px;">Recurring charges →</div></div>
+            <div style="font-size:12px;color:var(--ink-mute);">→</div>
+          </div>
+
+          <div style="margin:0 22px 8px;background:var(--card-bg);border:1px solid var(--card-divide);border-radius:14px;padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;">
+            <div style="width:36px;height:36px;border-radius:10px;background:rgba(240,236,228,.08);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">📈</div>
+            <div style="flex:1;"><div style="font-family:'Fraunces',serif;font-size:14px;line-height:1.25;letter-spacing:-.01em;">On track to overspend by <em style="font-style:italic;color:var(--accent);font-weight:500;">₹21,440</em> by month end.</div><div style="font-size:10px;color:var(--ink-soft);margin-top:2px;">Spend forecast →</div></div>
+            <div style="font-size:12px;color:var(--ink-mute);">→</div>
+          </div>
+
+          <div style="margin:0 22px 8px;background:var(--card-bg);border:1px solid var(--card-divide);border-radius:14px;padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;">
+            <div style="width:36px;height:36px;border-radius:10px;background:rgba(240,236,228,.08);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🛵</div>
+            <div style="flex:1;"><div style="font-family:'Fraunces',serif;font-size:14px;line-height:1.25;letter-spacing:-.01em;">You paid <em style="font-style:italic;color:var(--accent);font-weight:500;">₹3,200</em> for speed, not for things.</div><div style="font-size:10px;color:var(--ink-soft);margin-top:2px;">Hidden charges →</div></div>
+            <div style="font-size:12px;color:var(--ink-mute);">→</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- SCREEN 17: CREDIT DASHBOARD -->
+      <div class="screen" data-screen="20">
+                <div class="status-bar"><span>9:41</span><div class="icons"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
+        <div class="screen-pfm" style="flex:1;">
+          <div style="padding:12px 22px 0;display:flex;align-items:center;gap:10px;">
+            <div class="back-btn" onclick="goTo(18)">←</div>
+            <div style="font-family:'Fraunces',serif;font-size:20px;font-weight:400;letter-spacing:-.02em;flex:1;text-align:center;font-style:italic;color:var(--accent);">Credit</div>
+            <div style="width:30px;"></div>
+          </div>
+          <!-- OUTSTANDING HERO -->
+          <div style="margin:18px 22px 0;text-align:center;padding-bottom:16px;border-bottom:1px solid var(--card-divide);">
+            <div style="font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:var(--ink-soft);font-weight:600;margin-bottom:6px;">Total outstanding</div>
+            <div style="font-family:'Fraunces',serif;font-size:52px;font-weight:400;letter-spacing:-.03em;line-height:1;color:var(--accent);">₹38,000</div>
+            <div style="font-size:11px;color:var(--ink-soft);margin-top:4px;">across 2 credit cards</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;margin-top:14px;">
+              <div style="text-align:center;padding:0 8px;border-right:1px solid var(--card-divide);">
+                <div style="font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:var(--ink-mute);font-weight:600;margin-bottom:2px;">Score</div>
+                <div style="font-family:'Fraunces',serif;font-style:italic;font-size:18px;color:#4aad80;">742</div>
+              </div>
+              <div style="text-align:center;padding:0 8px;border-right:1px solid var(--card-divide);">
+                <div style="font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:var(--ink-mute);font-weight:600;margin-bottom:2px;">Utilisation</div>
+                <div style="font-family:'Fraunces',serif;font-style:italic;font-size:18px;color:#c69c4d;">38%</div>
+              </div>
+              <div style="text-align:center;padding:0 8px;">
+                <div style="font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:var(--ink-mute);font-weight:600;margin-bottom:2px;">Cards</div>
+                <div style="font-family:'Fraunces',serif;font-style:italic;font-size:18px;">2</div>
+              </div>
+            </div>
+          </div>
+          <!-- UPDATES -->
+          <div class="section-title">Updates</div>
+          <div style="margin:0 22px 8px;background:var(--card-bg);border:1px solid var(--card-divide);border-radius:14px;padding:13px 15px;display:flex;align-items:center;gap:12px;">
+            <div style="width:32px;height:32px;border-radius:50%;background:#f5ebd2;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">★</div>
+            <div style="flex:1;"><div style="font-size:13px;font-weight:500;margin-bottom:2px;">Credit score moved</div><div style="font-size:11px;color:var(--ink-soft);">728 → <strong>742</strong> · ↑ 14 points · May refresh</div></div>
+          </div>
+          <div style="margin:0 22px 8px;background:var(--accent-bg);border-left:3px solid var(--accent);border-radius:10px;padding:11px 14px;display:flex;align-items:center;gap:10px;">
+            <div style="width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--card-bg);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;">!</div>
+            <div style="font-size:12px;line-height:1.35;">HDFC bill <em style="font-style:italic;font-family:'Fraunces',serif;font-size:14px;color:var(--accent);">₹12,400</em> due in <strong>4 days</strong></div>
+          </div>
+          <!-- CREDIT INSIGHTS -->
+          <div class="section-title" style="margin-top:14px;">Insights</div>
+          <div style="margin:0 22px 8px;background:var(--ink);border-radius:14px;padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;">
+            <div style="width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">💸</div>
+            <div style="flex:1;"><div style="font-family:'Fraunces',serif;font-size:14px;line-height:1.25;letter-spacing:-.01em;color:var(--card-bg);">Interest this year = <em style="font-style:italic;color:var(--accent-soft);font-weight:500;">5 weeks</em> of salary.</div><div style="font-size:10px;color:rgba(250,247,240,.4);margin-top:2px;">₹18,000 paid to banks →</div></div>
+            <div style="font-size:12px;color:rgba(255,255,255,.25);">→</div>
+          </div>
+          <div style="margin:0 22px 8px;background:var(--ink);border-radius:14px;padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;">
+            <div style="width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🏠</div>
+            <div style="flex:1;"><div style="font-family:'Fraunces',serif;font-size:14px;line-height:1.25;letter-spacing:-.01em;color:var(--card-bg);">Home loan costs <em style="font-style:italic;color:var(--accent-soft);font-weight:500;">₹3.2L more</em> than people like you.</div><div style="font-size:10px;color:rgba(250,247,240,.4);margin-top:2px;">Score 742 vs peers 780+ →</div></div>
+            <div style="font-size:12px;color:rgba(255,255,255,.25);">→</div>
+          </div>
+          <div style="margin:0 22px 8px;background:var(--ink);border-radius:14px;padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;">
+            <div style="width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">📊</div>
+            <div style="flex:1;"><div style="font-family:'Fraunces',serif;font-size:14px;line-height:1.25;letter-spacing:-.01em;color:var(--card-bg);">ICICI at <em style="font-style:italic;color:var(--accent-soft);font-weight:500;">64% utilisation.</em> Drop below 30% for +22 pts.</div><div style="font-size:10px;color:rgba(250,247,240,.4);margin-top:2px;">Credit utilisation →</div></div>
+            <div style="font-size:12px;color:rgba(255,255,255,.25);">→</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCREEN 18: INSIGHT DETAIL — FOOD DELIVERY -->
+      <div class="screen" data-screen="21">
+        <div class="status-bar"><span>9:41</span><div class="icons"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
+        <div class="screen-pfm" style="flex:1;">
+
+          <!-- Header -->
+          <div style="padding:14px 22px 0;display:flex;align-items:center;gap:10px;">
+            <div class="back-btn" onclick="goTo(19)">←</div>
+            <div style="font-size:10px;font-weight:600;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.14em;">Food delivery · Insight</div>
+          </div>
+
+          <!-- HOOK — dark hero -->
+          <div style="margin:14px 22px 0;background:var(--ink);border-radius:20px;padding:22px 20px;position:relative;overflow:hidden;">
+            <div style="position:absolute;top:-28px;right:-28px;width:110px;height:110px;border:1px solid rgba(232,168,144,.1);border-radius:50%;"></div>
+            <div style="font-family:'Fraunces',serif;font-size:27px;line-height:1.05;letter-spacing:-.02em;font-weight:400;color:var(--card-bg);position:relative;z-index:1;">
+              This month, you worked
+              <span style="display:block;font-size:56px;line-height:.9;color:var(--accent-soft);font-style:italic;font-weight:500;margin:6px 0 8px;">3 days</span>
+              to keep Zomato in business.
+            </div>
+            <div style="font-size:12px;color:rgba(250,247,240,.45);margin-top:12px;position:relative;z-index:1;">₹21,000 on food delivery · May 2026</div>
+          </div>
+
+          <!-- MERCHANT BREAKDOWN -->
+          <div style="margin:12px 22px 0;background:var(--card-bg);border:1px solid var(--card-divide);border-radius:16px;padding:16px;">
+            <div style="font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:var(--ink-soft);font-weight:600;margin-bottom:12px;">Where it went</div>
+
+            <!-- Zomato -->
+            <div style="margin-bottom:12px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <div style="width:28px;height:28px;border-radius:8px;background:var(--accent-bg);display:flex;align-items:center;justify-content:center;font-size:14px;">🛵</div>
+                  <span style="font-size:13px;font-weight:500;">Zomato</span>
+                </div>
+                <div style="text-align:right;">
+                  <div style="font-family:'Fraunces',serif;font-style:italic;font-size:15px;color:var(--accent);">₹14,200</div>
+                  <div style="font-size:9px;color:var(--ink-soft);">68% of food spend</div>
+                </div>
+              </div>
+              <div style="height:5px;background:rgba(240,236,228,.08);border-radius:3px;overflow:hidden;"><div style="width:68%;height:100%;background:var(--accent);border-radius:3px;"></div></div>
+            </div>
+
+            <!-- Swiggy -->
+            <div style="margin-bottom:12px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <div style="width:28px;height:28px;border-radius:8px;background:rgba(240,236,228,.08);display:flex;align-items:center;justify-content:center;font-size:14px;">🍱</div>
+                  <span style="font-size:13px;font-weight:500;">Swiggy</span>
+                </div>
+                <div style="text-align:right;">
+                  <div style="font-family:'Fraunces',serif;font-style:italic;font-size:15px;">₹4,800</div>
+                  <div style="font-size:9px;color:var(--ink-soft);">23% of food spend</div>
+                </div>
+              </div>
+              <div style="height:5px;background:rgba(240,236,228,.08);border-radius:3px;overflow:hidden;"><div style="width:23%;height:100%;background:var(--accent-soft);border-radius:3px;"></div></div>
+            </div>
+
+            <!-- Other -->
+            <div>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <div style="width:28px;height:28px;border-radius:8px;background:rgba(240,236,228,.08);display:flex;align-items:center;justify-content:center;font-size:14px;">🍽️</div>
+                  <span style="font-size:13px;font-weight:500;">Restaurants</span>
+                </div>
+                <div style="text-align:right;">
+                  <div style="font-family:'Fraunces',serif;font-style:italic;font-size:15px;">₹2,000</div>
+                  <div style="font-size:9px;color:var(--ink-soft);">9% of food spend</div>
+                </div>
+              </div>
+              <div style="height:5px;background:rgba(240,236,228,.08);border-radius:3px;overflow:hidden;"><div style="width:9%;height:100%;background:var(--ink-mute);border-radius:3px;"></div></div>
+            </div>
+          </div>
+
+          <!-- MONTH TREND -->
+          <div style="margin:10px 22px 0;background:var(--card-bg);border:1px solid var(--card-divide);border-radius:16px;padding:16px;">
+            <div style="font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:var(--ink-soft);font-weight:600;margin-bottom:14px;">3-month trend</div>
+            <div style="display:flex;align-items:flex-end;justify-content:space-around;height:60px;gap:8px;">
+              <!-- bars -->
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+                <div style="font-size:9px;color:var(--ink-soft);">₹14.8k</div>
+                <div style="width:100%;background:var(--accent-soft);border-radius:4px 4px 0 0;height:42px;"></div>
+                <div style="font-size:9px;color:var(--ink-mute);">Mar</div>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+                <div style="font-size:9px;color:var(--ink-soft);">₹16.4k</div>
+                <div style="width:100%;background:var(--accent-soft);border-radius:4px 4px 0 0;height:50px;"></div>
+                <div style="font-size:9px;color:var(--ink-mute);">Apr</div>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+                <div style="font-size:9px;color:var(--accent);font-weight:600;">₹21k</div>
+                <div style="width:100%;background:var(--accent);border-radius:4px 4px 0 0;height:60px;"></div>
+                <div style="font-size:9px;color:var(--ink-mute);font-weight:600;">May</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PEER COMPARISON — bar graph style -->
+          <div style="margin:10px 22px 0;background:var(--gold-bg);border:1px solid var(--gold-soft);border-radius:16px;padding:16px;">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:14px;">
+              <div style="width:8px;height:8px;border-radius:50%;background:var(--gold);"></div>
+              <div style="font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:var(--gold);font-weight:600;">Peer comparison</div>
+            </div>
+
+            <!-- You vs peer bar comparison -->
+            <div style="display:flex;align-items:flex-end;gap:16px;">
+              <div style="flex:1;">
+                <div style="font-size:11px;color:var(--ink-soft);margin-bottom:6px;font-weight:500;">You</div>
+                <div style="background:var(--accent);border-radius:6px 6px 0 0;height:80px;position:relative;">
+                  <div style="position:absolute;top:-22px;left:50%;transform:translateX(-50%);font-family:'Fraunces',serif;font-style:italic;font-size:14px;color:var(--accent);white-space:nowrap;">₹21,000</div>
+                </div>
+              </div>
+              <div style="flex:1;">
+                <div style="font-size:11px;color:var(--ink-soft);margin-bottom:6px;font-weight:500;">Peers</div>
+                <div style="background:var(--gold);border-radius:6px 6px 0 0;height:36px;position:relative;">
+                  <div style="position:absolute;top:-22px;left:50%;transform:translateX(-50%);font-family:'Fraunces',serif;font-style:italic;font-size:14px;color:var(--gold);white-space:nowrap;">₹9,400</div>
+                </div>
+              </div>
+              <div style="flex:1;">
+                <div style="font-size:11px;color:var(--ink-soft);margin-bottom:6px;font-weight:500;">Best</div>
+                <div style="background:rgba(198,156,77,.3);border-radius:6px 6px 0 0;height:18px;position:relative;">
+                  <div style="position:absolute;top:-22px;left:50%;transform:translateX(-50%);font-family:'Fraunces',serif;font-style:italic;font-size:14px;color:var(--ink-soft);white-space:nowrap;">₹4,200</div>
+                </div>
+              </div>
+            </div>
+            <div style="height:1px;background:rgba(198,156,77,.3);margin-bottom:8px;"></div>
+
+            <div style="font-family:'Fraunces',serif;font-size:14px;line-height:1.35;color:var(--ink);">You spend <em style="font-style:italic;color:var(--gold);font-weight:500;">2.2× more</em> on food delivery than similar software developers in Bangalore.</div>
+            <div style="font-size:10px;color:var(--ink-soft);margin-top:8px;padding-top:8px;border-top:1px solid rgba(198,156,77,.25);">Based on comparing your profile against millions of similar users.</div>
+          </div>
+
+          <!-- IMPROVEMENT SECTION -->
+          <div class="improvement-section" style="margin:10px 22px 0;">
+            <div class="imp-label">Improve this · boost your Upscore</div>
+            <div class="imp-title">Bring food spend to <em>₹10k/month.</em></div>
+            <div class="imp-impact-row">
+              <div class="impact-cell">
+                <div class="ic-label">Annual savings</div>
+                <div class="ic-value">₹1,32,000</div>
+              </div>
+              <div class="impact-cell">
+                <div class="ic-label">Upscore impact</div>
+                <div class="ic-value score">+14 points</div>
+              </div>
+            </div>
+            <div class="imp-cta">
+              <button class="imp-cta-primary">Start improving this</button>
+              <button class="imp-cta-secondary">Not now</button>
+            </div>
+          </div>
+          <div style="height:28px;"></div>
+
+        </div>
+      </div>
+
+      <!-- SCREEN 19: INSIGHT DETAIL — RECURRING CHARGES -->
+      <div class="screen" data-screen="22">
+                <div class="status-bar"><span>9:41</span><div class="icons"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
+        <div class="screen-pfm" style="flex:1;">
+          <div style="padding:14px 22px 0;display:flex;align-items:center;gap:10px;">
+            <div class="back-btn" onclick="goTo(19)">←</div>
+            <div style="font-size:11px;color:var(--ink-soft);font-weight:600;text-transform:uppercase;letter-spacing:.12em;">Recurring charges</div>
+          </div>
+          <!-- HERO -->
+          <div style="padding:24px 24px 20px;border-bottom:1px solid var(--card-divide);">
+            <div style="font-family:'Fraunces',serif;font-size:26px;line-height:1.05;letter-spacing:-.025em;font-weight:400;">11 subscriptions. 3 you haven't touched in<span style="display:block;font-size:50px;line-height:.9;color:var(--accent);font-style:italic;font-weight:500;margin:5px 0 7px;">60 days.</span></div>
+          </div>
+          <div style="padding:18px 24px 0;">
+            <p style="font-size:13px;line-height:1.65;color:var(--ink-soft);margin-bottom:16px;">₹4,280/month in recurring charges. <strong style="color:var(--ink);">3 services unused for 60+ days</strong> cost ₹1,890/month — ₹22,680 a year going nowhere.</p>
+            <div style="background:rgba(240,236,228,.04);border-radius:12px;padding:14px 16px;margin-bottom:16px;border:1px solid var(--card-divide);">
+              <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--card-divide);font-size:12px;"><span style="color:var(--accent);font-weight:600;">⚠ Notion</span><span style="font-family:'Fraunces',serif;font-style:italic;color:var(--accent);">₹440 · unused 74 days</span></div>
+              <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--card-divide);font-size:12px;"><span style="color:var(--accent);font-weight:600;">⚠ Adobe CC</span><span style="font-family:'Fraunces',serif;font-style:italic;color:var(--accent);">₹540 · unused 68 days</span></div>
+              <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--card-divide);font-size:12px;"><span style="color:var(--accent);font-weight:600;">⚠ Duolingo</span><span style="font-family:'Fraunces',serif;font-style:italic;color:var(--accent);">₹260 · unused 91 days</span></div>
+              <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--card-divide);font-size:12px;"><span style="color:var(--ink-soft);">Netflix</span><span style="font-family:'Fraunces',serif;font-style:italic;color:#4aad80;">₹649 · active</span></div>
+              <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:12px;font-weight:600;"><span>All 11 subscriptions</span><span style="font-family:'Fraunces',serif;font-style:italic;color:var(--accent);">₹4,280/mo</span></div>
+            </div>
+          </div>
+          <div style="margin:0 24px;background:var(--accent-bg);border-radius:14px;padding:16px 18px;border:1px solid var(--accent-soft);">
+            <div style="font-size:9px;text-transform:uppercase;letter-spacing:.2em;color:var(--accent);font-weight:600;margin-bottom:6px;">Feature → Subscription manager</div>
+            <div style="font-family:'Fraunces',serif;font-size:17px;line-height:1.2;margin-bottom:12px;">Cancel the 3 unused. Get <em style="font-style:italic;color:var(--accent);">₹1,890/month back.</em></div>
+            <button class="btn-cta-dark">Cancel unused subscriptions →</button>
+          </div>
+          <div style="display:flex;gap:8px;padding:12px 24px 0;">
+            <button style="flex:1;background:transparent;border:1px solid var(--card-divide);color:var(--ink-soft);border-radius:10px;padding:10px;font-size:11px;font-weight:600;font-family:inherit;cursor:pointer;">Remind me Friday</button>
+            <button style="flex:1;background:transparent;border:1px solid var(--card-divide);color:var(--ink-soft);border-radius:10px;padding:10px;font-size:11px;font-weight:600;font-family:inherit;cursor:pointer;">Not now</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCREEN 20: UPSCORE DETAIL PAGE -->
+      <div class="screen" data-screen="23">
+        <div class="status-bar" style="color:var(--card-bg);"><span>9:41</span><div class="icons"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
+        <div class="screen-pfm" style="flex:1;">
+          <!-- Dark hero -->
+          <div style="background:var(--ink);color:var(--card-bg);padding:14px 22px 24px;position:relative;overflow:hidden;">
+            <div style="position:absolute;top:-40px;right:-40px;width:150px;height:150px;border:1px solid rgba(232,168,144,.1);border-radius:50%;pointer-events:none;"></div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+              <div class="back-btn" style="background:rgba(255,255,255,.1);color:var(--card-bg);" onclick="goTo(18)">←</div>
+              <div style="font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:rgba(250,247,240,.45);font-weight:600;">About Upscore</div>
+            </div>
+            <div style="font-size:9px;text-transform:uppercase;letter-spacing:.22em;color:var(--accent-soft);font-weight:600;margin-bottom:6px;position:relative;z-index:1;">Your score</div>
+            <div style="font-family:'Fraunces',serif;font-size:72px;font-weight:500;line-height:1;letter-spacing:-.02em;position:relative;z-index:1;">724</div>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:6px;position:relative;z-index:1;">
+              <div style="font-family:'Fraunces',serif;font-style:italic;font-size:16px;color:var(--accent-soft);">Healthy</div>
+              <div style="font-size:11px;color:rgba(250,247,240,.4);">· Top 34% of users</div>
+            </div>
+            <div style="margin-top:16px;position:relative;z-index:1;">
+              <div style="height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden;"><div style="width:68%;height:100%;background:linear-gradient(90deg,var(--accent),#a8d5b8);border-radius:3px;"></div></div>
+              <div style="display:flex;justify-content:space-between;margin-top:4px;font-size:9px;color:rgba(250,247,240,.3);"><span>300</span><span>500</span><span>700</span><span>900</span></div>
+            </div>
+          </div>
+          <!-- How calculated -->
+          <div style="padding:18px 22px 0;">
+            <div style="font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:var(--ink-soft);font-weight:600;margin-bottom:12px;">How it's calculated</div>
+            <!-- Money score -->
+            <div style="background:var(--card-bg);border:1px solid var(--card-divide);border-radius:14px;padding:14px 16px;margin-bottom:10px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                <div style="display:flex;align-items:center;gap:10px;"><div style="width:32px;height:32px;border-radius:10px;background:rgba(240,236,228,.08);display:flex;align-items:center;justify-content:center;font-size:16px;">💰</div><div><div style="font-size:13px;font-weight:500;">Money score</div><div style="font-size:10px;color:var(--ink-soft);">Savings rate, spend habits</div></div></div>
+                <div style="font-family:'Fraunces',serif;font-style:italic;font-size:20px;color:#4aad80;">340</div>
+              </div>
+              <div style="height:4px;background:rgba(240,236,228,.08);border-radius:2px;overflow:hidden;"><div style="width:68%;height:100%;background:#3d8a64;border-radius:2px;"></div></div>
+              <div style="font-size:10px;color:var(--ink-soft);margin-top:6px;">Below peers. Savings rate improving. Improves as spending habits change.</div>
+            </div>
+            <!-- Credit score -->
+            <div style="background:var(--card-bg);border:1px solid var(--card-divide);border-radius:14px;padding:14px 16px;margin-bottom:16px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                <div style="display:flex;align-items:center;gap:10px;"><div style="width:32px;height:32px;border-radius:10px;background:var(--accent-bg);display:flex;align-items:center;justify-content:center;font-size:16px;">💳</div><div><div style="font-size:13px;font-weight:500;">Credit score</div><div style="font-size:10px;color:var(--ink-soft);">Payment history, utilisation</div></div></div>
+                <div style="font-family:'Fraunces',serif;font-style:italic;font-size:20px;color:#c69c4d;">384</div>
+              </div>
+              <div style="height:4px;background:rgba(240,236,228,.08);border-radius:2px;overflow:hidden;"><div style="width:77%;height:100%;background:#c69c4d;border-radius:2px;"></div></div>
+              <div style="font-size:10px;color:var(--ink-soft);margin-top:6px;">No missed payments. ICICI utilisation at 64% is dragging this down.</div>
+            </div>
+            <!-- What it means -->
+            <div style="font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:var(--ink-soft);font-weight:600;margin-bottom:12px;">What it means for you</div>
+            <div style="background:var(--card-bg);border:1px solid var(--card-divide);border-radius:14px;overflow:hidden;margin-bottom:20px;">
+              <div style="padding:12px 16px;border-bottom:1px solid var(--card-divide);display:flex;justify-content:space-between;"><span style="font-size:12px;color:var(--ink-soft);">Home loan rate today</span><span style="font-family:'Fraunces',serif;font-style:italic;font-size:14px;">8.9% p.a.</span></div>
+              <div style="padding:12px 16px;border-bottom:1px solid var(--card-divide);display:flex;justify-content:space-between;"><span style="font-size:12px;color:var(--ink-soft);">If score hits 780+</span><span style="font-family:'Fraunces',serif;font-style:italic;font-size:14px;color:#4aad80;">8.4% · save ₹3.2L</span></div>
+              <div style="padding:12px 16px;display:flex;justify-content:space-between;"><span style="font-size:12px;color:var(--ink-soft);">Credit card offers</span><span style="font-family:'Fraunces',serif;font-style:italic;font-size:14px;">More unlock above 750</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCREEN 21: INFLOW DETAIL -->
+      <div class="screen" data-screen="24">
+        <div class="status-bar"><span>9:41</span><div class="icons"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
+        <div class="screen-pfm" style="flex:1;">
+          <div style="padding:14px 22px 0;display:flex;align-items:center;gap:10px;">
+            <div class="back-btn" onclick="goTo(19)">←</div>
+            <div style="font-size:12px;font-weight:600;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.12em;">Inflow · May</div>
+          </div>
+          <!-- Summary -->
+          <div style="margin:16px 22px 0;background:var(--card-bg);border:1px solid var(--card-divide);border-radius:16px;padding:18px;">
+            <div style="font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:var(--ink-soft);font-weight:600;margin-bottom:6px;">Total inflow</div>
+            <div style="font-family:'Fraunces',serif;font-size:44px;font-style:italic;font-weight:400;line-height:1;letter-spacing:-.02em;color:#4aad80;">₹1,55,000</div>
+            <div style="font-size:11px;color:var(--ink-soft);margin-top:4px;">Same as April · 1 source</div>
+            <!-- Category breakdown -->
+            <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--card-divide);">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--card-divide);">
+                <div style="display:flex;align-items:center;gap:10px;"><div style="width:28px;height:28px;border-radius:8px;background:rgba(61,138,100,.15);display:flex;align-items:center;justify-content:center;font-size:14px;">💼</div><span style="font-size:12px;font-weight:500;">Salary</span></div>
+                <div style="font-family:'Fraunces',serif;font-style:italic;font-size:15px;color:#4aad80;">₹1,55,000</div>
+              </div>
+            </div>
+          </div>
+          <!-- Transactions -->
+          <div class="section-title" style="margin-top:18px;">Transactions</div>
+          <div style="margin:0 22px;background:var(--card-bg);border:1px solid var(--card-divide);border-radius:16px;overflow:hidden;">
+            <div style="padding:13px 16px;border-bottom:1px solid var(--card-divide);display:flex;align-items:center;gap:12px;">
+              <div style="width:36px;height:36px;border-radius:10px;background:rgba(61,138,100,.15);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">💼</div>
+              <div style="flex:1;"><div style="font-size:13px;font-weight:500;">SalarySe Technologies</div><div style="font-size:10px;color:var(--ink-soft);margin-top:1px;">Kotak •••• 7821 · 1 May, 9:02am</div></div>
+              <div style="font-family:'Fraunces',serif;font-style:italic;font-size:15px;color:#4aad80;">+ ₹1,55,000</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCREEN 22: OUTFLOW DETAIL -->
+      <div class="screen" data-screen="25">
+        <div class="status-bar"><span>9:41</span><div class="icons"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
+        <div class="screen-pfm" style="flex:1;">
+          <div style="padding:14px 22px 0;display:flex;align-items:center;gap:10px;">
+            <div class="back-btn" onclick="goTo(19)">←</div>
+            <div style="font-size:12px;font-weight:600;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.12em;">Outflow · May</div>
+          </div>
+          <!-- Summary -->
+          <div style="margin:16px 22px 0;background:var(--card-bg);border:1px solid var(--card-divide);border-radius:16px;padding:18px;">
+            <div style="font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:var(--ink-soft);font-weight:600;margin-bottom:6px;">Total outflow</div>
+            <div style="font-family:'Fraunces',serif;font-size:44px;font-style:italic;font-weight:400;line-height:1;letter-spacing:-.02em;color:var(--accent);">₹1,16,560</div>
+            <div style="font-size:11px;color:var(--ink-soft);margin-top:4px;">↑ ₹8,200 vs April · 5 categories</div>
+            <!-- Category bars -->
+            <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--card-divide);display:flex;flex-direction:column;gap:10px;">
+              <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;"><span style="color:var(--ink-soft);">Essentials</span><span style="font-family:'Fraunces',serif;font-style:italic;">₹46,500</span></div><div style="height:4px;background:rgba(240,236,228,.08);border-radius:2px;overflow:hidden;"><div style="width:80%;height:100%;background:var(--ink);border-radius:2px;"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;"><span style="color:var(--accent);font-weight:600;">Lifestyle ↑</span><span style="font-family:'Fraunces',serif;font-style:italic;color:var(--accent);">₹34,100</span></div><div style="height:4px;background:rgba(240,236,228,.08);border-radius:2px;overflow:hidden;"><div style="width:59%;height:100%;background:var(--accent);border-radius:2px;"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;"><span style="color:var(--ink-soft);">EMIs</span><span style="font-family:'Fraunces',serif;font-style:italic;">₹23,250</span></div><div style="height:4px;background:rgba(240,236,228,.08);border-radius:2px;overflow:hidden;"><div style="width:40%;height:100%;background:var(--accent-soft);border-radius:2px;"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;"><span style="color:var(--ink-soft);">Investments</span><span style="font-family:'Fraunces',serif;font-style:italic;color:#4aad80;">₹12,400</span></div><div style="height:4px;background:rgba(240,236,228,.08);border-radius:2px;overflow:hidden;"><div style="width:21%;height:100%;background:#3d8a64;border-radius:2px;"></div></div></div>
+            </div>
+          </div>
+          <!-- Transactions -->
+          <div class="section-title" style="margin-top:18px;">Transactions</div>
+          <div style="margin:0 22px;background:var(--card-bg);border:1px solid var(--card-divide);border-radius:16px;overflow:hidden;">
+            <div style="padding:12px 16px;border-bottom:1px solid var(--card-divide);display:flex;align-items:center;gap:12px;">
+              <div style="width:34px;height:34px;border-radius:9px;background:rgba(240,236,228,.08);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">🏦</div>
+              <div style="flex:1;"><div style="font-size:13px;font-weight:500;">SBI Home Loan EMI</div><div style="font-size:10px;color:var(--ink-soft);margin-top:1px;">Kotak •••• 7821 · 1 May</div></div>
+              <div style="font-family:'Fraunces',serif;font-style:italic;font-size:14px;color:var(--accent);">− ₹18,500</div>
+            </div>
+            <div style="padding:12px 16px;border-bottom:1px solid var(--card-divide);display:flex;align-items:center;gap:12px;">
+              <div style="width:34px;height:34px;border-radius:9px;background:rgba(240,236,228,.08);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">🛒</div>
+              <div style="flex:1;"><div style="font-size:13px;font-weight:500;">Amazon</div><div style="font-size:10px;color:var(--ink-soft);margin-top:1px;">HDFC •••• 4521 · 21 May</div></div>
+              <div style="font-family:'Fraunces',serif;font-style:italic;font-size:14px;color:var(--accent);">− ₹24,000</div>
+            </div>
+            <div style="padding:12px 16px;border-bottom:1px solid var(--card-divide);display:flex;align-items:center;gap:12px;">
+              <div style="width:34px;height:34px;border-radius:9px;background:rgba(240,236,228,.08);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">🛵</div>
+              <div style="flex:1;"><div style="font-size:13px;font-weight:500;">Zomato</div><div style="font-size:10px;color:var(--ink-soft);margin-top:1px;">Kotak •••• 7821 · 22 May</div></div>
+              <div style="font-family:'Fraunces',serif;font-style:italic;font-size:14px;color:var(--accent);">− ₹1,240</div>
+            </div>
+            <div style="padding:12px 16px;border-bottom:1px solid var(--card-divide);display:flex;align-items:center;gap:12px;">
+              <div style="width:34px;height:34px;border-radius:9px;background:rgba(240,236,228,.08);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">☕</div>
+              <div style="flex:1;"><div style="font-size:13px;font-weight:500;">Starbucks</div><div style="font-size:10px;color:var(--ink-soft);margin-top:1px;">HDFC •••• 4521 · 21 May</div></div>
+              <div style="font-family:'Fraunces',serif;font-style:italic;font-size:14px;color:var(--accent);">− ₹640</div>
+            </div>
+            <div style="padding:12px 16px;display:flex;align-items:center;gap:12px;">
+              <div style="width:34px;height:34px;border-radius:9px;background:rgba(240,236,228,.08);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">🎬</div>
+              <div style="flex:1;"><div style="font-size:13px;font-weight:500;">BookMyShow</div><div style="font-size:10px;color:var(--ink-soft);margin-top:1px;">Kotak •••• 7821 · 19 May</div></div>
+              <div style="font-family:'Fraunces',serif;font-style:italic;font-size:14px;color:var(--accent);">− ₹1,200</div>
+            </div>
+          </div>
+          <div style="padding:12px 22px;text-align:center;font-size:11px;color:var(--ink-mute);">Showing 5 of 47 transactions</div>
+        </div>
+      </div>
+
+      <!-- SCREEN 23: KOTAK ACCOUNT DETAIL -->
+      <div class="screen" data-screen="26">
+        <div class="status-bar"><span>9:41</span><div class="icons"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
+        <div class="screen-pfm" style="flex:1;">
+          <div style="padding:14px 22px 0;display:flex;align-items:center;gap:10px;">
+            <div class="back-btn" onclick="goTo(19)">←</div>
+            <div style="font-size:12px;font-weight:600;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.12em;">Kotak Savings</div>
+          </div>
+          <!-- Account summary card -->
+          <div style="margin:16px 22px 0;background:#c8442a;color:white;border-radius:20px;padding:22px 20px;position:relative;overflow:hidden;">
+            <div style="position:absolute;top:-24px;right:-24px;width:100px;height:100px;border:1px solid rgba(255,255,255,.15);border-radius:50%;"></div>
+            <div style="position:absolute;top:-40px;right:-40px;width:140px;height:140px;border:1px solid rgba(255,255,255,.08);border-radius:50%;"></div>
+            <div style="font-size:9px;text-transform:uppercase;letter-spacing:.2em;color:rgba(255,255,255,.7);font-weight:600;margin-bottom:4px;position:relative;z-index:1;">Kotak Mahindra Bank</div>
+            <div style="font-family:'Fraunces',serif;font-size:40px;font-style:italic;font-weight:400;line-height:1;position:relative;z-index:1;">₹1,84,250</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.7);margin-top:6px;position:relative;z-index:1;">Savings •••• 7821 · Last updated now</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.2);position:relative;z-index:1;">
+              <div><div style="font-size:9px;text-transform:uppercase;letter-spacing:.16em;color:rgba(255,255,255,.6);margin-bottom:3px;">In this month</div><div style="font-family:'Fraunces',serif;font-style:italic;font-size:18px;">₹1,55,000</div></div>
+              <div><div style="font-size:9px;text-transform:uppercase;letter-spacing:.16em;color:rgba(255,255,255,.6);margin-bottom:3px;">Out this month</div><div style="font-family:'Fraunces',serif;font-style:italic;font-size:18px;">₹72,300</div></div>
+            </div>
+          </div>
+          <!-- Transactions -->
+          <div class="section-title" style="margin-top:18px;">Transactions</div>
+          <div style="margin:0 22px;background:var(--card-bg);border:1px solid var(--card-divide);border-radius:16px;overflow:hidden;">
+            <div style="padding:8px 16px;background:rgba(240,236,228,.04);border-bottom:1px solid var(--card-divide);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.15em;color:var(--ink-soft);">22 May</div>
+            <div style="padding:12px 16px;border-bottom:1px solid var(--card-divide);display:flex;align-items:center;gap:12px;">
+              <div style="width:34px;height:34px;border-radius:9px;background:rgba(240,236,228,.08);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">🛵</div>
+              <div style="flex:1;"><div style="font-size:13px;font-weight:500;">Zomato</div><div style="font-size:10px;color:var(--ink-soft);margin-top:1px;">Food delivery · 8:34pm</div></div>
+              <div style="font-family:'Fraunces',serif;font-style:italic;font-size:14px;color:var(--accent);">− ₹1,240</div>
+            </div>
+            <div style="padding:8px 16px;background:rgba(240,236,228,.04);border-bottom:1px solid var(--card-divide);border-top:1px solid var(--card-divide);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.15em;color:var(--ink-soft);">21 May</div>
+            <div style="padding:12px 16px;border-bottom:1px solid var(--card-divide);display:flex;align-items:center;gap:12px;">
+              <div style="width:34px;height:34px;border-radius:9px;background:rgba(240,236,228,.08);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">🎬</div>
+              <div style="flex:1;"><div style="font-size:13px;font-weight:500;">BookMyShow</div><div style="font-size:10px;color:var(--ink-soft);margin-top:1px;">Entertainment · 7:15pm</div></div>
+              <div style="font-family:'Fraunces',serif;font-style:italic;font-size:14px;color:var(--accent);">− ₹1,200</div>
+            </div>
+            <div style="padding:12px 16px;border-bottom:1px solid var(--card-divide);display:flex;align-items:center;gap:12px;">
+              <div style="width:34px;height:34px;border-radius:9px;background:rgba(61,138,100,.15);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">💼</div>
+              <div style="flex:1;"><div style="font-size:13px;font-weight:500;">SalarySe Technologies</div><div style="font-size:10px;color:var(--ink-soft);margin-top:1px;">Salary credit · 9:02am</div></div>
+              <div style="font-family:'Fraunces',serif;font-style:italic;font-size:14px;color:#4aad80;">+ ₹1,55,000</div>
+            </div>
+            <div style="padding:8px 16px;background:rgba(240,236,228,.04);border-bottom:1px solid var(--card-divide);border-top:1px solid var(--card-divide);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.15em;color:var(--ink-soft);">1 May</div>
+            <div style="padding:12px 16px;display:flex;align-items:center;gap:12px;">
+              <div style="width:34px;height:34px;border-radius:9px;background:rgba(240,236,228,.08);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">🏦</div>
+              <div style="flex:1;"><div style="font-size:13px;font-weight:500;">SBI Home Loan EMI</div><div style="font-size:10px;color:var(--ink-soft);margin-top:1px;">Auto-debit · 9:15am</div></div>
+              <div style="font-family:'Fraunces',serif;font-style:italic;font-size:14px;color:var(--accent);">− ₹18,500</div>
+            </div>
+          </div>
+          <div style="padding:12px 22px;text-align:center;font-size:11px;color:var(--ink-mute);">Showing 4 of 23 transactions</div>
+        </div>
+      </div>
+
+      <!-- SCREEN 24: HDFC ACCOUNT DETAIL -->
+      <div class="screen" data-screen="27">
+        <div class="status-bar"><span>9:41</span><div class="icons"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
+        <div class="screen-pfm" style="flex:1;">
+          <div style="padding:14px 22px 0;display:flex;align-items:center;gap:10px;">
+            <div class="back-btn" onclick="goTo(19)">←</div>
+            <div style="font-size:12px;font-weight:600;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.12em;">HDFC Savings</div>
+          </div>
+          <!-- Account summary card -->
+          <div style="margin:16px 22px 0;background:#1a1814;color:white;border-radius:20px;padding:22px 20px;position:relative;overflow:hidden;">
+            <div style="position:absolute;top:-24px;right:-24px;width:100px;height:100px;border:1px solid rgba(255,255,255,.1);border-radius:50%;"></div>
+            <div style="position:absolute;top:-40px;right:-40px;width:140px;height:140px;border:1px solid rgba(255,255,255,.06);border-radius:50%;"></div>
+            <div style="font-size:9px;text-transform:uppercase;letter-spacing:.2em;color:rgba(255,255,255,.5);font-weight:600;margin-bottom:4px;position:relative;z-index:1;">HDFC Bank</div>
+            <div style="font-family:'Fraunces',serif;font-size:40px;font-style:italic;font-weight:400;line-height:1;position:relative;z-index:1;">₹60,800</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:6px;position:relative;z-index:1;">Savings •••• 4521 · Last updated now</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.15);position:relative;z-index:1;">
+              <div><div style="font-size:9px;text-transform:uppercase;letter-spacing:.16em;color:rgba(255,255,255,.4);margin-bottom:3px;">In this month</div><div style="font-family:'Fraunces',serif;font-style:italic;font-size:18px;">₹0</div></div>
+              <div><div style="font-size:9px;text-transform:uppercase;letter-spacing:.16em;color:rgba(255,255,255,.4);margin-bottom:3px;">Out this month</div><div style="font-family:'Fraunces',serif;font-style:italic;font-size:18px;">₹44,260</div></div>
+            </div>
+          </div>
+          <!-- Transactions -->
+          <div class="section-title" style="margin-top:18px;">Transactions</div>
+          <div style="margin:0 22px;background:var(--card-bg);border:1px solid var(--card-divide);border-radius:16px;overflow:hidden;">
+            <div style="padding:8px 16px;background:rgba(240,236,228,.04);border-bottom:1px solid var(--card-divide);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.15em;color:var(--ink-soft);">21 May</div>
+            <div style="padding:12px 16px;border-bottom:1px solid var(--card-divide);display:flex;align-items:center;gap:12px;">
+              <div style="width:34px;height:34px;border-radius:9px;background:rgba(240,236,228,.08);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">🛒</div>
+              <div style="flex:1;"><div style="font-size:13px;font-weight:500;">Amazon</div><div style="font-size:10px;color:var(--ink-soft);margin-top:1px;">Shopping · 11:40pm</div></div>
+              <div style="font-family:'Fraunces',serif;font-style:italic;font-size:14px;color:var(--accent);">− ₹24,000</div>
+            </div>
+            <div style="padding:12px 16px;border-bottom:1px solid var(--card-divide);display:flex;align-items:center;gap:12px;">
+              <div style="width:34px;height:34px;border-radius:9px;background:rgba(240,236,228,.08);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">☕</div>
+              <div style="flex:1;"><div style="font-size:13px;font-weight:500;">Starbucks</div><div style="font-size:10px;color:var(--ink-soft);margin-top:1px;">Coffee · 9:12am</div></div>
+              <div style="font-family:'Fraunces',serif;font-style:italic;font-size:14px;color:var(--accent);">− ₹640</div>
+            </div>
+            <div style="padding:8px 16px;background:rgba(240,236,228,.04);border-bottom:1px solid var(--card-divide);border-top:1px solid var(--card-divide);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.15em;color:var(--ink-soft);">19 May</div>
+            <div style="padding:12px 16px;display:flex;align-items:center;gap:12px;">
+              <div style="width:34px;height:34px;border-radius:9px;background:rgba(240,236,228,.08);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">🛵</div>
+              <div style="flex:1;"><div style="font-size:13px;font-weight:500;">Swiggy</div><div style="font-size:10px;color:var(--ink-soft);margin-top:1px;">Food delivery · 1:22pm</div></div>
+              <div style="font-family:'Fraunces',serif;font-style:italic;font-size:14px;color:var(--accent);">− ₹890</div>
+            </div>
+          </div>
+          <div style="padding:12px 22px;text-align:center;font-size:11px;color:var(--ink-mute);">Showing 3 of 24 transactions</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+  const screens = document.querySelectorAll('.screen');
+  const stepNames = [
+    'Discovery', 'About you', 'Eating out', 'Shopping', 'Rent',
+    'Investments', 'EMIs', 'Building insights', 'The reveal',
+    'Preview gate', 'Preview: Money', 'Preview: Credit',
+    'Lite dashboard', 'Money stack', 'Credit stack',
+    'Upscore CVP', 'UPI mandate', 'AA processing', 'PFM dashboard',
+    'Money dashboard', 'Credit dashboard',
+    'Insight: Category spend', 'Insight: Recurring charges',
+    'Upscore detail', 'Inflow detail', 'Outflow detail',
+    'Kotak account', 'HDFC account', 'Score booster'
+  ];
+
+  let currentScreen = 0;
+  const totalScreens = screens.length;
+  const stepNoEl = document.getElementById('stepNo');
+  const stepNameEl = document.getElementById('stepName');
+  const progressRail = document.getElementById('progressRail');
+
+  for (let i = 0; i < totalScreens; i++) {
+    const d = document.createElement('div');
+    d.className = 'progress-rail-dot';
+    d.dataset.idx = i;
+    d.onclick = () => goTo(i);
+    progressRail.appendChild(d);
+  }
+
+  function updateUI() {
+    stepNoEl.textContent = `${String(currentScreen + 1).padStart(2, '0')} of ${totalScreens}`;
+    stepNameEl.textContent = stepNames[currentScreen];
+    document.querySelectorAll('.progress-rail-dot').forEach((d, i) => {
+      d.classList.remove('current', 'passed');
+      if (i === currentScreen) d.classList.add('current');
+      else if (i < currentScreen) d.classList.add('passed');
+    });
+  }
+
+  function goTo(idx) {
+    if (idx < 0 || idx >= totalScreens) return;
+    const oldScreen = screens[currentScreen];
+    const newScreen = screens[idx];
+    oldScreen.classList.remove('active');
+    oldScreen.classList.add('exit-left');
+    setTimeout(() => oldScreen.classList.remove('exit-left'), 500);
+    newScreen.classList.add('active');
+    currentScreen = idx;
+    updateUI();
+
+    if (idx === 7) startLoader();
+    if (idx === 8) resetStack('revealStack', 4, 'revealCounter', 'revealContinue');
+    if (idx === 9) animatePileLanding();
+    if (idx === 10) resetStack('moneyStack', 4, 'moneyStackCounter', 'moneyContinue');
+    if (idx === 11) resetStack('creditStack', 3, 'creditStackCounter', null);
+    if (idx === 14) startProcessing();
+    if (idx === 15) animateScore();
+  }
+
+  function goNext() { goTo(currentScreen + 1); }
+  function goPrev() { goTo(currentScreen - 1); }
+  function restart() { goTo(0); }
+
+  // Custom navigations
+  function goToDashboard() { goTo(12); }
+  function openMoneyStack() { goTo(13); }
+  function openCreditStack() { goTo(14); }
+  function goToCVP() { goTo(15); }
+
+  function lockedCardTap(e, card) {
+    e.stopPropagation();
+    goToCVP();
+  }
+
+  // Rupee sliders
+  function updateRupee(cat, input) {
+    const val = parseInt(input.value);
+    document.getElementById(`${cat}-val`).textContent = val.toLocaleString('en-IN');
+    const parent = input.closest('.onboard-body');
+    if (parent) parent.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+  }
+  function pickChip(cat, val, el) {
+    document.getElementById(`${cat}-val`).textContent = val.toLocaleString('en-IN');
+    const parent = el.closest('.onboard-body');
+    if (parent) {
+      const slider = parent.querySelector('.rupee-slider');
+      if (slider) slider.value = val;
+    }
+    el.parentElement.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  // Loader
+  const loaderMessages = [
+    'Comparing you with people in <em>Bangalore</em>...',
+    'Comparing you with people your <em>age</em>...',
+    'Comparing you with <em>software developers</em>...',
+    'Comparing you with people earning <em>like you</em>...',
+    'Crunching a <em>million data points</em>...'
+  ];
+  let loaderTimer = null;
+  function startLoader() {
+    if (loaderTimer) clearInterval(loaderTimer);
+    let i = 0;
+    const txt = document.getElementById('loaderText');
+    txt.style.opacity = '0';
+    setTimeout(() => { txt.innerHTML = loaderMessages[0]; txt.style.opacity = '1'; }, 100);
+    loaderTimer = setInterval(() => {
+      i = (i + 1) % loaderMessages.length;
+      txt.style.opacity = '0'; txt.style.transform = 'translateY(8px)';
+      setTimeout(() => {
+        txt.innerHTML = loaderMessages[i];
+        txt.style.opacity = '1'; txt.style.transform = 'translateY(0)';
+      }, 250);
+    }, 1100);
+    setTimeout(() => {
+      if (currentScreen === 7) { clearInterval(loaderTimer); goNext(); }
+    }, 4500);
+  }
+
+  // STACK LOGIC (generic for any stack)
+  let activeStack = null;
+  let stackTotalCards = 0;
+  let stackTopIndex = 0;
+  let counterElId = '';
+  let continueElId = null;
+
+  let dragStartX = 0, dragCurrentX = 0, isDragging = false, draggedCard = null;
+
+  function resetStack(stackId, total, counterId, continueId) {
+    activeStack = document.getElementById(stackId);
+    stackTotalCards = total;
+    counterElId = counterId;
+    continueElId = continueId;
+    stackTopIndex = 0;
+
+    const cards = activeStack.querySelectorAll('.stack-card');
+    cards.forEach((c) => {
+      c.classList.remove('swiped-out');
+      c.style.transform = '';
+      c.style.opacity = '';
+    });
+    setTimeout(() => {
+      cards.forEach((c) => {
+        const idx = parseInt(c.dataset.card);
+        const depth = idx;
+        const yOffset = depth * 8;
+        const scale = 1 - depth * 0.02;
+        const rot = depth === 0 ? 0 : (depth % 2 === 0 ? 1 : -1) * depth;
+        c.style.transform = `translateY(${yOffset}px) scale(${scale}) rotate(${rot}deg)`;
+        c.style.zIndex = 10 - depth;
+      });
+    }, 50);
+
+    document.getElementById(counterElId).textContent = '1';
+    if (continueElId) {
+      const cw = document.getElementById(continueElId);
+      if (cw) cw.classList.remove('show');
+    }
+    attachStackListeners();
+  }
+
+  function getTopCardEl() {
+    if (!activeStack) return null;
+    const cards = activeStack.querySelectorAll('.stack-card:not(.swiped-out)');
+    let top = null;
+    let highestZ = -1;
+    cards.forEach(c => {
+      const z = parseInt(c.style.zIndex) || 0;
+      if (z > highestZ) { highestZ = z; top = c; }
+    });
+    return top;
+  }
+
+  function attachStackListeners() {
+    document.querySelectorAll('.stack-card').forEach(card => {
+      card.onpointerdown = onCardDown;
+    });
+  }
+
+  function onCardDown(e) {
+    if (this.classList.contains('swiped-out')) return;
+    // Find which stack this card belongs to and rebind counter
+    activeStack = this.closest('.stack-area');
+    const stackId = activeStack ? activeStack.id : '';
+    if (stackId === 'revealStack') { counterElId = 'revealCounter'; stackTotalCards = 4; continueElId = 'revealContinue'; }
+    else if (stackId === 'moneyStack') { counterElId = 'moneyStackCounter'; stackTotalCards = 4; continueElId = 'moneyStackContinue'; }
+    else if (stackId === 'creditStack') { counterElId = 'creditStackCounter'; stackTotalCards = 3; continueElId = 'creditStackContinue'; }
+    const top = getTopCardEl();
+    if (this !== top) return;
+    // If it's a locked card, don't allow drag
+    if (this.classList.contains('locked')) return;
+    draggedCard = this;
+    isDragging = true;
+    dragStartX = e.clientX;
+    dragCurrentX = e.clientX;
+    this.classList.add('dragging');
+    this.setPointerCapture(e.pointerId);
+    document.addEventListener('pointermove', onCardMove);
+    document.addEventListener('pointerup', onCardUp);
+  }
+
+  function onCardMove(e) {
+    if (!isDragging || !draggedCard) return;
+    dragCurrentX = e.clientX;
+    const dx = dragCurrentX - dragStartX;
+    const rot = dx / 15;
+    draggedCard.style.transform = `translateX(${dx}px) rotate(${rot}deg)`;
+    draggedCard.style.opacity = Math.max(0.3, 1 - Math.abs(dx) / 300);
+  }
+
+  function onCardUp(e) {
+    if (!isDragging || !draggedCard) return;
+    const dx = dragCurrentX - dragStartX;
+    isDragging = false;
+    document.removeEventListener('pointermove', onCardMove);
+    document.removeEventListener('pointerup', onCardUp);
+
+    if (Math.abs(dx) > 80) {
+      draggedCard.classList.add('swiped-out');
+      const dir = dx > 0 ? 1 : -1;
+      draggedCard.style.transform = `translateX(${dir * 450}px) rotate(${dir * 18}deg)`;
+      draggedCard.style.opacity = '0';
+      setTimeout(() => {
+        const stack = draggedCard.closest('.stack-area');
+        const remaining = [...stack.querySelectorAll('.stack-card:not(.swiped-out)')];
+        remaining.sort((a,b) => (parseInt(b.style.zIndex)||0) - (parseInt(a.style.zIndex)||0));
+        remaining.forEach((c, i) => {
+          c.style.transform = `translateY(${i * 8}px) scale(${1 - i*0.02}) rotate(${i === 0 ? 0 : (i % 2 === 0 ? 1 : -1) * i}deg)`;
+          c.style.zIndex = 10 - i;
+          c.style.opacity = '1';
+        });
+        stackTopIndex++;
+        const counterEl = document.getElementById(counterElId);
+        const left = stackTotalCards - stackTopIndex;
+        if (left > 0) {
+          // Update counter to current card number
+          if (counterEl) counterEl.textContent = stackTopIndex + 1;
+        } else {
+          // All cards swiped — show completion state, no empty screen
+          const isReveal = activeStack && activeStack.id === 'revealStack';
+          if (isReveal) {
+            // Show a brief completion overlay, then navigate
+            const stackArea = activeStack;
+            const completionMsg = document.createElement('div');
+            completionMsg.style.cssText = 'position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(180deg,#f5f0e6 0%,#ebe4d4 100%);padding:40px 28px;text-align:center;opacity:0;transition:opacity .4s ease;z-index:100;';
+            completionMsg.innerHTML = '<div style="font-size:10px;text-transform:uppercase;letter-spacing:.22em;color:var(--accent);font-weight:600;margin-bottom:14px;">All caught up</div><div style="font-family:Fraunces,serif;font-size:26px;line-height:1.15;letter-spacing:-.02em;font-weight:400;color:var(--ink);margin-bottom:8px;">That\'s your starting picture.</div><div style="font-size:13px;color:var(--ink-soft);line-height:1.5;max-width:240px;">Take a closer look at your full dashboard.</div>';
+            stackArea.parentElement.appendChild(completionMsg);
+            requestAnimationFrame(() => { completionMsg.style.opacity = '1'; });
+            setTimeout(() => { goTo(9); }, 1400);
+          } else {
+            if (counterEl) counterEl.textContent = stackTotalCards;
+            if (continueElId) {
+              const cw = document.getElementById(continueElId);
+              if (cw) cw.classList.add('show');
+            }
+          }
+        }
+      }, 300);
+    } else {
+      draggedCard.style.transform = '';
+      draggedCard.style.opacity = '';
+    }
+    draggedCard.classList.remove('dragging');
+    draggedCard = null;
+  }
+
+  // Dashboard pile fly-in
+  function animatePileLanding() {
+    const allPileCards = screens[9].querySelectorAll('.pile-stack-card');
+    allPileCards.forEach((c, i) => {
+      c.style.animation = 'none';
+      c.style.opacity = '0';
+      void c.offsetWidth;
+      const delay = i * 120;
+      setTimeout(() => {
+        c.style.opacity = '';
+        c.classList.remove('flying-in');
+        void c.offsetWidth;
+        c.classList.add('flying-in');
+      }, delay);
+    });
+  }
+
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  let currentMonthIdx = 4; // May
+
+  function populatePreview() {
+    var dining=12000,shopping=8000,rent=23000,invest=12000,emi=23000;
+    var dEl=document.getElementById("v-dining"),sEl=document.getElementById("v-shopping"),
+        rEl=document.getElementById("v-rent"),iEl=document.getElementById("v-invest"),
+        eEl=document.getElementById("v-emi");
+    if(dEl)dining=parseInt(dEl.textContent.replace(/[^0-9]/g,""))||12000;
+    if(sEl)shopping=parseInt(sEl.textContent.replace(/[^0-9]/g,""))||8000;
+    if(rEl)rent=parseInt(rEl.textContent.replace(/[^0-9]/g,""))||23000;
+    if(iEl)invest=parseInt(iEl.textContent.replace(/[^0-9]/g,""))||12000;
+    if(eEl)emi=parseInt(eEl.textContent.replace(/[^0-9]/g,""))||23000;
+    var salary=155000,outflow=dining+shopping+rent+invest+emi;
+    var balance=Math.round(salary*1.4),forecast=Math.round(outflow*1.18);
+    function fmt(n){return "₹"+n.toLocaleString("en-IN");}
+    function el(id){return document.getElementById(id);}
+    if(el("previewBalance"))el("previewBalance").textContent=fmt(balance);
+    if(el("previewInflow"))el("previewInflow").textContent=fmt(salary);
+    if(el("previewOutflow"))el("previewOutflow").textContent=fmt(outflow);
+    if(el("previewForecast"))el("previewForecast").textContent=fmt(forecast);
+    if(el("previewSalaryTxn"))el("previewSalaryTxn").textContent="+ "+fmt(salary);
+    if(el("previewEmiTxn"))el("previewEmiTxn").textContent="- "+fmt(emi);
+    var cats=[
+      {label:"Rent & housing",val:rent,color:"var(--ink-soft)"},
+      {label:"Dining & delivery",val:dining,color:"var(--accent)"},
+      {label:"EMIs",val:emi,color:"var(--accent-soft)"},
+      {label:"Investments",val:invest,color:"#4aad80"},
+      {label:"Shopping",val:shopping,color:"var(--ink-mute)"}
+    ];
+    var maxVal=Math.max.apply(null,cats.map(function(c){return c.val;}));
+    var catsEl=el("previewCats");
+    if(catsEl){
+      catsEl.innerHTML=cats.map(function(c){
+        var pct=Math.round((c.val/maxVal)*100);
+        return "<div style='margin-bottom:11px;'>"+
+          "<div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;'>"+
+          "<div style='font-size:12px;font-weight:500;'>"+c.label+"</div>"+
+          "<div style='font-family:Fraunces,serif;font-style:italic;font-size:13px;'>"+fmt(c.val)+"</div>"+
+          "</div>"+
+          "<div style='height:4px;background:rgba(240,236,228,.08);border-radius:2px;overflow:hidden;'>"+
+          "<div style='width:"+pct+"%;height:100%;background:"+c.color+";border-radius:2px;'></div>"+
+          "</div></div>";
+      }).join("");
+    }
+  }
+
+  function prevMonth(btn) {
+    if (currentMonthIdx > 0) {
+      currentMonthIdx--;
+      document.getElementById('moneyMonth').textContent = months[currentMonthIdx];
+      const nextBtn = btn.nextElementSibling.nextElementSibling;
+      if (nextBtn) nextBtn.style.color = 'var(--ink-soft)';
+    }
+    if (currentMonthIdx === 0) btn.style.color = 'var(--ink-mute)';
+  }
+  function nextMonth(btn) {
+    if (currentMonthIdx < 4) { // can't go beyond current month (May)
+      currentMonthIdx++;
+      document.getElementById('moneyMonth').textContent = months[currentMonthIdx];
+      const prevBtn = btn.previousElementSibling.previousElementSibling;
+      if (prevBtn) prevBtn.style.color = 'var(--ink-soft)';
+    }
+    if (currentMonthIdx === 4) btn.style.color = 'var(--ink-mute)';
+  }
+
+  function selectUpi(el) {
+    document.querySelectorAll('.upi-app').forEach(a => a.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function startProcessing() {
+    const checks = document.querySelectorAll('#processChecks .process-check');
+    checks.forEach((c, i) => {
+      c.classList.remove('done', 'active');
+      if (i < 2) c.classList.add('done');
+      if (i === 2) c.classList.add('active');
+    });
+    setTimeout(() => {
+      checks[2].classList.remove('active');
+      checks[2].classList.add('done');
+      checks[3].classList.add('active');
+    }, 1800);
+    setTimeout(() => {
+      checks[3].classList.remove('active');
+      checks[3].classList.add('done');
+    }, 3400);
+    setTimeout(() => {
+      if (currentScreen === 14) goNext();
+    }, 4200);
+  }
+
+  function animateScore() {
+    const el = document.getElementById('upscoreNum');
+    const target = 724;
+    const duration = 1200;
+    const start = performance.now();
+    function frame(now) {
+      const p = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(eased * target);
+      if (p < 1) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') goNext();
+    if (e.key === 'ArrowLeft') goPrev();
+  });
+
+  updateUI();
+  attachStackListeners();
+</script>
+</body>
+</html>
