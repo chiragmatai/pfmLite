@@ -409,6 +409,148 @@ table.ctbl td.bench-td{font-weight:500;color:var(--ink)}
   .cat-val    { font-size: 16px; }
   .tab-btn    { padding: 14px 12px; font-size: 12px; }
 }
+
+/* ── 10-YEAR PROJECTION FLOW ─────────────────────────────── */
+.proj-wrap {
+  margin-top: 0; padding: 0;
+}
+
+/* Hook */
+.proj-hook {
+  text-align: center;
+  padding: 60px 24px 48px;
+  border-top: 1px solid var(--line);
+}
+.proj-hook-label {
+  font-size: 11px; font-weight: 500; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--ink3); margin-bottom: 16px;
+}
+.proj-hook-title {
+  font-family: var(--fd); font-size: 32px; font-weight: 300;
+  color: var(--ink); line-height: 1.2; margin-bottom: 12px;
+}
+.proj-hook-sub {
+  font-size: 14px; color: var(--ink2); line-height: 1.6;
+}
+
+/* Insight cards */
+.proj-insights {
+  display: flex; flex-direction: column; gap: 1px;
+  background: var(--line); border: 1px solid var(--line);
+  border-radius: 12px; overflow: hidden; margin-bottom: 40px;
+}
+.proj-card {
+  background: var(--paper); padding: 24px;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 20px; align-items: center;
+}
+.proj-card-label {
+  font-size: 10px; font-weight: 500; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--ink3); margin-bottom: 8px;
+}
+.proj-card-text {
+  font-size: 15px; color: var(--ink); line-height: 1.5;
+}
+.proj-card-text strong { font-weight: 500; }
+.proj-compare {
+  display: flex; flex-direction: column; gap: 10px;
+}
+.proj-compare-row {
+  display: flex; flex-direction: column; gap: 3px;
+}
+.proj-compare-who {
+  font-size: 10px; color: var(--ink3); text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.proj-compare-val {
+  font-family: var(--fd); font-size: 22px; font-weight: 300; color: var(--ink);
+}
+.proj-compare-val.peer { color: var(--ink3); font-size: 18px; }
+.proj-compare-val.gap  { color: var(--bad); font-size: 15px; font-family: var(--fs); font-weight: 500; }
+
+/* Graph */
+.proj-graph-section {
+  margin-bottom: 40px;
+}
+.proj-graph-label {
+  font-size: 11px; font-weight: 500; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--ink3); margin-bottom: 16px;
+  text-align: center;
+}
+.proj-graph-wrap {
+  background: var(--paper2); border: 1px solid var(--line);
+  border-radius: 12px; padding: 24px; position: relative;
+}
+.proj-canvas { width: 100%; height: 200px; }
+.proj-graph-legend {
+  display: flex; gap: 20px; justify-content: center;
+  margin-top: 12px;
+}
+.proj-legend-item {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; color: var(--ink2);
+}
+.proj-legend-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+}
+
+/* Gap callout */
+.proj-gap-callout {
+  text-align: center; padding: 32px 24px;
+  background: var(--paper2); border-radius: 12px;
+  margin-bottom: 40px; border: 1px solid var(--line);
+}
+.proj-gap-number {
+  font-family: var(--fd); font-size: 52px; font-weight: 300;
+  color: var(--bad); line-height: 1; margin-bottom: 8px;
+}
+.proj-gap-label {
+  font-size: 14px; color: var(--ink2);
+}
+
+/* USPs */
+.proj-usps {
+  display: flex; flex-direction: column; gap: 16px;
+  margin-bottom: 32px;
+}
+.proj-usp {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 18px; background: var(--paper2);
+  border: 1px solid var(--line); border-radius: 10px;
+}
+.proj-usp-icon {
+  font-size: 22px; flex-shrink: 0; margin-top: 1px;
+}
+.proj-usp-text {
+  font-size: 14px; color: var(--ink); line-height: 1.5;
+}
+.proj-usp-text strong { font-weight: 500; display: block; margin-bottom: 2px; }
+.proj-usp-text span { font-size: 13px; color: var(--ink2); }
+
+/* CTA */
+.proj-cta {
+  text-align: center; padding: 32px 24px 48px;
+}
+.proj-cta-text {
+  font-size: 13px; color: var(--ink3); margin-bottom: 20px;
+}
+.proj-cta-btn {
+  display: inline-block; background: var(--ink); color: #fff;
+  font-family: var(--fs); font-size: 15px; font-weight: 500;
+  padding: 16px 40px; border-radius: 12px; border: none;
+  cursor: pointer; letter-spacing: .02em; margin-bottom: 10px;
+  width: 100%;
+}
+.proj-cta-btn:hover { opacity: .88; }
+.proj-cta-price {
+  font-size: 12px; color: var(--ink3);
+}
+
+@media (max-width: 640px) {
+  .proj-card { grid-template-columns: 1fr; gap: 16px; }
+  .proj-hook-title { font-size: 26px; }
+  .proj-gap-number { font-size: 40px; }
+}
 </style>
 </head>
 <body>
@@ -803,6 +945,147 @@ table.ctbl td.bench-td{font-weight:500;color:var(--ink)}
   </div>
 
   </div><!-- /score-sections -->
+
+  <!-- 10-year projection flow -->
+  <div class="proj-wrap" id="proj-wrap" style="display:none">
+
+    <!-- Hook -->
+    <div class="proj-hook">
+      <div class="proj-hook-label">10 years from now</div>
+      <h2 class="proj-hook-title">See where you'll be<br>vs people like you</h2>
+      <p class="proj-hook-sub">Same age. Same salary. Different habits.</p>
+    </div>
+
+    <!-- Insight cards -->
+    <div class="proj-insights">
+
+      <div class="proj-card">
+        <div>
+          <div class="proj-card-label">Financial health score</div>
+          <div class="proj-card-text">Your score today is <strong id="pi-score">—</strong>. The average for your cohort is <strong id="pi-peer-score">—</strong>.</div>
+        </div>
+        <div class="proj-compare">
+          <div class="proj-compare-row">
+            <span class="proj-compare-who">You</span>
+            <span class="proj-compare-val" id="pi-score-val">—</span>
+          </div>
+          <div class="proj-compare-row">
+            <span class="proj-compare-who">Peer average</span>
+            <span class="proj-compare-val peer" id="pi-peer-score-val">—</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="proj-card">
+        <div>
+          <div class="proj-card-label">What you'll save in 10 years</div>
+          <div class="proj-card-text">At your current savings rate, here's the difference.</div>
+        </div>
+        <div class="proj-compare">
+          <div class="proj-compare-row">
+            <span class="proj-compare-who">You</span>
+            <span class="proj-compare-val" id="pi-save-you">—</span>
+          </div>
+          <div class="proj-compare-row">
+            <span class="proj-compare-who">Your peer</span>
+            <span class="proj-compare-val peer" id="pi-save-peer">—</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="proj-card">
+        <div>
+          <div class="proj-card-label">What you'll invest in 10 years</div>
+          <div class="proj-card-text">You invest <strong id="pi-inv-pct">—</strong> of your income. Your peer invests <strong id="pi-peer-inv-pct">—</strong>.</div>
+        </div>
+        <div class="proj-compare">
+          <div class="proj-compare-row">
+            <span class="proj-compare-who">You</span>
+            <span class="proj-compare-val" id="pi-inv-you">—</span>
+          </div>
+          <div class="proj-compare-row">
+            <span class="proj-compare-who">Your peer</span>
+            <span class="proj-compare-val peer" id="pi-inv-peer">—</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="proj-card">
+        <div>
+          <div class="proj-card-label">Working days bought back this year</div>
+          <div class="proj-card-text">Every rupee saved = time you'll never have to work.</div>
+        </div>
+        <div class="proj-compare">
+          <div class="proj-compare-row">
+            <span class="proj-compare-who">You</span>
+            <span class="proj-compare-val" id="pi-days-you">— days</span>
+          </div>
+          <div class="proj-compare-row">
+            <span class="proj-compare-who">Your peer</span>
+            <span class="proj-compare-val peer" id="pi-days-peer">— days</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Gap callout -->
+    <div class="proj-gap-callout">
+      <div class="proj-gap-number" id="pi-gap">—</div>
+      <div class="proj-gap-label">that's the gap between you and your peer in 10 years</div>
+    </div>
+
+    <!-- Graph -->
+    <div class="proj-graph-section">
+      <div class="proj-graph-label">Corpus over 10 years</div>
+      <div class="proj-graph-wrap">
+        <canvas class="proj-canvas" id="proj-canvas"></canvas>
+        <div class="proj-graph-legend">
+          <div class="proj-legend-item">
+            <div class="proj-legend-dot" style="background:var(--ink)"></div>
+            <span>You</span>
+          </div>
+          <div class="proj-legend-item">
+            <div class="proj-legend-dot" style="background:var(--line)"></div>
+            <span>Your peer</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- USPs -->
+    <div class="proj-usps">
+      <div class="proj-usp">
+        <div class="proj-usp-icon">📊</div>
+        <div class="proj-usp-text">
+          <strong>See where every rupee goes</strong>
+          <span>A clear picture of your cashflow — income, spending, savings — all in one place.</span>
+        </div>
+      </div>
+      <div class="proj-usp">
+        <div class="proj-usp-icon">🔔</div>
+        <div class="proj-usp-text">
+          <strong>Daily updates on your money</strong>
+          <span>Know what's happening with your finances every day, not just at month end.</span>
+        </div>
+      </div>
+      <div class="proj-usp">
+        <div class="proj-usp-icon">👥</div>
+        <div class="proj-usp-text">
+          <strong>Always know where you stand vs your peers</strong>
+          <span>Rich insights benchmarked against people your age and salary. Every month.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="proj-cta">
+      <div class="proj-cta-text">Close the gap. One habit at a time.</div>
+      <button class="proj-cta-btn">Get started with SalarySe</button>
+      <div class="proj-cta-price">₹99 / month</div>
+    </div>
+
+  </div><!-- /proj-wrap -->
 
 </div><!-- /calc-wrap -->
 </div><!-- /tab-calc -->
@@ -1498,6 +1781,7 @@ function toggleScore() {
     document.getElementById('sal-select').value = DEFAULTS.sal;
 
     scoreSecs.classList.remove('show');
+    document.getElementById('proj-wrap').style.display = 'none';
     btn.textContent = 'Calculate my UpScore';
     scoreVisible = false;
     updateRsDisplays();
@@ -1635,6 +1919,166 @@ function initCatDisplays() {
   const rsR1 = document.getElementById('rs-r1');
   if (rsR2) rsR2.textContent = '≈ ' + fmtRsLocal(r2Total) + ' / mo';
   if (rsR1) rsR1.textContent = '≈ ' + fmtRsLocal(r1Total) + ' / mo';
+}
+
+// ── 10-YEAR PROJECTION ───────────────────────────────────────────────────
+function fmtCr(n) {
+  if (n >= 10000000) return '₹' + (n/10000000).toFixed(1) + ' Cr';
+  if (n >= 100000)   return '₹' + (n/100000).toFixed(1) + 'L';
+  return '₹' + Math.round(n/1000) + 'k';
+}
+
+function buildProjection(myScore) {
+  const co = cohort();
+  const mid = SAL_MID[S.sal] || 57500;
+  const w = cfg.wt, sw = cfg.swt;
+
+  // Peer ratios — midpoint of P25/P75
+  const peerR1 = (co.r1.p25 + co.r1.p75) / 2;
+  const peerR2 = (co.r2.p25 + co.r2.p75) / 2;
+  const peerR5 = (co.r5.p25 + co.r5.p75) / 2;
+  const peerR6 = (co.r6.p25 + co.r6.p75) / 2;
+  const peerRes = Math.max(0, 1 - peerR1 - peerR2 - peerR5 - peerR6);
+  const peerR4 = peerRes / 2;
+
+  // User ratios
+  const userRes = Math.max(0, 1 - S.r1 - S.r2 - S.r5 - S.r6);
+  const userR4 = userRes / 2;
+
+  // Peer score
+  const peerScore = Math.round((relativeScore(peerR1, peerR2, peerRes/2, peerR5, peerR6) + scoreAll(peerR1, peerR2, peerRes/2, peerR4, peerR5, peerR6)) / 2);
+
+  // Monthly savings (R4) and investments (R5)
+  const userSaveMo  = mid * userR4;
+  const userInvMo   = mid * S.r5;
+  const peerSaveMo  = mid * peerR4;
+  const peerInvMo   = mid * peerR5;
+
+  // 10-year projections at 12% annual return (compounded monthly)
+  function fv(monthly, years, r) {
+    const rm = r / 12;
+    const n = years * 12;
+    return monthly * ((Math.pow(1 + rm, n) - 1) / rm) * (1 + rm);
+  }
+
+  const years = 10;
+  const rate = 0.12;
+  const userCorpus = fv(userSaveMo + userInvMo, years, rate);
+  const peerCorpus = fv(peerSaveMo + peerInvMo, years, rate);
+  const gap = Math.abs(peerCorpus - userCorpus);
+
+  // Working days bought back per year
+  const dailyEarning = mid / 22;
+  const userDays  = Math.round((userSaveMo * 12) / dailyEarning);
+  const peerDays  = Math.round((peerSaveMo * 12) / dailyEarning);
+
+  // Populate insight cards
+  document.getElementById('pi-score').textContent = myScore;
+  document.getElementById('pi-peer-score').textContent = peerScore;
+  document.getElementById('pi-score-val').textContent = myScore;
+  document.getElementById('pi-peer-score-val').textContent = peerScore;
+
+  document.getElementById('pi-save-you').textContent  = fmtCr(userSaveMo * 12 * years);
+  document.getElementById('pi-save-peer').textContent = fmtCr(peerSaveMo * 12 * years);
+
+  document.getElementById('pi-inv-pct').textContent      = Math.round(S.r5 * 100) + '%';
+  document.getElementById('pi-peer-inv-pct').textContent = Math.round(peerR5 * 100) + '%';
+  document.getElementById('pi-inv-you').textContent      = fmtCr(userInvMo * 12 * years);
+  document.getElementById('pi-inv-peer').textContent     = fmtCr(peerInvMo * 12 * years);
+
+  document.getElementById('pi-days-you').textContent  = userDays + ' days';
+  document.getElementById('pi-days-peer').textContent = peerDays + ' days';
+
+  document.getElementById('pi-gap').textContent = fmtCr(gap);
+
+  // Draw canvas chart
+  drawProjectionChart(userSaveMo + userInvMo, peerSaveMo + peerInvMo, rate, years);
+
+  // Show the projection section
+  document.getElementById('proj-wrap').style.display = 'block';
+}
+
+function drawProjectionChart(userMo, peerMo, rate, years) {
+  const canvas = document.getElementById('proj-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.parentElement.getBoundingClientRect();
+  const W = rect.width - 48; // account for padding
+  const H = 200;
+  canvas.width  = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.width  = W + 'px';
+  canvas.style.height = H + 'px';
+  ctx.scale(dpr, dpr);
+
+  const pts = years * 12 + 1;
+  const rm = rate / 12;
+
+  function corpus(mo, i) {
+    if (i === 0) return 0;
+    return mo * ((Math.pow(1+rm, i) - 1) / rm) * (1+rm);
+  }
+
+  // Find max for scaling
+  let maxVal = 0;
+  for (let i = 0; i <= pts; i++) {
+    maxVal = Math.max(maxVal, corpus(userMo, i), corpus(peerMo, i));
+  }
+
+  const padL = 10, padR = 10, padT = 16, padB = 28;
+  const chartW = W - padL - padR;
+  const chartH = H - padT - padB;
+
+  function xp(i) { return padL + (i / pts) * chartW; }
+  function yp(v) { return padT + chartH - (v / maxVal) * chartH; }
+
+  // Grid lines
+  ctx.strokeStyle = '#e2e0d8';
+  ctx.lineWidth = 1;
+  for (let y = 0; y <= 4; y++) {
+    const yv = padT + (y / 4) * chartH;
+    ctx.beginPath(); ctx.moveTo(padL, yv); ctx.lineTo(padL + chartW, yv); ctx.stroke();
+  }
+
+  // Year labels
+  ctx.fillStyle = '#9a9a92';
+  ctx.font = '10px DM Sans, sans-serif';
+  ctx.textAlign = 'center';
+  for (let yr = 0; yr <= years; yr += 2) {
+    const xi = yr * 12;
+    ctx.fillText('Y' + yr, xp(xi), H - 8);
+  }
+
+  // Peer line (lighter)
+  ctx.beginPath();
+  ctx.strokeStyle = '#c8c6be';
+  ctx.lineWidth = 2;
+  for (let i = 0; i <= pts; i++) {
+    const x = xp(i), y = yp(corpus(peerMo, i));
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+
+  // User line (dark)
+  ctx.beginPath();
+  ctx.strokeStyle = '#1a1a18';
+  ctx.lineWidth = 2.5;
+  for (let i = 0; i <= pts; i++) {
+    const x = xp(i), y = yp(corpus(userMo, i));
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+
+  // End point labels
+  const uxEnd = xp(pts), uyEnd = yp(corpus(userMo, pts));
+  const pxEnd = xp(pts), pyEnd = yp(corpus(peerMo, pts));
+  ctx.font = 'bold 11px DM Sans, sans-serif';
+  ctx.textAlign = 'right';
+  ctx.fillStyle = '#1a1a18';
+  ctx.fillText(fmtCr(corpus(userMo, pts)), uxEnd - 2, uyEnd - 6);
+  ctx.fillStyle = '#9a9a92';
+  ctx.fillText(fmtCr(corpus(peerMo, pts)), pxEnd - 2, pyEnd + 14);
 }
 
 // ── INIT ──
