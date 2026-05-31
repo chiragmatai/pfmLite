@@ -1886,7 +1886,225 @@
       </div>
 
       <!-- SCREEN 15: PFM DASHBOARD -->
+      <!-- SCREEN 15: POST-AA INSIGHT REVEAL -->
       <div class="screen" data-screen="15">
+        <div class="status-bar"><span>9:41</span><div class="icons"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg></div></div>
+        <div style="flex:1;background:linear-gradient(180deg,#1a1814 0%,#111109 100%);display:flex;flex-direction:column;position:relative;">
+
+          <div style="padding:20px 22px 0;display:flex;justify-content:space-between;align-items:center;">
+            <div style="font-size:10px;text-transform:uppercase;letter-spacing:.22em;color:var(--ink-mute);font-weight:600;">What we found</div>
+            <div id="aaInsightCtr" style="font-family:'Fraunces',serif;font-size:12px;font-style:italic;color:var(--ink-soft);">1 of 4</div>
+          </div>
+
+          <!-- Swipeable insight stack -->
+          <div style="flex:1;padding:16px 22px 20px;perspective:1000px;">
+            <div id="aaStack" style="position:relative;height:100%;">
+
+              <!-- Card 4 bottom -->
+              <div class="aa-card" data-idx="3" style="position:absolute;inset:0;background:var(--card-bg);border-radius:22px;box-shadow:0 4px 20px rgba(26,24,20,.08);transform:translateY(16px) scale(.94);z-index:1;padding:28px 26px;display:flex;flex-direction:column;justify-content:space-between;">
+                <div>
+                  <div style="font-size:9px;text-transform:uppercase;letter-spacing:.22em;color:var(--ink-soft);font-weight:600;margin-bottom:12px;">Salary utilisation</div>
+                  <div style="font-family:'Fraunces',serif;font-size:28px;line-height:1.05;letter-spacing:-.02em;font-weight:400;">After commitments, you actually keep<span style="display:block;font-size:54px;line-height:.9;color:#2d6a4f;font-style:italic;font-weight:500;margin:5px 0 6px;">25%</span>of your salary.</div>
+                </div>
+                <div style="font-size:12px;color:var(--ink-soft);line-height:1.5;">&#8377;38,440 free each month. Peers in your bracket keep 31%. Small gap, big 10-year difference.</div>
+              </div>
+
+              <!-- Card 3 -->
+              <div class="aa-card" data-idx="2" style="position:absolute;inset:0;background:var(--card-bg);border-radius:22px;box-shadow:0 4px 20px rgba(26,24,20,.1);transform:translateY(10px) scale(.96);z-index:2;padding:28px 26px;display:flex;flex-direction:column;justify-content:space-between;">
+                <div>
+                  <div style="font-size:9px;text-transform:uppercase;letter-spacing:.22em;color:var(--ink-soft);font-weight:600;margin-bottom:12px;">Idle money</div>
+                  <div style="font-family:'Fraunces',serif;font-size:28px;line-height:1.05;letter-spacing:-.02em;font-weight:400;">&#8377;60,800 is sitting in savings,<span style="display:block;font-size:54px;line-height:.9;color:var(--accent);font-style:italic;font-weight:500;margin:5px 0 6px;">earning &#8377;0.</span></div>
+                </div>
+                <div style="font-size:12px;color:var(--ink-soft);line-height:1.5;">At 3.5% savings rate vs 7% liquid fund — you're losing &#8377;2,130 every year to inaction.</div>
+              </div>
+
+              <!-- Card 2 -->
+              <div class="aa-card" data-idx="1" style="position:absolute;inset:0;background:var(--card-bg);border-radius:22px;box-shadow:0 6px 24px rgba(26,24,20,.12);transform:translateY(5px) scale(.98);z-index:3;padding:28px 26px;display:flex;flex-direction:column;justify-content:space-between;">
+                <div>
+                  <div style="font-size:9px;text-transform:uppercase;letter-spacing:.22em;color:var(--ink-soft);font-weight:600;margin-bottom:12px;">Subscriptions</div>
+                  <div style="font-family:'Fraunces',serif;font-size:28px;line-height:1.05;letter-spacing:-.02em;font-weight:400;">You're paying for 3 apps you haven't opened in<span style="display:block;font-size:54px;line-height:.9;color:var(--accent);font-style:italic;font-weight:500;margin:5px 0 6px;">60 days.</span></div>
+                </div>
+                <div style="font-size:12px;color:var(--ink-soft);line-height:1.5;">Notion &#8377;440 &middot; Adobe &#8377;540 &middot; Duolingo &#8377;260. That's &#8377;22,680 a year going nowhere.</div>
+              </div>
+
+              <!-- Card 1 top — draggable -->
+              <div class="aa-card" id="aaTopCard" data-idx="0" style="position:absolute;inset:0;background:var(--card-bg);border-radius:22px;box-shadow:0 8px 32px rgba(26,24,20,.16);transform:translateY(0) scale(1);z-index:4;padding:28px 26px;display:flex;flex-direction:column;justify-content:space-between;cursor:grab;user-select:none;">
+                <div>
+                  <div style="font-size:9px;text-transform:uppercase;letter-spacing:.22em;color:var(--ink-soft);font-weight:600;margin-bottom:12px;">Food delivery</div>
+                  <div style="font-family:'Fraunces',serif;font-size:28px;line-height:1.05;letter-spacing:-.02em;font-weight:400;font-variation-settings:'SOFT' 30;">This month you worked<span style="display:block;font-size:60px;line-height:.88;color:var(--accent);font-style:italic;font-weight:500;margin:5px 0 6px;font-variation-settings:'SOFT' 100,'WONK' 1;">3 days</span>to keep Zomato in business.</div>
+                </div>
+                <div>
+                  <div style="font-size:12px;color:var(--ink-soft);line-height:1.5;margin-bottom:16px;">&#8377;21,000 on food delivery. Your peer in Bangalore spends &#8377;9,400. The &#8377;11,600 monthly gap is &#8377;1.4L a year.</div>
+                  <div style="font-size:10px;color:var(--ink-mute);text-align:center;">Swipe right to see next insight &#8594;</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Bottom CTA — appears after all swiped -->
+          <div id="aaRevealContinue" style="padding:0 22px 28px;opacity:0;pointer-events:none;transition:opacity .5s ease;">
+            <button onclick="goTo(16)" style="background:var(--ink);color:var(--card-bg);border:none;border-radius:14px;padding:15px;width:100%;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;">See your Upscore &#8594;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCREEN 16: YOUR SCORE EXPLAINED -->
+      <div class="screen" data-screen="16">
+        <div class="status-bar"><span>9:41</span><div class="icons"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg></div></div>
+        <div style="flex:1;overflow-y:auto;padding-bottom:28px;">
+
+          <!-- Score hero — edge to edge dark -->
+          <div style="background:var(--ink);color:var(--card-bg);padding:24px 22px 28px;position:relative;overflow:hidden;">
+            <div style="position:absolute;top:-40px;right:-40px;width:160px;height:160px;border:1px solid rgba(232,168,144,.1);border-radius:50%;"></div>
+            <div style="position:absolute;top:-20px;right:-20px;width:100px;height:100px;border:1px solid rgba(232,168,144,.07);border-radius:50%;"></div>
+            <div style="font-size:10px;text-transform:uppercase;letter-spacing:.22em;color:var(--accent-soft);font-weight:600;margin-bottom:8px;position:relative;z-index:1;">Your Upscore</div>
+            <div style="font-size:13px;color:rgba(250,247,240,.5);margin-bottom:10px;position:relative;z-index:1;">Hey Arjun, your financial health is</div>
+            <div style="font-family:'Fraunces',serif;font-size:20px;font-style:italic;color:var(--accent-soft);margin-bottom:12px;position:relative;z-index:1;">Healthy.</div>
+            <div style="display:flex;align-items:baseline;gap:12px;position:relative;z-index:1;margin-bottom:14px;">
+              <div style="font-family:'Fraunces',serif;font-size:72px;font-weight:500;line-height:1;letter-spacing:-.02em;">724</div>
+              <div style="font-size:12px;color:rgba(250,247,240,.45);">&#8593; 12 pts this month</div>
+            </div>
+            <!-- Score bar -->
+            <div style="position:relative;z-index:1;">
+              <div style="height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden;">
+                <div style="width:68%;height:100%;background:linear-gradient(90deg,var(--accent),#a8d5b8);border-radius:3px;"></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin-top:4px;font-size:9px;color:rgba(250,247,240,.3);">
+                <span>300 · Poor</span><span>500 · Fair</span><span>700 · Good</span><span>900 · Excellent</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- What it means in plain English -->
+          <div style="padding:22px 22px 0;">
+            <div style="font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:var(--ink-mute);font-weight:600;margin-bottom:14px;">What this means for you</div>
+
+            <div style="background:var(--card-bg);border:1px solid var(--card-divide);border-radius:16px;overflow:hidden;margin-bottom:14px;">
+              <div style="padding:14px 16px;border-bottom:1px solid var(--card-divide);display:flex;justify-content:space-between;align-items:center;">
+                <div style="font-size:12px;color:var(--ink-soft);">Home loan interest rate</div>
+                <div style="font-family:'Fraunces',serif;font-style:italic;font-size:15px;">8.9% p.a.</div>
+              </div>
+              <div style="padding:14px 16px;border-bottom:1px solid var(--card-divide);display:flex;justify-content:space-between;align-items:center;">
+                <div style="font-size:12px;color:var(--ink-soft);">If score reaches 780+</div>
+                <div style="font-family:'Fraunces',serif;font-style:italic;font-size:15px;color:#2d6a4f;">8.4% &middot; save &#8377;3.2L</div>
+              </div>
+              <div style="padding:14px 16px;display:flex;justify-content:space-between;align-items:center;">
+                <div style="font-size:12px;color:var(--ink-soft);">Credit card limit eligibility</div>
+                <div style="font-family:'Fraunces',serif;font-style:italic;font-size:15px;">Mid-tier offers</div>
+              </div>
+            </div>
+
+            <!-- Two component scores -->
+            <div style="font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:var(--ink-mute);font-weight:600;margin-bottom:14px;">How it's calculated</div>
+
+            <div style="background:var(--card-bg);border:1px solid var(--card-divide);border-radius:16px;padding:16px;margin-bottom:10px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <div style="width:32px;height:32px;border-radius:9px;background:rgba(45,106,79,.1);display:flex;align-items:center;justify-content:center;font-size:16px;">&#128176;</div>
+                  <div><div style="font-size:13px;font-weight:500;">Money score</div><div style="font-size:10px;color:var(--ink-soft);">Savings rate, spend habits, investments</div></div>
+                </div>
+                <div style="font-family:'Fraunces',serif;font-style:italic;font-size:22px;color:#2d6a4f;">340</div>
+              </div>
+              <div style="height:4px;background:rgba(26,24,20,.07);border-radius:2px;overflow:hidden;"><div style="width:68%;height:100%;background:#2d6a4f;border-radius:2px;"></div></div>
+              <div style="font-size:11px;color:var(--ink-soft);margin-top:8px;">Your savings rate is 25% vs peer average of 31%. Lifestyle spend is the biggest drag.</div>
+            </div>
+
+            <div style="background:var(--card-bg);border:1px solid var(--card-divide);border-radius:16px;padding:16px;margin-bottom:22px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <div style="width:32px;height:32px;border-radius:9px;background:var(--accent-bg);display:flex;align-items:center;justify-content:center;font-size:16px;">&#128179;</div>
+                  <div><div style="font-size:13px;font-weight:500;">Credit score</div><div style="font-size:10px;color:var(--ink-soft);">Payment history, utilisation, credit age</div></div>
+                </div>
+                <div style="font-family:'Fraunces',serif;font-style:italic;font-size:22px;color:var(--gold);">384</div>
+              </div>
+              <div style="height:4px;background:rgba(26,24,20,.07);border-radius:2px;overflow:hidden;"><div style="width:77%;height:100%;background:var(--gold);border-radius:2px;"></div></div>
+              <div style="font-size:11px;color:var(--ink-soft);margin-top:8px;">No missed payments — strong. But ICICI at 64% utilisation is dragging this down by ~22 pts.</div>
+            </div>
+
+            <button onclick="goTo(17)" style="background:var(--ink);color:var(--card-bg);border:none;border-radius:14px;padding:15px;width:100%;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;">See how to improve &#8594;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCREEN 17: HOW TO IMPROVE -->
+      <div class="screen" data-screen="17">
+        <div class="status-bar"><span>9:41</span><div class="icons"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg></div></div>
+        <div style="flex:1;overflow-y:auto;padding-bottom:28px;">
+
+          <div style="padding:22px 22px 0;">
+            <div style="font-size:10px;text-transform:uppercase;letter-spacing:.22em;color:var(--accent);font-weight:600;margin-bottom:10px;">Your improvement plan</div>
+            <div style="font-family:'Fraunces',serif;font-size:28px;font-weight:400;line-height:1.1;letter-spacing:-.02em;margin-bottom:6px;">Three actions that <em style="font-style:italic;color:var(--accent);">move the needle.</em></div>
+            <div style="font-size:12px;color:var(--ink-soft);margin-bottom:24px;line-height:1.5;">Each one is connected to a feature in your dashboard. Tap any card to get started.</div>
+          </div>
+
+          <!-- Feature card 1: Spend tracker -->
+          <div onclick="goTo(21)" style="margin:0 22px 12px;background:var(--card-bg);border:1px solid var(--card-divide);border-radius:18px;overflow:hidden;cursor:pointer;transition:all .2s;" onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''">
+            <div style="background:var(--accent-bg);padding:16px 18px 14px;border-bottom:1px solid var(--accent-soft);">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                <div style="width:36px;height:36px;border-radius:10px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:18px;">&#128202;</div>
+                <div style="font-size:10px;text-transform:uppercase;letter-spacing:.18em;color:var(--accent);font-weight:600;">Category spend tracker</div>
+              </div>
+              <div style="font-family:'Fraunces',serif;font-size:18px;line-height:1.2;">Set a dining limit. Get <em style="font-style:italic;color:var(--accent);">&#8377;7,000/month</em> back.</div>
+            </div>
+            <div style="padding:14px 18px;display:flex;justify-content:space-between;align-items:center;">
+              <div style="display:flex;gap:16px;">
+                <div style="text-align:center;"><div style="font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:var(--ink-mute);font-weight:600;margin-bottom:2px;">Annual saving</div><div style="font-family:'Fraunces',serif;font-style:italic;font-size:16px;color:var(--accent);">&#8377;84,000</div></div>
+                <div style="width:1px;background:var(--card-divide);"></div>
+                <div style="text-align:center;"><div style="font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:var(--ink-mute);font-weight:600;margin-bottom:2px;">Upscore impact</div><div style="font-family:'Fraunces',serif;font-style:italic;font-size:16px;color:#2d6a4f;">+8 pts</div></div>
+              </div>
+              <div style="font-size:18px;color:var(--ink-mute);">&#8250;</div>
+            </div>
+          </div>
+
+          <!-- Feature card 2: Subscription manager -->
+          <div onclick="goTo(22)" style="margin:0 22px 12px;background:var(--card-bg);border:1px solid var(--card-divide);border-radius:18px;overflow:hidden;cursor:pointer;transition:all .2s;" onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''">
+            <div style="background:rgba(240,236,228,.03);padding:16px 18px 14px;border-bottom:1px solid var(--card-divide);">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                <div style="width:36px;height:36px;border-radius:10px;background:var(--ink);display:flex;align-items:center;justify-content:center;font-size:18px;">&#128203;</div>
+                <div style="font-size:10px;text-transform:uppercase;letter-spacing:.18em;color:var(--ink-soft);font-weight:600;">Subscription manager</div>
+              </div>
+              <div style="font-family:'Fraunces',serif;font-size:18px;line-height:1.2;">Cancel 3 unused apps. Recover <em style="font-style:italic;color:var(--accent);">&#8377;1,890/month.</em></div>
+            </div>
+            <div style="padding:14px 18px;display:flex;justify-content:space-between;align-items:center;">
+              <div style="display:flex;gap:16px;">
+                <div style="text-align:center;"><div style="font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:var(--ink-mute);font-weight:600;margin-bottom:2px;">Annual saving</div><div style="font-family:'Fraunces',serif;font-style:italic;font-size:16px;color:var(--accent);">&#8377;22,680</div></div>
+                <div style="width:1px;background:var(--card-divide);"></div>
+                <div style="text-align:center;"><div style="font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:var(--ink-mute);font-weight:600;margin-bottom:2px;">Upscore impact</div><div style="font-family:'Fraunces',serif;font-style:italic;font-size:16px;color:#2d6a4f;">+4 pts</div></div>
+              </div>
+              <div style="font-size:18px;color:var(--ink-mute);">&#8250;</div>
+            </div>
+          </div>
+
+          <!-- Feature card 3: Credit optimiser -->
+          <div style="margin:0 22px 12px;background:var(--ink);border-radius:18px;overflow:hidden;cursor:pointer;transition:all .2s;" onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''">
+            <div style="padding:16px 18px 14px;border-bottom:1px solid rgba(255,255,255,.08);">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                <div style="width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:18px;">&#128200;</div>
+                <div style="font-size:10px;text-transform:uppercase;letter-spacing:.18em;color:rgba(250,247,240,.5);font-weight:600;">Credit optimiser</div>
+              </div>
+              <div style="font-family:'Fraunces',serif;font-size:18px;line-height:1.2;color:var(--card-bg);">Lower ICICI utilisation. Add <em style="font-style:italic;color:var(--accent-soft);">+22 score points.</em></div>
+            </div>
+            <div style="padding:14px 18px;display:flex;justify-content:space-between;align-items:center;">
+              <div style="display:flex;gap:16px;">
+                <div style="text-align:center;"><div style="font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:rgba(250,247,240,.4);font-weight:600;margin-bottom:2px;">Loan saving</div><div style="font-family:'Fraunces',serif;font-style:italic;font-size:16px;color:var(--accent-soft);">&#8377;3.2L</div></div>
+                <div style="width:1px;background:rgba(255,255,255,.08);"></div>
+                <div style="text-align:center;"><div style="font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:rgba(250,247,240,.4);font-weight:600;margin-bottom:2px;">Score impact</div><div style="font-family:'Fraunces',serif;font-style:italic;font-size:16px;color:#4aad80;">+22 pts</div></div>
+              </div>
+              <div style="font-size:18px;color:rgba(255,255,255,.3);">&#8250;</div>
+            </div>
+          </div>
+
+          <!-- CTA to dashboard -->
+          <div style="padding:8px 22px 0;">
+            <button onclick="goTo(18)" style="background:var(--accent);color:white;border:none;border-radius:14px;padding:15px;width:100%;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;margin-bottom:10px;">Go to my dashboard &#8594;</button>
+            <div style="text-align:center;font-size:11px;color:var(--ink-mute);">You can always come back to these from your Money and Credit dashboards</div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="screen" data-screen="18">
         <div class="status-bar">
           <span>9:41</span>
           <div class="icons">
@@ -1996,7 +2214,7 @@
       <!-- SCREEN 16: MONEY DASHBOARD -->
       <!-- SCREEN 16: MONEY DASHBOARD -->
       <!-- SCREEN 16: MONEY DASHBOARD -->
-      <div class="screen" data-screen="16">
+      <div class="screen" data-screen="19">
         <div class="status-bar"><span>9:41</span><div class="icons"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
         <div class="screen-pfm" style="flex:1;">
 
@@ -2085,7 +2303,7 @@
         </div>
       </div>
 
-      <div class="screen" data-screen="17">
+      <div class="screen" data-screen="20">
                 <div class="status-bar"><span>9:41</span><div class="icons"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
         <div class="screen-pfm" style="flex:1;">
           <div style="padding:12px 22px 0;display:flex;align-items:center;gap:10px;">
@@ -2144,7 +2362,7 @@
       </div>
 
       <!-- SCREEN 18: INSIGHT DETAIL — FOOD DELIVERY -->
-      <div class="screen" data-screen="18">
+      <div class="screen" data-screen="21">
         <div class="status-bar"><span>9:41</span><div class="icons"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
         <div class="screen-pfm" style="flex:1;">
 
@@ -2297,7 +2515,7 @@
       </div>
 
       <!-- SCREEN 19: INSIGHT DETAIL — RECURRING CHARGES -->
-      <div class="screen" data-screen="19">
+      <div class="screen" data-screen="22">
                 <div class="status-bar"><span>9:41</span><div class="icons"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
         <div class="screen-pfm" style="flex:1;">
           <div style="padding:14px 22px 0;display:flex;align-items:center;gap:10px;">
@@ -2331,7 +2549,7 @@
       </div>
 
       <!-- SCREEN 20: UPSCORE DETAIL PAGE -->
-      <div class="screen" data-screen="20">
+      <div class="screen" data-screen="23">
         <div class="status-bar" style="color:var(--card-bg);"><span>9:41</span><div class="icons"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
         <div class="screen-pfm" style="flex:1;">
           <!-- Dark hero -->
@@ -2385,7 +2603,7 @@
       </div>
 
       <!-- SCREEN 21: INFLOW DETAIL -->
-      <div class="screen" data-screen="21">
+      <div class="screen" data-screen="24">
         <div class="status-bar"><span>9:41</span><div class="icons"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
         <div class="screen-pfm" style="flex:1;">
           <div style="padding:14px 22px 0;display:flex;align-items:center;gap:10px;">
@@ -2418,7 +2636,7 @@
       </div>
 
       <!-- SCREEN 22: OUTFLOW DETAIL -->
-      <div class="screen" data-screen="22">
+      <div class="screen" data-screen="25">
         <div class="status-bar"><span>9:41</span><div class="icons"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
         <div class="screen-pfm" style="flex:1;">
           <div style="padding:14px 22px 0;display:flex;align-items:center;gap:10px;">
@@ -2472,7 +2690,7 @@
       </div>
 
       <!-- SCREEN 23: KOTAK ACCOUNT DETAIL -->
-      <div class="screen" data-screen="23">
+      <div class="screen" data-screen="26">
         <div class="status-bar"><span>9:41</span><div class="icons"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
         <div class="screen-pfm" style="flex:1;">
           <div style="padding:14px 22px 0;display:flex;align-items:center;gap:10px;">
@@ -2523,7 +2741,7 @@
       </div>
 
       <!-- SCREEN 24: HDFC ACCOUNT DETAIL -->
-      <div class="screen" data-screen="24">
+      <div class="screen" data-screen="27">
         <div class="status-bar"><span>9:41</span><div class="icons"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx=".5"/><rect x="4" y="4" width="3" height="6" rx=".5"/><rect x="8" y="2" width="3" height="8" rx=".5"/><rect x="12" y="0" width="3" height="10" rx=".5"/></svg><svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="currentColor" opacity=".4"/><rect x="22" y="3.5" width="1.5" height="4" rx=".5" fill="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/></svg></div></div>
         <div class="screen-pfm" style="flex:1;">
           <div style="padding:14px 22px 0;display:flex;align-items:center;gap:10px;">
@@ -2576,7 +2794,9 @@
     'Discovery', 'About you', 'Eating out', 'Shopping', 'Rent',
     'Investments', 'EMIs', 'Building insights', 'The reveal',
     'Lite dashboard', 'Money stack', 'Credit stack',
-    'Upscore CVP', 'UPI mandate', 'AA processing', 'PFM dashboard',
+    'Upscore CVP', 'UPI mandate', 'AA processing',
+    'Post-AA insights', 'Your Upscore', 'How to improve',
+    'PFM dashboard',
     'Money dashboard', 'Credit dashboard',
     'Insight: Category spend', 'Insight: Recurring charges',
     'Upscore detail', 'Inflow detail', 'Outflow detail',
@@ -3127,6 +3347,88 @@
       }
     };
   });
+
+  // ── POST-AA INSIGHT REVEAL SWIPE ──────────────────────────
+  var aaSwipedCount = 0;
+  var aaDragging = false, aaDragX = 0, aaCurX = 0, aaDragCard = null;
+
+  function initAAStack() {
+    aaSwipedCount = 0;
+    var cards = document.querySelectorAll('.aa-card');
+    cards.forEach(function(c) {
+      c.classList.remove('aa-gone');
+      c.style.transform = '';
+      c.style.opacity = '';
+    });
+    var ctr = document.getElementById('aaInsightCtr');
+    if(ctr) ctr.textContent = '1 of 4';
+    var cont = document.getElementById('aaRevealContinue');
+    if(cont) { cont.style.opacity = '0'; cont.style.pointerEvents = 'none'; }
+    var topCard = document.getElementById('aaTopCard');
+    if(topCard) {
+      topCard.onpointerdown = aaOnDown;
+    }
+  }
+
+  function aaOnDown(e) {
+    aaDragging = true; aaDragCard = this;
+    aaDragX = e.clientX; aaCurX = e.clientX;
+    this.style.cursor = 'grabbing';
+    this.setPointerCapture(e.pointerId);
+    document.addEventListener('pointermove', aaOnMove);
+    document.addEventListener('pointerup', aaOnUp);
+  }
+  function aaOnMove(e) {
+    if(!aaDragging || !aaDragCard) return;
+    aaCurX = e.clientX;
+    var dx = aaCurX - aaDragX;
+    aaDragCard.style.transform = 'translateY(0) scale(1) translateX(' + dx + 'px) rotate(' + (dx/20) + 'deg)';
+    aaDragCard.style.opacity = Math.max(.3, 1 - Math.abs(dx)/250);
+  }
+  function aaOnUp(e) {
+    if(!aaDragging || !aaDragCard) return;
+    aaDragging = false;
+    document.removeEventListener('pointermove', aaOnMove);
+    document.removeEventListener('pointerup', aaOnUp);
+    var dx = aaCurX - aaDragX;
+    aaDragCard.style.cursor = 'grab';
+    if(Math.abs(dx) > 80) {
+      // Swipe accepted
+      var dir = dx > 0 ? 1 : -1;
+      aaDragCard.style.transform = 'translateX(' + (dir*500) + 'px) rotate(' + (dir*20) + 'deg)';
+      aaDragCard.style.opacity = '0';
+      aaDragCard.style.transition = 'transform .4s ease, opacity .3s ease';
+      aaSwipedCount++;
+      var ctr = document.getElementById('aaInsightCtr');
+      // Promote next card
+      var remaining = Array.from(document.querySelectorAll('.aa-card:not(.aa-gone)')).filter(function(c){ return c !== aaDragCard; });
+      setTimeout(function() {
+        aaDragCard.classList.add('aa-gone');
+        aaDragCard.style.transition = '';
+        if(remaining.length > 0) {
+          // Re-stack remaining
+          remaining.forEach(function(c, i) {
+            var offset = i * 5;
+            var scale = 1 - i * 0.02;
+            c.style.transform = 'translateY(' + offset + 'px) scale(' + scale + ')';
+            c.style.zIndex = 4 - i;
+          });
+          remaining[0].onpointerdown = aaOnDown;
+          aaDragCard = remaining[0];
+          if(ctr) ctr.textContent = (aaSwipedCount + 1) + ' of 4';
+        } else {
+          // All swiped
+          if(ctr) ctr.textContent = 'Done';
+          var cont = document.getElementById('aaRevealContinue');
+          if(cont) { cont.style.opacity = '1'; cont.style.pointerEvents = 'auto'; }
+        }
+      }, 350);
+    } else {
+      // Snap back
+      aaDragCard.style.transform = 'translateY(0) scale(1)';
+      aaDragCard.style.opacity = '1';
+    }
+  }
 
 </script>
 </body>
